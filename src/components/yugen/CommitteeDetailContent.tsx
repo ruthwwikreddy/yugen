@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { TornCardTop } from './TornEdge'
+import { EARLY_BIRD_REGISTER_PATH, isApplyOpen } from '../../config/features'
 import type { Committee, CommitteeChair } from '../../lib/yugen'
 
 function ChairCard({ chair, committeeName }: { chair: CommitteeChair; committeeName: string }) {
@@ -115,14 +116,16 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
 
       <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
         <p className="label-caps">Registration</p>
-        <h2 className="mt-3 font-heading text-2xl font-bold">Delegate registration opens soon</h2>
+        <h2 className="mt-3 font-heading text-2xl font-bold">Early bird delegate registration is open</h2>
         <p className="mt-2 text-sm text-muted">
-          Committee preferences are collected during registration. Get notified when slots open.
+          Committee preferences are collected during registration. Chair applications open later.
         </p>
         <div className="mt-6 flex flex-wrap gap-4">
-          <Link to="/register" className="btn-primary">Get notified</Link>
+          <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary">Register now</Link>
           <Link to="/resources" className="btn-ghost">All resources</Link>
-          <Link to="/apply" className="btn-ghost">Apply to chair</Link>
+          {isApplyOpen() && (
+            <Link to="/apply" className="btn-ghost">Apply to chair</Link>
+          )}
         </div>
       </section>
     </>

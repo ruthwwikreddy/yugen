@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LogoLockup } from './Logo'
 import { YUGEN } from '../../lib/yugen'
+import { EARLY_BIRD_REGISTER_PATH } from '../../config/features'
 
 export function Header() {
   const [open, setOpen] = useState(false)
@@ -23,7 +24,7 @@ export function Header() {
   }, [location])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 pt-4">
+    <header className="safe-top fixed top-0 left-0 right-0 z-50 pt-2 sm:pt-4">
       <motion.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -53,12 +54,12 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link to="/register" className="btn-primary hidden sm:inline-flex">
-              Get notified
+            <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary hidden sm:inline-flex">
+              Register
             </Link>
             <button
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-yugen md:hidden transition-all duration-200 hover:scale-105 active:scale-95"
+              className="touch-target flex h-11 w-11 items-center justify-center rounded-full border border-yugen md:hidden"
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
               onClick={() => setOpen(!open)}
@@ -88,17 +89,17 @@ export function Header() {
                     key={item.href}
                     to={item.href}
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-4 py-3 label-caps text-yugen-muted transition-all duration-200 hover:bg-surface hover:text-yugen-white"
+                    className="flex min-h-12 items-center rounded-lg px-4 py-3.5 label-caps text-yugen-muted transition-colors hover:bg-surface hover:text-yugen-white"
                   >
                     {item.label}
                   </Link>
                 ))}
                 <Link
-                  to="/register"
+                  to={EARLY_BIRD_REGISTER_PATH}
                   onClick={() => setOpen(false)}
                   className="btn-primary mt-3 w-full"
                 >
-                  Get notified
+                  Register now
                 </Link>
                 {!isHome && (
                   <Link

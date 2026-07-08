@@ -14,11 +14,27 @@ import {
 import { db, firebaseEnabled } from './firebase'
 import { isFirestoreDisabledError } from './firebase-errors'
 import {
+  buildRegistrationUpiUri,
+  buildUpiPaymentNote,
+  formatRegistrationIdDisplay,
+  normalizeRegistrationRef,
+} from './upi'
+import { PAYMENT_CONFIG } from '../config/payment'
+import { getFlowBySlug, type FlowConfig } from '../config/registrations'
+import type {
+  CreateRegistrationResult,
+  Registration,
+  RegistrationInput,
+  RegistrationStatus,
+  RegistrationUpdate,
+} from './registration-types'
+import {
   deleteLocalRegistration,
   getLocalRegistration,
   inputToStored,
   listLocalRegistrations,
   markLocalSynced,
+  normalizeStored,
   saveLocalRegistration,
   storedToRegistration,
   updateLocalRegistration,
@@ -26,68 +42,36 @@ import {
   type StoredRegistration,
 } from './registration-storage'
 
-export const EARLY_BIRD_AMOUNT = Number(import.meta.env.VITE_EARLY_BIRD_AMOUNT) || 1200
-export const UPI_ID = import.meta.env.VITE_UPI_ID ?? ''
-export const UPI_PAYEE_NAME = import.meta.env.VITE_UPI_PAYEE_NAME ?? 'Yugen Summit'
+export type { Registration, RegistrationInput, RegistrationStatus, RegistrationUpdate, CreateRegistrationResult }
 
-export type RegistrationStatus = 'pending' | 'paid' | 'verified' | 'rejected'
-
-export type Registration = {
-  id: string
-  name: string
-  email: string
-  phone: string
-  school: string
-  grade: string
-  committeePreference: string
-  experience: string
-  dietaryNotes: string
-  adminNotes: string
-  amount: number
-  tier: 'early-bird'
-  status: RegistrationStatus
-  createdAt: Timestamp | null
-  paidAt: Timestamp | null
-}
-
-export type RegistrationInput = Omit<
-  Registration,
-  'id' | 'amount' | 'tier' | 'status' | 'createdAt' | 'paidAt' | 'adminNotes'
->
-
-export type RegistrationUpdate = Partial<RegistrationInput> & {
-  adminNotes?: string
-  status?: RegistrationStatus
-}
-
-export type CreateRegistrationResult = {
-  id: string
-  registration: Registration
-  cloudSynced: boolean
-  warning?: string
-}
+export const EARLY_BIRD_AMOUNT = PAYMENT_CONFIG.earlyBirdAmount
+export const UPI_ID = PAYMENT_CONFIG.upiId
+export const UPI_PAYEE_NAME = PAYMENT_CONFIG.payeeName
 
 const COLLECTION = 'registrations'
 const ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 
-export function generateRegistrationId() {
+export function generateRegistrationId(flow: FlowConfig) {
   let suffix = ''
   for (let i = 0; i < 6; i++) {
     suffix += ID_CHARS[Math.floor(Math.random() * ID_CHARS.length)]
   }
-  return `YG6-EB-${suffix}`
+  // Keep legacy EB format for early bird backward compat
+  if (flow.slug === 'delegate-r1-early-bird') {
+    return `YG6-EB-${suffix}`
+  }
+  return `YG6-${flow.idPrefix}-${suffix}`
 }
 
-export function buildUpiUri(registrationId: string) {
-  const params = new URLSearchParams({
-    pa: UPI_ID,
-    pn: UPI_PAYEE_NAME,
-    am: EARLY_BIRD_AMOUNT.toFixed(2),
-    cu: 'INR',
-    tn: `Yugen6 ${registrationId}`,
+export function buildUpiUri(registrationId: string, amount = EARLY_BIRD_AMOUNT) {
+  return buildRegistrationUpiUri(registrationId, {
+    vpa: UPI_ID,
+    payeeName: UPI_PAYEE_NAME,
+    amount,
   })
-  return `upi://pay?${params.toString()}`
 }
+
+export { buildUpiPaymentNote, formatRegistrationIdDisplay, normalizeRegistrationRef }
 
 function sanitizeInput(input: RegistrationInput): RegistrationInput {
   return {
@@ -97,8 +81,17 @@ function sanitizeInput(input: RegistrationInput): RegistrationInput {
     school: input.school.trim(),
     grade: input.grade,
     committeePreference: (input.committeePreference || '').trim(),
+    committeePreference2: (input.committeePreference2 || '').trim(),
+    committeePreference3: (input.committeePreference3 || '').trim(),
     experience: input.experience,
+    experienceDetails: (input.experienceDetails || '').trim(),
+    awardsAndAchievements: (input.awardsAndAchievements || '').trim(),
     dietaryNotes: (input.dietaryNotes || '').trim(),
+    countryPreference: (input.countryPreference || '').trim(),
+    portfolioPreference: (input.portfolioPreference || '').trim(),
+    whyJoin: (input.whyJoin || '').trim(),
+    availability: (input.availability || '').trim(),
+    portfolioUrl: (input.portfolioUrl || '').trim(),
   }
 }
 
@@ -109,40 +102,77 @@ function stripUndefined<T extends Record<string, unknown>>(obj: T): T {
 function toFirestorePayload(stored: StoredRegistration) {
   return stripUndefined({
     id: stored.id,
+    flowSlug: stored.flowSlug,
+    flowType: stored.flowType,
+    round: stored.round,
     name: stored.name,
     email: stored.email,
     phone: stored.phone,
     school: stored.school,
     grade: stored.grade,
     committeePreference: stored.committeePreference,
+    committeePreference2: stored.committeePreference2,
+    committeePreference3: stored.committeePreference3,
     experience: stored.experience,
+    experienceDetails: stored.experienceDetails,
+    awardsAndAchievements: stored.awardsAndAchievements,
     dietaryNotes: stored.dietaryNotes,
+    countryPreference: stored.countryPreference,
+    portfolioPreference: stored.portfolioPreference,
+    whyJoin: stored.whyJoin,
+    availability: stored.availability,
+    portfolioUrl: stored.portfolioUrl,
     adminNotes: stored.adminNotes ?? '',
     amount: stored.amount,
+    paymentRequired: stored.paymentRequired,
     tier: stored.tier,
     status: stored.status,
+    allocationStatus: stored.allocationStatus,
+    allocatedCommittee: stored.allocatedCommittee,
+    allocatedCountry: stored.allocatedCountry,
+    allocationNotes: stored.allocationNotes,
     createdAt: serverTimestamp(),
     paidAt: stored.paidAtMs ? new Date(stored.paidAtMs) : null,
+    allocatedAt: stored.allocatedAtMs ? new Date(stored.allocatedAtMs) : null,
   })
 }
 
 export function formatRegistration(docData: Record<string, unknown>, id: string): Registration {
+  const amount = Number(docData.amount ?? EARLY_BIRD_AMOUNT)
   return {
     id,
+    flowSlug: String(docData.flowSlug ?? 'delegate-r1-early-bird'),
+    flowType: (docData.flowType as Registration['flowType']) ?? 'delegate',
+    round: Number(docData.round ?? 1),
     name: String(docData.name ?? ''),
     email: String(docData.email ?? ''),
     phone: String(docData.phone ?? ''),
     school: String(docData.school ?? ''),
     grade: String(docData.grade ?? ''),
     committeePreference: String(docData.committeePreference ?? ''),
+    committeePreference2: String(docData.committeePreference2 ?? ''),
+    committeePreference3: String(docData.committeePreference3 ?? ''),
     experience: String(docData.experience ?? ''),
+    experienceDetails: String(docData.experienceDetails ?? ''),
+    awardsAndAchievements: String(docData.awardsAndAchievements ?? ''),
     dietaryNotes: String(docData.dietaryNotes ?? ''),
+    countryPreference: String(docData.countryPreference ?? ''),
+    portfolioPreference: String(docData.portfolioPreference ?? ''),
+    whyJoin: String(docData.whyJoin ?? ''),
+    availability: String(docData.availability ?? ''),
+    portfolioUrl: String(docData.portfolioUrl ?? ''),
     adminNotes: String(docData.adminNotes ?? ''),
-    amount: Number(docData.amount ?? EARLY_BIRD_AMOUNT),
-    tier: 'early-bird',
+    amount,
+    paymentRequired: docData.paymentRequired !== undefined ? Boolean(docData.paymentRequired) : amount > 0,
+    tier: String(docData.tier ?? 'early-bird'),
     status: (docData.status as RegistrationStatus) ?? 'pending',
+    allocationStatus: (docData.allocationStatus as Registration['allocationStatus']) ?? 'unallocated',
+    allocatedCommittee: (docData.allocatedCommittee as string | undefined) ?? undefined,
+    allocatedCountry: (docData.allocatedCountry as string | undefined) ?? undefined,
+    allocationNotes: (docData.allocationNotes as string | undefined) ?? undefined,
     createdAt: (docData.createdAt as Timestamp | null) ?? null,
     paidAt: (docData.paidAt as Timestamp | null) ?? null,
+    allocatedAt: (docData.allocatedAt as Timestamp | null | undefined) ?? undefined,
   }
 }
 
@@ -166,19 +196,27 @@ async function cloudWrite(stored: StoredRegistration): Promise<{ ok: boolean; wa
   }
 }
 
-export async function createRegistration(input: RegistrationInput): Promise<CreateRegistrationResult> {
+export async function createRegistration(
+  flowSlug: string,
+  input: RegistrationInput,
+): Promise<CreateRegistrationResult> {
+  const flow = getFlowBySlug(flowSlug)
+  if (!flow || !flow.active) {
+    throw new Error('This registration round is not open.')
+  }
+
   const clean = sanitizeInput(input)
-  let id = generateRegistrationId()
+  let id = generateRegistrationId(flow)
 
   if (firebaseEnabled && db) {
     for (let attempt = 0; attempt < 5; attempt++) {
       const existing = await getDoc(doc(db, COLLECTION, id)).catch(() => null)
       if (!existing?.exists()) break
-      id = generateRegistrationId()
+      id = generateRegistrationId(flow)
     }
   }
 
-  const stored = inputToStored(id, clean, EARLY_BIRD_AMOUNT)
+  const stored = inputToStored(id, clean, flow)
   saveLocalRegistration(stored)
 
   const cloud = await cloudWrite(stored)
@@ -194,7 +232,7 @@ export async function createRegistration(input: RegistrationInput): Promise<Crea
 
 export async function getRegistration(id: string): Promise<Registration | null> {
   const local = getLocalRegistration(id)
-  if (local) return storedToRegistration(local)
+  if (local) return storedToRegistration(normalizeStored(local))
 
   if (!firebaseEnabled || !db) return null
 
@@ -252,12 +290,20 @@ export async function acceptPayment(id: string) {
   await updateRegistrationStatus(id, 'verified')
 }
 
+export async function acceptApplication(id: string) {
+  await updateRegistrationStatus(id, 'verified')
+}
+
 export async function rejectPayment(id: string, adminNotes?: string) {
   if (adminNotes) {
     await updateRegistration(id, { status: 'rejected', adminNotes })
   } else {
     await updateRegistrationStatus(id, 'rejected')
   }
+}
+
+export async function rejectApplication(id: string, adminNotes?: string) {
+  await rejectPayment(id, adminNotes)
 }
 
 export async function updateRegistration(id: string, patch: RegistrationUpdate) {
@@ -267,7 +313,16 @@ export async function updateRegistration(id: string, patch: RegistrationUpdate) 
   if (patch.phone) clean.phone = patch.phone.trim()
   if (patch.school) clean.school = patch.school.trim()
   if (patch.committeePreference !== undefined) clean.committeePreference = patch.committeePreference.trim()
+  if (patch.committeePreference2 !== undefined) clean.committeePreference2 = patch.committeePreference2.trim()
+  if (patch.committeePreference3 !== undefined) clean.committeePreference3 = patch.committeePreference3.trim()
+  if (patch.experienceDetails !== undefined) clean.experienceDetails = patch.experienceDetails.trim()
+  if (patch.awardsAndAchievements !== undefined) clean.awardsAndAchievements = patch.awardsAndAchievements.trim()
   if (patch.dietaryNotes !== undefined) clean.dietaryNotes = patch.dietaryNotes.trim()
+  if (patch.countryPreference !== undefined) clean.countryPreference = patch.countryPreference.trim()
+  if (patch.portfolioPreference !== undefined) clean.portfolioPreference = patch.portfolioPreference.trim()
+  if (patch.whyJoin !== undefined) clean.whyJoin = patch.whyJoin.trim()
+  if (patch.availability !== undefined) clean.availability = patch.availability.trim()
+  if (patch.portfolioUrl !== undefined) clean.portfolioUrl = patch.portfolioUrl.trim()
 
   updateLocalRegistration(id, clean)
 
@@ -280,6 +335,12 @@ export async function updateRegistration(id: string, patch: RegistrationUpdate) 
   if (clean.status === 'pending' || clean.status === 'rejected') {
     updates.paidAt = null
   }
+  if (clean.allocationStatus === 'allocated') {
+    updates.allocatedAt = serverTimestamp()
+  }
+  if (clean.allocationStatus === 'unallocated' || clean.allocationStatus === 'waitlisted') {
+    updates.allocatedAt = null
+  }
 
   try {
     await updateDoc(doc(db, COLLECTION, id), updates)
@@ -287,6 +348,38 @@ export async function updateRegistration(id: string, patch: RegistrationUpdate) 
   } catch {
     // local already updated
   }
+}
+
+export async function allocateCommittee(
+  id: string,
+  committee: string,
+  country?: string,
+  notes?: string,
+): Promise<void> {
+  await updateRegistration(id, {
+    allocationStatus: 'allocated',
+    allocatedCommittee: committee,
+    allocatedCountry: country,
+    allocationNotes: notes,
+  })
+}
+
+export async function waitlistDelegate(id: string, notes?: string): Promise<void> {
+  await updateRegistration(id, {
+    allocationStatus: 'waitlisted',
+    allocatedCommittee: undefined,
+    allocatedCountry: undefined,
+    allocationNotes: notes,
+  })
+}
+
+export async function deallocateDelegate(id: string): Promise<void> {
+  await updateRegistration(id, {
+    allocationStatus: 'unallocated',
+    allocatedCommittee: undefined,
+    allocatedCountry: undefined,
+    allocationNotes: undefined,
+  })
 }
 
 export async function deleteRegistration(id: string) {
@@ -302,7 +395,7 @@ export async function deleteRegistration(id: string) {
 }
 
 export async function listRegistrations(): Promise<Registration[]> {
-  const local = listLocalRegistrations()
+  const local = listLocalRegistrations().map(normalizeStored)
   const byId = new Map<string, Registration>(local.map((r) => [r.id, storedToRegistration(r)]))
 
   if (!firebaseEnabled || !db) {
@@ -340,7 +433,9 @@ export async function syncPendingToCloud(): Promise<number> {
   for (const stored of listLocalRegistrations()) {
     if (stored.syncedToCloud) continue
     try {
-      await setDoc(doc(db, COLLECTION, stored.id), toFirestorePayload(stored), { merge: true })
+      await setDoc(doc(db, COLLECTION, normalizeStored(stored).id), toFirestorePayload(normalizeStored(stored)), {
+        merge: true,
+      })
       markLocalSynced(stored.id)
       synced++
     } catch {
@@ -348,4 +443,10 @@ export async function syncPendingToCloud(): Promise<number> {
     }
   }
   return synced
+}
+
+export function getFlowLabel(reg: Registration): string {
+  const flow = getFlowBySlug(reg.flowSlug)
+  if (flow) return flow.eyebrow
+  return `${reg.flowType} · Round ${reg.round}`
 }

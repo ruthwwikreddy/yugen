@@ -23,6 +23,26 @@ export type Committee = {
   chairs: CommitteeChair[]
 }
 
+export type OCRole = {
+  id: string
+  title: string
+  department: string
+  description: string
+  requirements: string[]
+  responsibilities: string[]
+  availableRounds: number[]
+  capacity?: number
+}
+
+export type OCRoundConfig = {
+  round: number
+  title: string
+  description: string
+  startDate?: string
+  endDate?: string
+  status: 'upcoming' | 'open' | 'closed' | 'archived'
+}
+
 export const YUGEN = {
   name: 'Yūgen Summit 6.0',
   shortName: 'Yūgen',
@@ -55,7 +75,7 @@ export const YUGEN = {
   },
   stats: [
     { label: 'Edition', value: '6.0' },
-    { label: 'Committees', value: 'TBA' },
+    { label: 'Committees', value: '7' },
     { label: 'Delegates', value: 'TBA' },
     { label: 'Schools', value: 'TBA' },
   ],
@@ -142,6 +162,96 @@ export const YUGEN = {
     { id: 'ip', title: 'International Press', description: 'Join the Yūgen IP corps. Portfolio requirements announcing soon.', status: 'coming-soon' as const },
     { id: 'oc', title: 'Organizing Committee', description: 'USG and department roles fill through internal OC recruitment.', status: 'coming-soon' as const },
   ],
+  ocRoles: [
+    {
+      id: 'usg-delegate-affairs',
+      title: 'USG Delegate Affairs',
+      department: 'Delegate Affairs',
+      description: 'Manage delegate registrations, communications, and experience.',
+      requirements: ['Strong communication skills', 'Experience with event coordination', 'Available for pre-conference planning'],
+      responsibilities: ['Handle delegate queries', 'Coordinate registration process', 'Manage delegate check-in', 'Support delegate experience'],
+      availableRounds: [1, 2],
+      capacity: 1,
+    },
+    {
+      id: 'usg-logistics',
+      title: 'USG Logistics',
+      department: 'Logistics',
+      description: 'Coordinate venue setup, materials, and conference operations.',
+      requirements: ['Organizational skills', 'Physical availability during conference', 'Attention to detail'],
+      responsibilities: ['Venue preparation', 'Material management', 'Coordinate with school administration', 'On-site logistics support'],
+      availableRounds: [1, 2],
+      capacity: 1,
+    },
+    {
+      id: 'usg-marketing',
+      title: 'USG Marketing',
+      department: 'Marketing',
+      description: 'Lead social media, promotions, and brand communications.',
+      requirements: ['Social media experience', 'Content creation skills', 'Creative mindset'],
+      responsibilities: ['Manage social media accounts', 'Create promotional content', 'Coordinate with design team', 'Engage with schools'],
+      availableRounds: [1, 2],
+      capacity: 1,
+    },
+    {
+      id: 'usg-operations',
+      title: 'USG Operations',
+      department: 'Operations',
+      description: 'Oversee conference operations and team coordination.',
+      requirements: ['Leadership experience', 'Problem-solving skills', 'Available throughout planning phase'],
+      responsibilities: ['Coordinate department heads', 'Manage timeline', 'Resolve operational issues', 'Support secretariat'],
+      availableRounds: [1],
+      capacity: 1,
+    },
+    {
+      id: 'delegate-affairs-member',
+      title: 'Delegate Affairs Member',
+      department: 'Delegate Affairs',
+      description: 'Support delegate communications and registration management.',
+      requirements: ['Good communication skills', 'Team player', 'Responsive'],
+      responsibilities: ['Respond to delegate emails', 'Assist with registration', 'Support check-in process', 'Help during conference'],
+      availableRounds: [1, 2],
+      capacity: 3,
+    },
+    {
+      id: 'logistics-member',
+      title: 'Logistics Member',
+      department: 'Logistics',
+      description: 'Assist with venue setup, materials, and on-site operations.',
+      requirements: ['Reliable', 'Available for physical work', 'Detail-oriented'],
+      responsibilities: ['Set up committee rooms', 'Manage materials', 'On-site support', 'Clean-up coordination'],
+      availableRounds: [1, 2],
+      capacity: 4,
+    },
+    {
+      id: 'marketing-member',
+      title: 'Marketing Member',
+      department: 'Marketing',
+      description: 'Support social media, content creation, and promotions.',
+      requirements: ['Social media savvy', 'Creative', 'Good writing skills'],
+      responsibilities: ['Create social posts', 'Design graphics', 'Engage with followers', 'Support promotional campaigns'],
+      availableRounds: [1, 2],
+      capacity: 3,
+    },
+  ] as OCRole[],
+  ocRounds: [
+    {
+      round: 1,
+      title: 'Round 1 - Core Team',
+      description: 'Applications for USG positions and core team members. Priority given to experienced candidates.',
+      startDate: '2026-07-01',
+      endDate: '2026-07-31',
+      status: 'open',
+    },
+    {
+      round: 2,
+      title: 'Round 2 - Extended Team',
+      description: 'Applications for supporting team members. Open to all enthusiastic candidates.',
+      startDate: '2026-08-01',
+      endDate: '2026-08-31',
+      status: 'upcoming',
+    },
+  ] as OCRoundConfig[],
   press: {
     intro: 'Media inquiries, press passes, and brand assets for Yūgen Summit 6.0.',
     contact: 'hello@yugenporps.in',
@@ -166,8 +276,8 @@ export const YUGEN = {
   },
   pricing: [] as { tier: string; price: string; note: string; features: string[] }[],
   registration: {
-    status: 'coming-soon' as const,
-    path: '/register',
+    status: 'live' as const,
+    path: '/register/early-bird',
   },
   nav: [
     { label: 'About', href: '/about' },
@@ -208,15 +318,33 @@ const DEFAULT_CHAIRS: CommitteeChair[] = [
   { name: 'TBA', role: 'Vice-Chair', initials: 'VC' },
 ]
 
-/** Placeholder roster — replace entire array in YUGEN.committees when councils are confirmed */
-export const DEFAULT_COMMITTEES: Committee[] = [
-  {
-    id: 'committee-i',
-    acronym: 'TBA',
-    name: 'Committee I',
-    type: 'Security Council',
+const CRISIS_CHAIRS: CommitteeChair[] = [
+  { name: 'TBA', role: 'Crisis Director', initials: 'CD' },
+  { name: 'TBA', role: 'Deputy Director', initials: 'DD' },
+]
+
+const IP_CHAIRS: CommitteeChair[] = [{ name: 'TBA', role: 'Editor-in-Chief', initials: 'EC' }]
+
+function defaultCommittee(
+  partial: Pick<Committee, 'id' | 'acronym' | 'name' | 'type'> &
+    Partial<
+      Pick<
+        Committee,
+        | 'topic'
+        | 'topicExpanded'
+        | 'delegateCapacity'
+        | 'portfolioRequired'
+        | 'portfolioNote'
+        | 'chairs'
+        | 'venue'
+        | 'studyGuideStatus'
+        | 'status'
+      >
+    >,
+): Committee {
+  return {
     topic: 'Agenda announcing soon',
-    topicExpanded: 'The full agenda for Committee I publishes when the Yūgen 6.0 organizing committee confirms the council lineup. Study guide and portfolio requirements will appear on this page.',
+    topicExpanded: `The full agenda for ${partial.name} publishes when the Yūgen 6.0 organizing committee confirms the council lineup.`,
     difficulty: 'TBA',
     delegateCapacity: 'TBA',
     portfolioRequired: true,
@@ -225,119 +353,69 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     studyGuideStatus: 'coming-soon',
     status: 'announcing-soon',
     chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-ii',
-    acronym: 'TBA',
-    name: 'Committee II',
-    type: 'General Assembly',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Committee II agenda and background guide drop here first. Follow @yugenporps for the reveal.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA — portfolio guidelines coming soon.',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-iii',
-    acronym: 'TBA',
-    name: 'Committee III',
-    type: 'General Assembly',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Full topic brief and committee overview publish with the final roster.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-iv',
-    acronym: 'TBA',
-    name: 'Committee IV',
-    type: 'Specialized Agency',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Specialized agency mandate and agenda announcing soon for Yūgen 6.0.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-v',
-    acronym: 'TBA',
-    name: 'Committee V',
-    type: 'Human Rights',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Human rights council agenda and study materials publish when committees are locked.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-vi',
-    acronym: 'TBA',
-    name: 'Committee VI',
-    type: 'Indian Committee',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Indian committee simulation topic and procedure notes announcing soon.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: DEFAULT_CHAIRS,
-  },
-  {
-    id: 'committee-vii',
-    acronym: 'TBA',
-    name: 'Committee VII',
-    type: 'Crisis',
-    topic: 'Agenda announcing soon',
-    topicExpanded: 'Crisis committee arc, directives, and portfolio requirements publish with the full roster.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA — crisis portfolio format announcing soon.',
-    venue: 'TBA — room assignment',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: [{ name: 'TBA', role: 'Crisis Director', initials: 'CD' }, { name: 'TBA', role: 'Deputy Director', initials: 'DD' }],
-  },
-  {
-    id: 'committee-viii',
-    acronym: 'TBA',
-    name: 'Committee VIII',
+    ...partial,
+  }
+}
+
+/** Yūgen 6.0 committee roster — replace via YUGEN.committees when overriding */
+export const DEFAULT_COMMITTEES: Committee[] = [
+  defaultCommittee({
+    id: 'ip',
+    acronym: 'IP',
+    name: 'International Press',
     type: 'International Press',
     topic: 'Coverage brief announcing soon',
-    topicExpanded: 'IP corps briefing, beat assignments, and application details publish on /apply.',
-    difficulty: 'TBA',
-    delegateCapacity: 'TBA',
-    portfolioRequired: true,
-    portfolioNote: 'TBA — journalism portfolio requirements on /apply.',
+    topicExpanded: 'IP corps briefing, beat assignments, and portfolio requirements publish with the study guide.',
+    portfolioNote: 'TBA — journalism portfolio requirements.',
     venue: 'TBA — press room',
-    studyGuideStatus: 'coming-soon',
-    status: 'announcing-soon',
-    chairs: [{ name: 'TBA', role: 'Editor-in-Chief', initials: 'EC' }],
-  },
+    chairs: IP_CHAIRS,
+  }),
+  defaultCommittee({
+    id: 'ecosoc',
+    acronym: 'ECOSOC',
+    name: 'Economic and Social Council',
+    type: 'ECOSOC',
+    topicExpanded: 'ECOSOC agenda and background guide for Yūgen 6.0 publish here first.',
+  }),
+  defaultCommittee({
+    id: 'fcc',
+    acronym: 'FCC',
+    name: 'Futuristic Crisis Committee',
+    type: 'Crisis',
+    delegateCapacity: '10',
+    topicExpanded: 'Crisis committee arc, directives, and portfolio requirements publish with the full roster.',
+    portfolioNote: 'TBA — crisis portfolio format announcing soon.',
+    chairs: CRISIS_CHAIRS,
+  }),
+  defaultCommittee({
+    id: 'specpol',
+    acronym: 'SPECPOL',
+    name: 'Special Political and Decolonization Committee',
+    type: 'SPECPOL',
+    topicExpanded: 'SPECPOL agenda and study materials publish when committees are locked.',
+  }),
+  defaultCommittee({
+    id: 'lok-sabha',
+    acronym: 'LS',
+    name: 'The House of the People (Lok Sabha)',
+    type: 'Indian Committee',
+    topicExpanded: 'Lok Sabha simulation topic and procedure notes announcing soon.',
+    portfolioNote: 'TBA — Indian committee portfolio guidelines coming soon.',
+  }),
+  defaultCommittee({
+    id: 'disec',
+    acronym: 'DISEC',
+    name: 'Disarmament and International Security Committee',
+    type: 'DISEC',
+    topicExpanded: 'DISEC agenda and background guide for Yūgen 6.0 publish here first.',
+  }),
+  defaultCommittee({
+    id: 'unhrc',
+    acronym: 'UNHRC',
+    name: 'UN Human Rights Council',
+    type: 'UNHRC',
+    topicExpanded: 'Human rights council agenda and study materials publish when committees are locked.',
+  }),
 ]
 
 export const YUGEN_SEO = {

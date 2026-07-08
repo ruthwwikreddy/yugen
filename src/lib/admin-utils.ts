@@ -19,6 +19,8 @@ export type RegistrationStats = {
   paid: number
   verified: number
   rejected: number
+  allocated: number
+  waitlisted: number
   revenueVerified: number
   revenuePending: number
   schools: number
@@ -36,12 +38,16 @@ export function computeStats(registrations: Registration[]): RegistrationStats {
   let paid = 0
   let verified = 0
   let rejected = 0
+  let allocated = 0
+  let waitlisted = 0
 
   for (const r of registrations) {
     if (r.status === 'pending') pending++
     if (r.status === 'paid') paid++
     if (r.status === 'verified') verified++
     if (r.status === 'rejected') rejected++
+    if (r.allocationStatus === 'allocated') allocated++
+    if (r.allocationStatus === 'waitlisted') waitlisted++
 
     byGrade[r.grade] = (byGrade[r.grade] ?? 0) + 1
     bySchool[r.school] = (bySchool[r.school] ?? 0) + 1
@@ -55,6 +61,8 @@ export function computeStats(registrations: Registration[]): RegistrationStats {
     paid,
     verified,
     rejected,
+    allocated,
+    waitlisted,
     revenueVerified: verified * EARLY_BIRD_AMOUNT,
     revenuePending: (paid + pending) * EARLY_BIRD_AMOUNT,
     schools: Object.keys(bySchool).length,
@@ -69,7 +77,7 @@ export function formatInr(amount: number) {
   return `₹${amount.toLocaleString('en-IN')}`
 }
 
-export function formatTimestamp(ts: Registration['createdAt']) {
+export function formatTimestamp(ts: Registration['createdAt'] | Registration['allocatedAt']) {
   if (!ts) return '—'
   return ts.toDate().toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -88,13 +96,19 @@ export function formatDateShort(ts: Registration['createdAt']) {
 
 export function exportRegistrationsCsv(registrations: Registration[]) {
   const headers = [
-    'ID', 'Name', 'Email', 'Phone', 'School', 'Grade', 'Experience',
-    'Committee', 'Dietary', 'Admin Notes', 'Amount', 'Status', 'Created', 'Paid At',
+    'ID', 'Name', 'Email', 'Phone', 'School', 'Grade', 'Experience Level',
+    'Preference 1', 'Preference 2', 'Preference 3',
+    'Country Preference', 'Portfolio Preference', 'Portfolio URL',
+    'Experience Details', 'Awards & Achievements',
+    'Dietary', 'Admin Notes', 'Amount', 'Status', 'Created', 'Paid At',
   ]
 
   const rows = registrations.map((r) => [
     r.id, r.name, r.email, r.phone, r.school, r.grade, r.experience,
-    r.committeePreference, r.dietaryNotes, r.adminNotes,
+    r.committeePreference, r.committeePreference2, r.committeePreference3,
+    r.countryPreference, r.portfolioPreference, r.portfolioUrl,
+    r.experienceDetails, r.awardsAndAchievements,
+    r.dietaryNotes, r.adminNotes,
     String(r.amount), r.status, formatTimestamp(r.createdAt), formatTimestamp(r.paidAt),
   ])
 
@@ -111,11 +125,77 @@ export function exportRegistrationsCsv(registrations: Registration[]) {
   URL.revokeObjectURL(url)
 }
 
+export function exportAllocationsCsv(registrations: Registration[]) {
+  const headers = [
+    'ID',
+    'Name',
+    'Email',
+    'School',
+    'Grade',
+    'Preference 1',
+    'Preference 2',
+    'Preference 3',
+    'Country Preference',
+    'Portfolio Preference',
+    'Experience Details',
+    'Awards & Achievements',
+    'Allocation Status',
+    'Allocated Committee',
+    'Country',
+    'Allocation Notes',
+    'Allocated At',
+  ]
+
+  const rows = registrations.map((r) => [
+    r.id,
+    r.name,
+    r.email,
+    r.school,
+    r.grade,
+    r.committeePreference,
+    r.committeePreference2,
+    r.committeePreference3,
+    r.countryPreference,
+    r.portfolioPreference,
+    r.experienceDetails,
+    r.awardsAndAchievements,
+    r.allocationStatus,
+    r.allocatedCommittee ?? '',
+    r.allocatedCountry ?? '',
+    r.allocationNotes ?? '',
+    formatTimestamp(r.allocatedAt),
+  ])
+
+  const csv = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `yugen-allocations-${new Date().toISOString().slice(0, 10)}.csv`
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
 export const STATUS_LABELS: Record<RegistrationStatus, string> = {
   pending: 'Pending payment',
   paid: 'Awaiting verification',
   verified: 'Verified',
   rejected: 'Rejected',
+}
+
+export const ALLOCATION_STATUS_LABELS: Record<Registration['allocationStatus'], string> = {
+  unallocated: 'Unallocated',
+  allocated: 'Allocated',
+  waitlisted: 'Waitlisted',
+}
+
+export const ALLOCATION_STATUS_COLORS: Record<Registration['allocationStatus'], string> = {
+  unallocated: 'border-yugen text-dim bg-surface',
+  allocated: 'border-green-500/50 text-green-300 bg-green-950/30',
+  waitlisted: 'border-yellow-500/50 text-yellow-300 bg-yellow-950/30',
 }
 
 export const STATUS_COLORS: Record<RegistrationStatus, string> = {

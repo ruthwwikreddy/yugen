@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { EARLY_BIRD_REGISTER_PATH } from '../../config/features'
 import { YUGEN } from '../../lib/yugen'
 
 export function NotifyCTA() {
@@ -17,16 +18,19 @@ export function NotifyCTA() {
           </p>
         </div>
         <div className="relative">
-          <span className="coming-soon-pill">Registration</span>
+          <span className="coming-soon-pill">Early bird · Live</span>
           <h2 className="mt-6 font-heading text-3xl font-bold md:text-4xl">
-            Be first when registration opens
+            Early bird registration is open
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-muted">
-            No checkout yet — drop your email and we&apos;ll ping you the moment Yūgen 6.0 registration goes live.
+            Round 1 delegate registration is live. Complete the form, pay via UPI, and save your registration ID.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link to={YUGEN.registration.path} className="btn-primary">
-              Get notified
+            <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary">
+              Register now
+            </Link>
+            <Link to="/register" className="btn-ghost">
+              View pricing
             </Link>
             <a
               href={YUGEN.social.instagramUrl}

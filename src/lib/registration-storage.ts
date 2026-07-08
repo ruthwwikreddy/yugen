@@ -1,17 +1,28 @@
-import type { Registration, RegistrationInput, RegistrationStatus, RegistrationUpdate } from './registration'
+import type { FlowConfig } from '../config/registrations'
+import type { Registration, RegistrationInput, RegistrationStatus, RegistrationUpdate } from './registration-types'
 
-const STORAGE_KEY = 'yugen-registrations-v1'
+const STORAGE_KEY = 'yugen-registrations-v2'
 
 export type StoredRegistration = Registration & {
   createdAtMs: number
   paidAtMs: number | null
+  allocatedAtMs: number | null
   syncedToCloud: boolean
 }
 
 function readAll(): Record<string, StoredRegistration> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return {}
+    if (!raw) {
+      // migrate v1 if present
+      const legacy = localStorage.getItem('yugen-registrations-v1')
+      if (legacy) {
+        const parsed = JSON.parse(legacy) as Record<string, StoredRegistration>
+        writeAll(parsed)
+        return parsed
+      }
+      return {}
+    }
     return JSON.parse(raw) as Record<string, StoredRegistration>
   } catch {
     return {}
@@ -70,20 +81,48 @@ export function markLocalSynced(id: string) {
   writeAll(all)
 }
 
-export function inputToStored(id: string, input: RegistrationInput, amount: number): StoredRegistration {
+export function inputToStored(
+  id: string,
+  input: RegistrationInput,
+  flow: FlowConfig,
+): StoredRegistration {
   return {
     id,
-    ...input,
-    committeePreference: input.committeePreference || '',
-    dietaryNotes: input.dietaryNotes || '',
+    flowSlug: flow.slug,
+    flowType: flow.type,
+    round: flow.round,
+    name: input.name,
+    email: input.email,
+    phone: input.phone,
+    school: input.school,
+    grade: input.grade,
+    committeePreference: input.committeePreference ?? '',
+    committeePreference2: input.committeePreference2 ?? '',
+    committeePreference3: input.committeePreference3 ?? '',
+    experience: input.experience,
+    experienceDetails: input.experienceDetails ?? '',
+    awardsAndAchievements: input.awardsAndAchievements ?? '',
+    dietaryNotes: input.dietaryNotes ?? '',
+    countryPreference: input.countryPreference ?? '',
+    portfolioPreference: input.portfolioPreference ?? '',
+    whyJoin: input.whyJoin ?? '',
+    availability: input.availability ?? '',
+    portfolioUrl: input.portfolioUrl ?? '',
     adminNotes: '',
-    amount,
-    tier: 'early-bird',
+    amount: flow.amount,
+    paymentRequired: flow.paymentRequired,
+    tier: flow.tier,
     status: 'pending',
+    allocationStatus: 'unallocated',
+    allocatedCommittee: undefined,
+    allocatedCountry: undefined,
+    allocationNotes: undefined,
     createdAt: null,
     paidAt: null,
+    allocatedAt: undefined,
     createdAtMs: Date.now(),
     paidAtMs: null,
+    allocatedAtMs: null,
     syncedToCloud: false,
   }
 }
@@ -91,19 +130,58 @@ export function inputToStored(id: string, input: RegistrationInput, amount: numb
 export function storedToRegistration(reg: StoredRegistration): Registration {
   return {
     id: reg.id,
+    flowSlug: reg.flowSlug ?? 'delegate-r1-early-bird',
+    flowType: reg.flowType ?? 'delegate',
+    round: reg.round ?? 1,
     name: reg.name,
     email: reg.email,
     phone: reg.phone,
     school: reg.school,
     grade: reg.grade,
-    committeePreference: reg.committeePreference,
+    committeePreference: reg.committeePreference ?? '',
+    committeePreference2: reg.committeePreference2 ?? '',
+    committeePreference3: reg.committeePreference3 ?? '',
     experience: reg.experience,
-    dietaryNotes: reg.dietaryNotes,
+    experienceDetails: reg.experienceDetails ?? '',
+    awardsAndAchievements: reg.awardsAndAchievements ?? '',
+    dietaryNotes: reg.dietaryNotes ?? '',
+    countryPreference: reg.countryPreference ?? '',
+    portfolioPreference: reg.portfolioPreference ?? '',
+    whyJoin: reg.whyJoin ?? '',
+    availability: reg.availability ?? '',
+    portfolioUrl: reg.portfolioUrl ?? '',
     adminNotes: reg.adminNotes ?? '',
     amount: reg.amount,
-    tier: reg.tier,
+    paymentRequired: reg.paymentRequired ?? true,
+    tier: reg.tier ?? 'early-bird',
     status: reg.status,
+    allocationStatus: reg.allocationStatus ?? 'unallocated',
+    allocatedCommittee: reg.allocatedCommittee,
+    allocatedCountry: reg.allocatedCountry,
+    allocationNotes: reg.allocationNotes,
     createdAt: null,
     paidAt: null,
+    allocatedAt: reg.allocatedAt,
+  }
+}
+
+/** Backfill legacy docs missing flow fields */
+export function normalizeStored(reg: StoredRegistration): StoredRegistration {
+  return {
+    ...reg,
+    flowSlug: reg.flowSlug ?? 'delegate-r1-early-bird',
+    flowType: reg.flowType ?? 'delegate',
+    round: reg.round ?? 1,
+    paymentRequired: reg.paymentRequired ?? reg.amount > 0,
+    whyJoin: reg.whyJoin ?? '',
+    availability: reg.availability ?? '',
+    portfolioUrl: reg.portfolioUrl ?? '',
+    adminNotes: reg.adminNotes ?? '',
+    committeePreference2: reg.committeePreference2 ?? '',
+    committeePreference3: reg.committeePreference3 ?? '',
+    experienceDetails: reg.experienceDetails ?? '',
+    awardsAndAchievements: reg.awardsAndAchievements ?? '',
+    countryPreference: reg.countryPreference ?? '',
+    portfolioPreference: reg.portfolioPreference ?? '',
   }
 }

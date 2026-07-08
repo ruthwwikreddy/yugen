@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom'
 import { LogoLockup } from './Logo'
 import { YUGEN } from '../../lib/yugen'
 import { GATHRLY, RUTHWIK } from '../../lib/partners'
+import { isApplyOpen } from '../../config/features'
 
 export function Footer() {
   const { event, delegates, org } = YUGEN.footerLinks
+  const orgLinks = isApplyOpen() ? org : org.filter((link) => link.href !== '/apply')
 
   return (
     <footer className="border-t border-yugen bg-yugen-black">
@@ -45,7 +47,7 @@ export function Footer() {
           <div>
             <p className="label-caps mb-4">Organizing</p>
             <ul className="space-y-2 text-sm text-muted">
-              {org.map((link) => (
+              {orgLinks.map((link) => (
                 <li key={link.href}>
                   <Link to={link.href} className="hover:text-yugen-white">{link.label}</Link>
                 </li>

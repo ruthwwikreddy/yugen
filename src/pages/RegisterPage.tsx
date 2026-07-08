@@ -19,10 +19,10 @@ export function RegisterPage() {
       <div className="section-padding mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl">
           <span className="coming-soon-pill">Registration</span>
-          <h1 className="mt-6 font-display text-5xl uppercase tracking-tight md:text-6xl">
+          <h1 className="mt-4 font-display text-4xl uppercase tracking-tight sm:mt-6 sm:text-5xl md:text-6xl">
             Early bird open
           </h1>
-          <p className="mt-4 text-lg text-muted">
+          <p className="mt-3 text-base leading-relaxed text-muted sm:mt-4 sm:text-lg">
             Round 1 early bird registration is live at ₹{EARLY_BIRD_AMOUNT.toLocaleString('en-IN')}. Complete the form,
             pay via UPI, and save your registration ID. Standard and late tiers open later on{' '}
             <a href={GATHRLY.eventTechnology} target="_blank" rel="noopener noreferrer" className="text-yugen-white hover:underline">
@@ -31,18 +31,18 @@ export function RegisterPage() {
             .
           </p>
 
-          <div className="mt-10 rounded-xl border border-yugen-strong bg-surface-raised p-8">
+          <div className="mt-8 rounded-xl border border-yugen-strong bg-surface-raised p-5 sm:mt-10 sm:p-8">
             <p className="label-caps">Round 1 · Early bird</p>
-            <p className="mt-2 font-display text-4xl uppercase">₹{EARLY_BIRD_AMOUNT.toLocaleString('en-IN')}</p>
+            <p className="mt-2 font-display text-3xl uppercase sm:text-4xl">₹{EARLY_BIRD_AMOUNT.toLocaleString('en-IN')}</p>
             <p className="mt-2 text-sm text-muted">
               Form → UPI QR (pre-filled amount & ID) → screenshot your registration ID
             </p>
-            <Link to="/register/early-bird" className="btn-primary mt-6 inline-flex">
+            <Link to="/register/early-bird" className="btn-primary mt-5 inline-flex w-full justify-center sm:mt-6 sm:w-auto">
               Register now
             </Link>
           </div>
 
-          <div className="mt-10 rounded-xl border border-yugen bg-surface-raised p-8">
+          <div className="mt-8 rounded-xl border border-yugen bg-surface-raised p-5 sm:mt-10 sm:p-8">
             <h2 className="font-heading text-xl font-bold">Get notified for other tiers</h2>
             <p className="mt-2 text-sm text-muted">Standard and late registration — we&apos;ll email you when they open.</p>
             <div className="mt-6">

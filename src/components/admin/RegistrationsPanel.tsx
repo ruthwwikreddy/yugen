@@ -89,40 +89,44 @@ export function RegistrationsPanel({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search ID, name, email, school…"
-          className="min-w-[220px] flex-1 rounded-lg border border-yugen bg-surface px-4 py-2.5 text-sm focus:border-yugen-strong focus:outline-none"
+          className="input-touch w-full flex-1 rounded-lg border border-yugen bg-surface px-4 py-3 focus:border-yugen-strong focus:outline-none sm:py-2.5 sm:text-sm"
         />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as RegistrationStatus | 'all')}
-          className="rounded-lg border border-yugen bg-surface px-3 py-2.5 text-sm"
-        >
-          <option value="all">All statuses</option>
-          <option value="pending">Pending</option>
-          <option value="paid">Awaiting verify</option>
-          <option value="verified">Verified</option>
-          <option value="rejected">Rejected</option>
-        </select>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-          className="rounded-lg border border-yugen bg-surface px-3 py-2.5 text-sm"
-        >
-          <option value="newest">Newest first</option>
-          <option value="oldest">Oldest first</option>
-          <option value="name">Name A–Z</option>
-        </select>
-        <button type="button" onClick={onAdd} className="btn-primary shrink-0">
-          + Add
-        </button>
-        <button type="button" onClick={onExport} className="btn-ghost shrink-0">
-          Export CSV
-        </button>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as RegistrationStatus | 'all')}
+            className="input-touch rounded-lg border border-yugen bg-surface px-3 py-3 sm:py-2.5 sm:text-sm"
+          >
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="paid">Awaiting verify</option>
+            <option value="verified">Verified</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="input-touch rounded-lg border border-yugen bg-surface px-3 py-3 sm:py-2.5 sm:text-sm"
+          >
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:flex">
+          <button type="button" onClick={onAdd} className="btn-primary w-full sm:w-auto">
+            + Add
+          </button>
+          <button type="button" onClick={onExport} className="btn-ghost w-full sm:w-auto">
+            Export
+          </button>
+        </div>
       </div>
 
       {selected.length > 0 && (
@@ -145,7 +149,71 @@ export function RegistrationsPanel({
 
       <p className="text-xs text-dim">Showing {filtered.length} of {registrations.length}</p>
 
-      <div className="overflow-hidden rounded-xl border border-yugen">
+      {/* Mobile card list */}
+      <div className="space-y-3 md:hidden">
+        {filtered.length === 0 ? (
+          <div className="rounded-xl border border-yugen bg-surface px-4 py-12 text-center">
+            <p className="font-heading font-semibold">No registrations</p>
+            <p className="mt-1 text-sm text-dim">Add one manually or wait for delegate sign-ups.</p>
+            <button type="button" onClick={onAdd} className="btn-primary mt-4 inline-flex">
+              Add registration
+            </button>
+          </div>
+        ) : (
+          filtered.map((r) => (
+            <article
+              key={r.id}
+              className="rounded-xl border border-yugen bg-surface p-4"
+            >
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(r.id)}
+                  onChange={() => toggleOne(r.id)}
+                  className="mt-1 h-5 w-5 shrink-0 rounded"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <button type="button" onClick={() => onSelect(r)} className="text-left">
+                      <p className="font-medium">{r.name}</p>
+                      <p className="mt-0.5 break-all font-mono text-[10px] text-dim">{r.id}</p>
+                    </button>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  <p className="mt-2 text-sm text-muted">{r.school} · Grade {r.grade}</p>
+                  <p className="mt-1 truncate text-xs text-dim">{r.email}</p>
+                  <p className="mt-1 text-[10px] text-dim">{formatTimestamp(r.createdAt)}</p>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {r.status === 'paid' && (
+                      <>
+                        <button type="button" onClick={() => onAccept(r.id)} className="btn-primary min-h-10 text-[10px]">
+                          Accept
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onReject(r.id)}
+                          className="min-h-10 rounded-full border border-red-500/40 text-[10px] uppercase text-red-300"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                    <button type="button" onClick={() => onSelect(r)} className="btn-ghost min-h-10 text-[10px]">
+                      View
+                    </button>
+                    <button type="button" onClick={() => onEdit(r)} className="btn-ghost min-h-10 text-[10px]">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden overflow-hidden rounded-xl border border-yugen md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="border-b border-yugen bg-surface-raised">

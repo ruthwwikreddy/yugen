@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PageLayout } from '../components/yugen/PageLayout'
 import { ComingSoonBlock } from '../components/yugen/ComingSoonBlock'
+import { EARLY_BIRD_REGISTER_PATH } from '../config/features'
 import { YUGEN } from '../lib/yugen'
 import { GATHRLY } from '../lib/partners'
 
@@ -15,7 +16,7 @@ export function DelegatesPage() {
       eyebrow="Delegates"
       headline="Delegate handbook"
       subheadline={YUGEN.delegatesGuide.intro}
-      cta={{ label: 'Get notified', href: '/register' }}
+      cta={{ label: 'Register now', href: EARLY_BIRD_REGISTER_PATH }}
     >
       <div className="grid gap-8 lg:grid-cols-3">
         {YUGEN.delegatesGuide.sections.map((section) => (

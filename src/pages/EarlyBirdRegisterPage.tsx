@@ -79,6 +79,7 @@ export function EarlyBirdRegisterPage() {
   function handleFormSuccess(result: { id: string; registration: Registration; warning?: string }) {
     saveActiveSession({
       id: result.id,
+      flowSlug: result.registration.flowSlug,
       step: 'payment',
       registration: result.registration,
       warning: result.warning,
@@ -109,16 +110,18 @@ export function EarlyBirdRegisterPage() {
       />
 
       <div className="section-padding mx-auto max-w-2xl">
-        <Link to="/register" className="label-caps text-muted transition-colors hover:text-yugen-white">
+        <Link
+          to="/register"
+          className="label-caps inline-flex min-h-11 items-center text-muted transition-colors hover:text-yugen-white"
+        >
           ← Registration
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          <span className="coming-soon-pill mt-6">Early bird · Round 1</span>
-          <h1 className="mt-4 font-display text-5xl uppercase tracking-tight md:text-6xl">Register</h1>
-          <p className="mt-3 text-muted">
-            ₹{EARLY_BIRD_AMOUNT.toLocaleString('en-IN')} · 3 quick steps
-          </p>
+          <span className="coming-soon-pill mt-4 sm:mt-6">Early bird · Round 1</span>
+          <h1 className="mt-3 font-display text-4xl uppercase tracking-tight sm:mt-4 sm:text-5xl md:text-6xl">
+            Register
+          </h1>
         </motion.div>
 
         <RegistrationStepper current={stepNumber} />
@@ -151,7 +154,7 @@ export function EarlyBirdRegisterPage() {
               className="mt-10"
             >
               {step === 'form' && (
-                <div className="rounded-2xl border border-yugen bg-surface-raised p-6 md:p-8">
+                <div className="rounded-2xl border border-yugen bg-surface-raised p-4 sm:p-6 md:p-8">
                   <p className="label-caps">Step 1</p>
                   <h2 className="mt-1 font-heading text-xl font-bold">Delegate information</h2>
                   <p className="mt-2 text-sm text-muted">Takes about 2 minutes. All fields marked * are required.</p>

@@ -4,6 +4,7 @@ import { Shell } from '../components/yugen/Shell'
 import { SEO } from '../components/yugen/SEO'
 import { ComingSoonBlock } from '../components/yugen/ComingSoonBlock'
 import { CommitteeFilter, CommitteeGrid } from '../components/yugen/CommitteeCard'
+import { EARLY_BIRD_REGISTER_PATH, isApplyOpen } from '../config/features'
 import { getCommittees, getCommitteeTypes, YUGEN } from '../lib/yugen'
 
 export function CommitteesPage() {
@@ -55,8 +56,11 @@ export function CommitteesPage() {
         )}
 
         <div className="mt-12 flex flex-wrap gap-4">
+          <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary">Register as delegate</Link>
           <Link to="/resources" className="btn-ghost">Resources &amp; study guides</Link>
-          <Link to="/apply" className="btn-ghost">Apply to chair</Link>
+          {isApplyOpen() && (
+            <Link to="/apply" className="btn-ghost">Apply to chair</Link>
+          )}
           <Link to="/" className="btn-ghost">← Home</Link>
         </div>
       </div>

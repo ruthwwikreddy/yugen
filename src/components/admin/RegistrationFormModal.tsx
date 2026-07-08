@@ -1,6 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
+import { getCommittees } from '../../lib/yugen'
 import { EARLY_BIRD_AMOUNT, type Registration, type RegistrationInput } from '../../lib/registration'
+import { MUN_COUNTRIES } from '../../lib/mun-countries'
+import { MUN_PORTFOLIOS } from '../../lib/mun-portfolios'
+import { SearchSelect } from '../yugen/SearchSelect'
 
 const inputClass =
   'w-full rounded-lg border border-yugen bg-yugen-black px-4 py-2.5 text-sm text-yugen-white placeholder:text-dim focus:border-yugen-strong focus:outline-none'
@@ -15,7 +19,14 @@ const emptyForm: RegistrationInput = {
   school: '',
   grade: '',
   committeePreference: '',
+  committeePreference2: '',
+  committeePreference3: '',
   experience: '',
+  experienceDetails: '',
+  awardsAndAchievements: '',
+  countryPreference: '',
+  portfolioPreference: '',
+  portfolioUrl: '',
   dietaryNotes: '',
 }
 
@@ -49,7 +60,14 @@ export function RegistrationFormModal({
         school: initial.school,
         grade: initial.grade,
         committeePreference: initial.committeePreference,
+        committeePreference2: initial.committeePreference2,
+        committeePreference3: initial.committeePreference3,
         experience: initial.experience,
+        experienceDetails: initial.experienceDetails,
+        awardsAndAchievements: initial.awardsAndAchievements,
+        countryPreference: initial.countryPreference,
+        portfolioPreference: initial.portfolioPreference,
+        portfolioUrl: initial.portfolioUrl,
         dietaryNotes: initial.dietaryNotes,
       })
       setAdminNotes(initial.adminNotes ?? '')
@@ -65,6 +83,8 @@ export function RegistrationFormModal({
     e.preventDefault()
     onSubmit({ ...form, adminNotes })
   }
+
+  const committees = getCommittees()
 
   return (
     <>
@@ -125,14 +145,61 @@ export function RegistrationFormModal({
             </div>
           </div>
 
-          <div className="mt-4">
-            <label className="label-caps mb-1.5 block">Committee preference</label>
-            <input value={form.committeePreference} onChange={(e) => setForm({ ...form, committeePreference: e.target.value })} className={inputClass} />
+          <div className="mt-4 space-y-3">
+            <label className="label-caps block">Committee preferences</label>
+            {(['committeePreference', 'committeePreference2', 'committeePreference3'] as const).map((key, i) => (
+              <select key={key} value={form[key] ?? ''} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className={inputClass}>
+                <option value="">{i + 1}{i === 0 ? 'st' : i === 1 ? 'nd' : 'rd'} choice</option>
+                {committees.map((c) => (
+                  <option key={c.id} value={c.name}>{c.acronym} — {c.name}</option>
+                ))}
+              </select>
+            ))}
           </div>
+
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="label-caps mb-1.5 block">Country preference</label>
+              <SearchSelect
+                value={form.countryPreference ?? ''}
+                onChange={(v) => setForm({ ...form, countryPreference: v })}
+                options={MUN_COUNTRIES}
+                placeholder="Search countries…"
+                inputClassName={inputClass}
+              />
+            </div>
+            <div>
+              <label className="label-caps mb-1.5 block">Portfolio preference</label>
+              <SearchSelect
+                value={form.portfolioPreference ?? ''}
+                onChange={(v) => setForm({ ...form, portfolioPreference: v })}
+                options={MUN_PORTFOLIOS}
+                placeholder="Search portfolios…"
+                inputClassName={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="label-caps mb-1.5 block">Portfolio link</label>
+            <input type="url" value={form.portfolioUrl ?? ''} onChange={(e) => setForm({ ...form, portfolioUrl: e.target.value })} className={inputClass} placeholder="https://…" />
+          </div>
+
+          <div className="mt-4">
+            <label className="label-caps mb-1.5 block">Experience details</label>
+            <textarea rows={2} value={form.experienceDetails ?? ''} onChange={(e) => setForm({ ...form, experienceDetails: e.target.value })} className={inputClass} />
+          </div>
+
+          <div className="mt-4">
+            <label className="label-caps mb-1.5 block">Awards & achievements</label>
+            <textarea rows={2} value={form.awardsAndAchievements ?? ''} onChange={(e) => setForm({ ...form, awardsAndAchievements: e.target.value })} className={inputClass} />
+          </div>
+
           <div className="mt-4">
             <label className="label-caps mb-1.5 block">Dietary / notes</label>
-            <textarea rows={2} value={form.dietaryNotes} onChange={(e) => setForm({ ...form, dietaryNotes: e.target.value })} className={inputClass} />
+            <textarea rows={2} value={form.dietaryNotes ?? ''} onChange={(e) => setForm({ ...form, dietaryNotes: e.target.value })} className={inputClass} />
           </div>
+
           <div className="mt-4">
             <label className="label-caps mb-1.5 block">Admin notes</label>
             <textarea rows={2} value={adminNotes} onChange={(e) => setAdminNotes(e.target.value)} placeholder="Internal notes, rejection reason…" className={inputClass} />
