@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#000000"/>
+  <text x="600" y="200" text-anchor="middle" fill="#ffffff" opacity="0.08" font-family="Arial Black, sans-serif" font-size="180" font-weight="900">BACK</text>
+  <text x="600" y="340" text-anchor="middle" fill="#ffffff" opacity="0.12" font-family="Arial Black, sans-serif" font-size="180" font-weight="900">BACK</text>
+  <text x="600" y="280" text-anchor="middle" fill="#ffffff" font-family="Arial Black, sans-serif" font-size="96" font-weight="900" letter-spacing="4">YŪGEN 6.0</text>
+  <text x="600" y="360" text-anchor="middle" fill="#ffffff" opacity="0.7" font-family="Arial, sans-serif" font-size="28" letter-spacing="8">COMING SOON</text>
+  <text x="600" y="420" text-anchor="middle" fill="#ffffff" opacity="0.45" font-family="Arial, sans-serif" font-size="22">Making Every Voice Matter · PORPS Hyderabad</text>
+  <rect x="500" y="470" width="200" height="1" fill="#ffffff" opacity="0.2"/>
+</svg>
