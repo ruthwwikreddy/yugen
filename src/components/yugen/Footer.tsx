@@ -27,7 +27,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted">
               {event.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href} className="hover:text-yugen-white">{link.label}</Link>
+                  <Link to={link.href} className="hover:text-accent-light transition-colors">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -38,7 +38,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted">
               {delegates.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href} className="hover:text-yugen-white">{link.label}</Link>
+                  <Link to={link.href} className="hover:text-accent-light transition-colors">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -49,19 +49,19 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted">
               {orgLinks.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href} className="hover:text-yugen-white">{link.label}</Link>
+                  <Link to={link.href} className="hover:text-accent-light transition-colors">{link.label}</Link>
                 </li>
               ))}
             </ul>
             <p className="label-caps mb-2 mt-6">Connect</p>
             <ul className="space-y-2 text-sm text-muted">
               <li>
-                <a href={YUGEN.social.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-yugen-white">
+                <a href={YUGEN.social.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent-light transition-colors">
                   {YUGEN.social.instagram}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${YUGEN.email}`} className="hover:text-yugen-white">{YUGEN.email}</a>
+                <a href={`mailto:${YUGEN.email}`} className="hover:text-accent-light transition-colors">{YUGEN.email}</a>
               </li>
             </ul>
           </div>

@@ -46,7 +46,7 @@ export function Header() {
               <Link
                 key={item.href}
                 to={item.href}
-                className="label-caps text-yugen-muted transition-all duration-200 hover:text-yugen-white hover:scale-105"
+                className="label-caps text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105"
               >
                 {item.label}
               </Link>
@@ -54,6 +54,12 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link
+              to="/portfolio-guide"
+              className="label-caps hidden text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105 md:inline-flex"
+            >
+              Portfolios
+            </Link>
             <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary hidden sm:inline-flex">
               Register
             </Link>
@@ -89,11 +95,18 @@ export function Header() {
                     key={item.href}
                     to={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex min-h-12 items-center rounded-lg px-4 py-3.5 label-caps text-yugen-muted transition-colors hover:bg-surface hover:text-yugen-white"
+                    className="flex min-h-12 items-center rounded-lg px-4 py-3.5 label-caps text-yugen-muted transition-colors hover:bg-surface hover:text-accent-light"
                   >
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  to="/portfolio-guide"
+                  onClick={() => setOpen(false)}
+                  className="flex min-h-12 items-center rounded-lg px-4 py-3.5 label-caps text-yugen-muted transition-colors hover:bg-surface hover:text-accent-light"
+                >
+                  Portfolio guide
+                </Link>
                 <Link
                   to={EARLY_BIRD_REGISTER_PATH}
                   onClick={() => setOpen(false)}

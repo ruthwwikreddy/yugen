@@ -51,8 +51,8 @@ export const YUGEN = {
   status: 'coming-soon' as const,
   teaserStack: ['BACK', 'BACK', 'BACK'],
   teaserPunch: 'WE ARE BACK',
-  dates: 'Coming soon',
-  datesHero: 'COMING SOON',
+  dates: '22 and 23 August 2026',
+  datesHero: '22 & 23 AUGUST 2026',
   venue: 'P. Obul Reddy Public School',
   venueShort: 'PORPS',
   city: 'Hyderabad',
@@ -83,7 +83,7 @@ export const YUGEN = {
     headline: 'Six editions in. The next chapter is on the way.',
     paragraphs: [
       'Yūgen Summit is Hyderabad\'s premier inter-school Model United Nations conference, hosted at P. Obul Reddy Public School. For six editions, we\'ve brought together delegates who believe every voice matters — in committee rooms, in caucus, and beyond.',
-      'Yūgen 6.0 continues that legacy. Dates, committees, and registration details drop here first — follow @yugenporps for the latest.',
+      'Yūgen 6.0 continues that legacy. Join us on 22 and 23 August 2026 at P. Obul Reddy Public School — follow @yugenporps for the latest.',
     ],
     letterFromSG: {
       signatory: 'Secretary General',
@@ -140,7 +140,7 @@ export const YUGEN = {
     ],
   },
   faq: [
-    { q: 'When will Yūgen 6.0 take place?', a: 'Dates are coming soon. Join the notify list or follow @yugenporps — we announce here first.' },
+    { q: 'When will Yūgen 6.0 take place?', a: 'Yūgen Summit 6.0 will take place on 22 and 23 August 2026.' },
     { q: 'When does registration open?', a: 'Registration is not live yet. When it opens, delegate slots and UPI payment will run on Gathrly — our event registration technology partner. Use the Get Notified form and we will email you the moment registration goes live.' },
     { q: 'Is Yūgen open to all schools?', a: 'TBA — add eligibility criteria (inter-school, grade levels, etc.) when confirmed by the organizing committee.' },
     { q: 'Can I register as an individual delegate?', a: 'TBA — add individual vs school delegation policy when registration details are finalized.' },
@@ -298,6 +298,7 @@ export const YUGEN = {
     ],
     delegates: [
       { label: 'Register', href: '/register' },
+      { label: 'Portfolio Guide', href: '/portfolio-guide' },
       { label: 'Delegate Guide', href: '/delegates' },
       { label: 'Resources', href: '/resources' },
       { label: 'Awards', href: '/awards' },
@@ -360,6 +361,13 @@ function defaultCommittee(
 /** Yūgen 6.0 committee roster — replace via YUGEN.committees when overriding */
 export const DEFAULT_COMMITTEES: Committee[] = [
   defaultCommittee({
+    id: 'aippm',
+    acronym: 'AIPPM',
+    name: 'All India Political Parties Meet',
+    type: 'Indian Committee',
+    topicExpanded: 'AIPPM agenda and background guide for Yūgen 6.0 publish here first.',
+  }),
+  defaultCommittee({
     id: 'ip',
     acronym: 'IP',
     name: 'International Press',
@@ -371,16 +379,30 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     chairs: IP_CHAIRS,
   }),
   defaultCommittee({
-    id: 'ecosoc',
-    acronym: 'ECOSOC',
-    name: 'Economic and Social Council',
-    type: 'ECOSOC',
-    topicExpanded: 'ECOSOC agenda and background guide for Yūgen 6.0 publish here first.',
+    id: 'unhrc',
+    acronym: 'UNHRC',
+    name: 'UN Human Rights Council',
+    type: 'UNHRC',
+    topicExpanded: 'Human rights council agenda and study materials publish when committees are locked.',
   }),
   defaultCommittee({
-    id: 'fcc',
-    acronym: 'FCC',
-    name: 'Futuristic Crisis Committee',
+    id: 'unsc',
+    acronym: 'UNSC',
+    name: 'UN Security Council',
+    type: 'UNSC',
+    topicExpanded: 'Security Council agenda and background guide for Yūgen 6.0 publish here first.',
+  }),
+  defaultCommittee({
+    id: 'ccpcj',
+    acronym: 'CCPCJ',
+    name: 'Commission on Crime Prevention and Criminal Justice',
+    type: 'CCPCJ',
+    topicExpanded: 'CCPCJ agenda and study materials publish when committees are locked.',
+  }),
+  defaultCommittee({
+    id: 'ccc',
+    acronym: 'CCC',
+    name: 'Continental Crisis Committee',
     type: 'Crisis',
     delegateCapacity: '10',
     topicExpanded: 'Crisis committee arc, directives, and portfolio requirements publish with the full roster.',
@@ -388,42 +410,37 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     chairs: CRISIS_CHAIRS,
   }),
   defaultCommittee({
-    id: 'specpol',
-    acronym: 'SPECPOL',
-    name: 'Special Political and Decolonization Committee',
-    type: 'SPECPOL',
-    topicExpanded: 'SPECPOL agenda and study materials publish when committees are locked.',
-  }),
-  defaultCommittee({
-    id: 'lok-sabha',
-    acronym: 'LS',
-    name: 'The House of the People (Lok Sabha)',
-    type: 'Indian Committee',
-    topicExpanded: 'Lok Sabha simulation topic and procedure notes announcing soon.',
-    portfolioNote: 'TBA — Indian committee portfolio guidelines coming soon.',
-  }),
-  defaultCommittee({
-    id: 'disec',
-    acronym: 'DISEC',
-    name: 'Disarmament and International Security Committee',
-    type: 'DISEC',
-    topicExpanded: 'DISEC agenda and background guide for Yūgen 6.0 publish here first.',
-  }),
-  defaultCommittee({
-    id: 'unhrc',
-    acronym: 'UNHRC',
-    name: 'UN Human Rights Council',
-    type: 'UNHRC',
-    topicExpanded: 'Human rights council agenda and study materials publish when committees are locked.',
+    id: 'committee-x',
+    acronym: 'X',
+    name: 'Committee X',
+    type: 'Crisis',
+    delegateCapacity: '15',
+    topicExpanded: 'Committee X agenda and background guide for Yūgen 6.0 publish here first.',
+    portfolioNote: 'TBA — special portfolio requirements.',
+    chairs: CRISIS_CHAIRS,
   }),
 ]
 
+/** PNG logo assets in `/public/` — filenames only for email base URLs */
+export const YUGEN_LOGO = {
+  white: '/logo-white@2x.png',
+  white2x: '/logo-white@2x.png',
+  dark: '/logo-white@2x.png',
+  dark2x: '/logo-white@2x.png',
+  emailLight: 'logo-white@2x.png',
+  emailDark: 'logo-white@2x.png',
+  favicon32: '/logo-white@2x.png',
+  appleTouch: '/logo-white@2x.png',
+  full: '/logo-white@2x.png',
+  full512: '/logo-white@2x.png',
+} as const
+
 export const YUGEN_SEO = {
-  title: 'Yūgen Summit 6.0 — Coming Soon | P. Obul Reddy Public School',
+  title: 'Yūgen Summit 6.0 — 22 & 23 August 2026 | P. Obul Reddy Public School',
   description:
-    'Yūgen Summit 6.0 at PORPS, Hyderabad — Making Every Voice Matter. Dates, committees, and registration coming soon.',
+    'Yūgen Summit 6.0 at PORPS, Hyderabad — Making Every Voice Matter. The conference will take place on 22 and 23 August 2026.',
   siteUrl: 'https://yugen.ruthwikreddy.live',
-  ogImage: '/image.png',
+  ogImage: '/og-image.png',
 }
 
 export const SITE_ROUTES = [
@@ -435,6 +452,7 @@ export const SITE_ROUTES = [
   '/team',
   '/resources',
   '/delegates',
+  '/portfolio-guide',
   '/faq',
   '/awards',
   '/apply',
@@ -583,6 +601,13 @@ export function getPricing() {
 
 export function getCommittees(): Committee[] {
   return YUGEN.committees.length > 0 ? YUGEN.committees : DEFAULT_COMMITTEES
+}
+
+/** Press corps and other committees excluded from delegate allocation flows */
+export const NON_DELEGATE_COMMITTEE_IDS: readonly string[] = ['ip']
+
+export function getAllocatableCommittees(): Committee[] {
+  return getCommittees().filter((c) => !NON_DELEGATE_COMMITTEE_IDS.includes(c.id))
 }
 
 export function getCommitteeById(id: string): Committee | undefined {

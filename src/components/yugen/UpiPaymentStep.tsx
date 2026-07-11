@@ -91,7 +91,7 @@ export function UpiPaymentStep({ registrationId, delegateName, onPaid }: UpiPaym
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-5 pb-2 sm:space-y-6"
+      className="space-y-5 pb-28 sm:space-y-6 sm:pb-2"
     >
       {delegateName && (
         <p className="text-sm leading-relaxed text-muted">
@@ -107,7 +107,7 @@ export function UpiPaymentStep({ registrationId, delegateName, onPaid }: UpiPaym
           payments. Copy this note first, then paste it into the remark field after scanning.
         </p>
         <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yugen-black/60 p-4">
-          <p className="break-all font-mono text-xl font-bold tracking-wider text-yugen-white sm:text-2xl">{upiNote}</p>
+          <p className="break-all font-mono text-lg font-bold tracking-wider text-yugen-white sm:text-xl md:text-2xl">{upiNote}</p>
           <p className="mt-2 text-[11px] text-yellow-100/60">Registration ID: {displayId}</p>
         </div>
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -155,7 +155,7 @@ export function UpiPaymentStep({ registrationId, delegateName, onPaid }: UpiPaym
                 </li>
               </ol>
 
-              <div className="w-full max-w-[min(100%,300px)] rounded-2xl bg-white p-4 shadow-lg shadow-black/20 sm:p-6">
+              <div className="w-full max-w-[min(100%,280px)] rounded-2xl bg-white p-3 shadow-lg shadow-black/20 sm:max-w-[min(100%,300px)] sm:p-6">
                 <QRCode
                   value={upiUri}
                   size={qrSize}
@@ -196,7 +196,7 @@ export function UpiPaymentStep({ registrationId, delegateName, onPaid }: UpiPaym
                     key={app.id}
                     type="button"
                     onClick={() => openUpiApp(app.id)}
-                    className="btn-ghost w-full px-2 text-[10px]"
+                    className="btn-ghost min-h-11 w-full px-1.5 text-[11px] sm:px-2 sm:text-[10px]"
                   >
                     {app.label}
                   </button>
@@ -217,7 +217,7 @@ export function UpiPaymentStep({ registrationId, delegateName, onPaid }: UpiPaym
         </div>
       </div>
 
-      <div className="mobile-sticky-bar sm:!static">
+      <div className="mobile-sticky-bar -mx-4 sm:!static sm:mx-0">
         <button
           type="button"
           onClick={handlePaid}

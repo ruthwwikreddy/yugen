@@ -112,7 +112,7 @@ export function Hero() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.25, duration: 0.8, ease: EASE }}
-                  className="hero-rule h-px w-10 origin-left bg-yugen-white/50 md:w-14"
+                  className="hero-rule h-px w-10 origin-left bg-accent-berry md:w-14"
                 />
                 <span className="label-caps">{YUGEN.tagline}</span>
               </motion.div>
@@ -148,7 +148,7 @@ export function Hero() {
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ delay: 0.85, duration: 0.9, ease: EASE }}
-                className="hero-rule mt-4 block h-px max-w-[min(100%,20rem)] origin-left bg-yugen-border-strong"
+                className="hero-rule mt-4 block h-px max-w-[min(100%,20rem)] origin-left bg-accent-crimson"
               />
             </div>
 
@@ -170,7 +170,7 @@ export function Hero() {
               animate="visible"
               className="mt-7 flex flex-wrap items-center gap-3 md:mt-9"
             >
-              <span className="coming-soon-pill">{YUGEN.datesHero}</span>
+              <span className="coming-soon-pill border-accent-light bg-accent-light/10">{YUGEN.datesHero}</span>
               <span className="hidden h-4 w-px bg-yugen-border sm:block" />
               <span className="text-sm text-muted">{YUGEN.venueShort} · {YUGEN.city}</span>
             </motion.div>

@@ -25,11 +25,11 @@ export function RegistrationStepper({ current, sticky = true, paymentRequired = 
     <div
       className={
         sticky
-          ? 'sticky top-[4.5rem] z-10 -mx-1 border-b border-yugen/60 bg-yugen-black/90 px-1 py-4 backdrop-blur-md sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:py-0 sm:backdrop-blur-none'
+          ? 'sticky top-[4.5rem] z-10 -mx-4 border-b border-yugen/60 bg-yugen-black/90 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none'
           : 'mt-8'
       }
     >
-      <div className="flex items-center justify-between gap-1">
+      <div className="flex min-w-0 items-center justify-between gap-1">
         {STEPS.map((step, i) => {
           const done = current > step.num
           const active = current === step.num
@@ -42,7 +42,7 @@ export function RegistrationStepper({ current, sticky = true, paymentRequired = 
                     backgroundColor: done || active ? '#ffffff' : 'transparent',
                     color: done || active ? '#000000' : 'rgba(255,255,255,0.35)',
                   }}
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-xs font-semibold sm:h-9 sm:w-9 ${
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-xs font-semibold sm:h-9 sm:w-9 ${
                     done || active ? 'border-yugen-white' : 'border-yugen'
                   }`}
                 >

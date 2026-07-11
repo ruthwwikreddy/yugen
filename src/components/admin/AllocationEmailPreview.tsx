@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { YUGEN } from '../../lib/yugen'
+import { YUGEN_SEO } from '../../lib/yugen'
 import {
   buildAllocationHtml,
   buildAllocationMailtoUrl,
   buildAllocationPlainText,
   type AllocationEmailData,
+  type AllocationEmailTheme,
 } from '../../lib/allocation-email'
 
 type AllocationEmailPreviewProps = {
@@ -13,19 +14,70 @@ type AllocationEmailPreviewProps = {
   onCopied?: (format: 'plain' | 'html') => void
 }
 
+type PreviewTheme = AllocationEmailTheme
+
+const THEME_OPTIONS: { id: PreviewTheme; label: string }[] = [
+  { id: 'light', label: 'Light' },
+  { id: 'dark', label: 'Dark' },
+  { id: 'auto', label: 'System' },
+]
+
+const PAGE_BG = {
+  light: '#F5F5F5',
+  dark: '#0A0A0A',
+} as const
+
+function useSystemPrefersDark(): boolean {
+  const [prefersDark, setPrefersDark] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (event: MediaQueryListEvent) => setPrefersDark(event.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  return prefersDark
+}
+
+function resolvePreviewBackground(theme: PreviewTheme, systemDark: boolean): string {
+  if (theme === 'light') return PAGE_BG.light
+  if (theme === 'dark') return PAGE_BG.dark
+  return systemDark ? PAGE_BG.dark : PAGE_BG.light
+}
+
 export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPreviewProps) {
   const [tab, setTab] = useState<'preview' | 'plain' | 'html'>('preview')
+  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>('light')
   const [copied, setCopied] = useState<'plain' | 'html' | null>(null)
+  const systemDark = useSystemPrefersDark()
+
+  const logoBaseUrl =
+    typeof window !== 'undefined' ? window.location.origin : YUGEN_SEO.siteUrl
 
   const plainText = buildAllocationPlainText(data)
-  const html = buildAllocationHtml(data)
+  const htmlForCopy = buildAllocationHtml(data, { theme: 'auto', logoBaseUrl })
+
+  const previewHtml = useMemo(() => {
+    if (previewTheme === 'auto') {
+      return buildAllocationHtml(data, { theme: 'auto', logoBaseUrl })
+    }
+    return buildAllocationHtml(data, { theme: previewTheme, logoBaseUrl })
+  }, [data, previewTheme, logoBaseUrl])
+
+  const previewBackground = resolvePreviewBackground(previewTheme, systemDark)
+  const iframeColorScheme =
+    previewTheme === 'auto' ? 'light dark' : previewTheme
 
   async function copyText(text: string, format: 'plain' | 'html') {
     try {
       if (format === 'html') {
         await navigator.clipboard.write([
           new ClipboardItem({
-            'text/html': new Blob([text], { type: 'text/html' }),
+            'text/html': new Blob([htmlForCopy], { type: 'text/html' }),
             'text/plain': new Blob([buildAllocationPlainText(data)], { type: 'text/plain' }),
           }),
         ])
@@ -45,7 +97,7 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {(['preview', 'plain', 'html'] as const).map((t) => (
           <button
             key={t}
@@ -58,87 +110,58 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
             {t === 'preview' ? 'Preview' : t === 'plain' ? 'Plain text' : 'HTML'}
           </button>
         ))}
+
+        {tab === 'preview' && (
+          <div className="ml-auto flex flex-wrap gap-1 rounded-full border border-yugen p-1">
+            {THEME_OPTIONS.map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setPreviewTheme(id)}
+                className={`rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                  previewTheme === id
+                    ? 'bg-yugen-white text-yugen-black'
+                    : 'text-dim hover:text-yugen-white'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <AnimatePresence mode="wait">
         {tab === 'preview' && (
           <motion.div
-            key="preview"
+            key={`preview-${previewTheme}-${previewTheme === 'auto' ? (systemDark ? 'dark' : 'light') : ''}`}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="allocation-email-preview relative overflow-hidden rounded-2xl border border-yugen bg-yugen-black"
+            className="allocation-email-preview overflow-hidden rounded-2xl border border-yugen"
           >
-            <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-              <div className="hero-grid absolute inset-0" />
-              <div className="hero-vignette absolute inset-0" />
-              <div className="hero-grain absolute inset-0" />
-              <div className="hero-spotlight absolute inset-0" />
-            </div>
-
-            <div className="relative border-b border-yugen bg-yugen-black/80 px-6 py-5 backdrop-blur-sm">
-              <p className="label-caps">Yūgen Summit · Edition {YUGEN.edition}</p>
-              <h3 className="mt-2 font-display text-3xl uppercase tracking-wide text-yugen-white">
-                Committee Allocation
-              </h3>
-            </div>
-
-            <div className="relative space-y-5 px-6 py-6">
-              <p className="text-sm leading-relaxed text-muted">
-                Dear <span className="font-semibold text-yugen-white">{data.delegateName}</span>,
+            <div className="flex items-center justify-between border-b border-yugen bg-surface px-4 py-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-dim">
+                Email preview
+                {previewTheme === 'auto' && ` · ${systemDark ? 'dark' : 'light'} (system)`}
               </p>
-              <p className="text-sm leading-relaxed text-muted">
-                Congratulations — we are pleased to confirm your committee allocation for{' '}
-                <span className="text-yugen-white">Yūgen Summit 6.0</span>.
-              </p>
-
-              <div className="rounded-xl border border-yugen-strong bg-surface-raised p-5">
-                <p className="label-caps">Your committee</p>
-                <p className="mt-2 font-heading text-xl font-bold leading-snug">{data.committee}</p>
-                {data.country && (
-                  <p className="mt-3 text-sm text-muted">
-                    <span className="label-caps mr-2">Country</span>
-                    <span className="text-yugen-white">{data.country}</span>
-                  </p>
-                )}
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <DetailChip label="Registration ID" value={data.registrationId} mono />
-                <DetailChip label="School" value={data.school} />
-              </div>
-
-              <div>
-                <p className="label-caps mb-3">Next steps</p>
-                <ul className="space-y-2 text-sm text-muted">
-                  <li className="flex gap-2">
-                    <span className="text-dim">·</span>
-                    Review your committee study guide on our website
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-dim">·</span>
-                    Prepare position papers per committee guidelines
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-dim">·</span>
-                    Watch for further updates from the secretariat
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-yugen bg-surface/80 px-4 py-3">
-                <p className="text-xs leading-relaxed text-dim">
-                  {YUGEN.datesHero}
-                  <br />
-                  {YUGEN.venue}, {YUGEN.city}
-                </p>
-              </div>
-
-              <div className="border-t border-yugen pt-4">
-                <p className="text-sm font-semibold">Yūgen Summit Secretariat</p>
-                <p className="mt-1 text-sm text-dim">{YUGEN.email}</p>
-              </div>
+              <p className="text-[10px] text-dim">600px max · Gmail-safe tables</p>
+            </div>
+            <div
+              className="transition-colors duration-200"
+              style={{ backgroundColor: previewBackground }}
+            >
+              <iframe
+                title="Allocation email preview"
+                srcDoc={previewHtml}
+                sandbox="allow-same-origin"
+                className="block h-[680px] w-full border-0"
+                style={{
+                  backgroundColor: previewBackground,
+                  colorScheme: iframeColorScheme,
+                }}
+              />
             </div>
           </motion.div>
         )}
@@ -166,7 +189,7 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
             transition={{ duration: 0.2 }}
           >
             <pre className="max-h-72 overflow-auto rounded-xl border border-yugen bg-surface p-4 font-mono text-[10px] leading-relaxed text-dim whitespace-pre-wrap">
-              {html}
+              {htmlForCopy}
             </pre>
           </motion.div>
         )}
@@ -182,7 +205,7 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
         </button>
         <button
           type="button"
-          onClick={() => copyText(html, 'html')}
+          onClick={() => copyText(htmlForCopy, 'html')}
           className="btn-ghost text-xs"
         >
           {copied === 'html' ? 'Copied' : 'Copy HTML'}
@@ -196,23 +219,6 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
           Open in mail client
         </a>
       </div>
-    </div>
-  )
-}
-
-function DetailChip({
-  label,
-  value,
-  mono,
-}: {
-  label: string
-  value: string
-  mono?: boolean
-}) {
-  return (
-    <div className="rounded-lg border border-yugen bg-surface px-4 py-3">
-      <p className="label-caps">{label}</p>
-      <p className={`mt-1 text-sm text-yugen-white ${mono ? 'font-mono text-xs' : ''}`}>{value}</p>
     </div>
   )
 }

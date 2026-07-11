@@ -1,6 +1,6 @@
 import type { Registration } from './registration'
 import type { Committee } from './yugen'
-import { getCommittees } from './yugen'
+import { getAllocatableCommittees } from './yugen'
 
 export type CommitteeAllocationStats = {
   committee: Committee
@@ -32,7 +32,7 @@ export function formatCommitteePreferencesDisplay(
 }
 
 export function getCommitteeAllocationStats(registrations: Registration[]): CommitteeAllocationStats[] {
-  const committees = getCommittees()
+  const committees = getAllocatableCommittees()
   return committees.map((committee) => ({
     committee,
     allocated: registrations.filter((r) => matchesCommittee(r.allocatedCommittee, committee)).length,
@@ -57,7 +57,7 @@ export function matchesCommittee(value: string | undefined, committee: Committee
 
 export function filterByCommittee(registrations: Registration[], committeeId: string | 'all'): Registration[] {
   if (committeeId === 'all') return registrations
-  const committee = getCommittees().find((c) => c.id === committeeId)
+  const committee = getAllocatableCommittees().find((c) => c.id === committeeId)
   if (!committee) return registrations
   return registrations.filter(
     (r) =>

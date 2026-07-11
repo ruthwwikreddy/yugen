@@ -1,21 +1,21 @@
 import { Link } from 'react-router-dom'
+import { YUGEN_LOGO } from '../../lib/yugen'
 
 interface LogoProps {
   className?: string
-  /** `white` = transparent PNG for dark UI (default) */
+  /** Kept for API compatibility — all variants use the same asset */
   variant?: 'white' | 'dark'
 }
 
-export function Logo({ className = 'h-8 w-8', variant = 'white' }: LogoProps) {
-  const src = variant === 'dark' ? '/logo-transparent.png' : '/logo-white.png'
-
+export function Logo({ className = 'h-8 w-8' }: LogoProps) {
   return (
     <img
-      src={src}
+      src={YUGEN_LOGO.white2x}
       alt=""
       className={`block object-contain ${className}`}
       aria-hidden="true"
       draggable={false}
+      decoding="async"
     />
   )
 }

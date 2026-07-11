@@ -200,6 +200,20 @@ export const MUN_COUNTRIES = [
 
 export type MunCountry = (typeof MUN_COUNTRIES)[number]
 
+/** Common picks shown first when browsing countries */
+export const POPULAR_COUNTRIES = [
+  'India',
+  'United States',
+  'United Kingdom',
+  'China',
+  'France',
+  'Germany',
+  'Japan',
+  'Brazil',
+  'Canada',
+  'Australia',
+] as const
+
 export function filterCountries(query: string, limit = 50): string[] {
   const q = query.trim().toLowerCase()
   if (!q) return [...MUN_COUNTRIES].slice(0, limit)

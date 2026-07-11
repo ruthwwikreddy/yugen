@@ -73,6 +73,43 @@ export function buildUpiUri(registrationId: string, amount = EARLY_BIRD_AMOUNT) 
 
 export { buildUpiPaymentNote, formatRegistrationIdDisplay, normalizeRegistrationRef }
 
+/** Merge legacy split fields for display/editing in a single textarea. */
+export function combineMunExperienceForDisplay(
+  experienceDetails: string | undefined,
+  awardsAndAchievements: string | undefined,
+): string {
+  const details = (experienceDetails ?? '').trim()
+  const awards = (awardsAndAchievements ?? '').trim()
+  if (!awards) return details
+  if (!details) return awards
+  return `${details}\n${awards}`
+}
+
+/** Short summary for the `experience` column — first non-empty line, truncated. */
+export function deriveExperienceSummary(experienceDetails: string): string {
+  const firstLine =
+    experienceDetails
+      .trim()
+      .split('\n')
+      .map((line) => line.trim())
+      .find(Boolean) ?? ''
+  if (firstLine.length <= 100) return firstLine
+  return `${firstLine.slice(0, 97)}…`
+}
+
+/** Store combined MUN experience in `experienceDetails`; clear legacy awards field. */
+export function prepareMunExperienceForSubmit(combined: string): Pick<
+  RegistrationInput,
+  'experience' | 'experienceDetails' | 'awardsAndAchievements'
+> {
+  const experienceDetails = combined.trim()
+  return {
+    experience: deriveExperienceSummary(experienceDetails),
+    experienceDetails,
+    awardsAndAchievements: '',
+  }
+}
+
 function sanitizeInput(input: RegistrationInput): RegistrationInput {
   return {
     name: input.name.trim(),
@@ -92,6 +129,7 @@ function sanitizeInput(input: RegistrationInput): RegistrationInput {
     whyJoin: (input.whyJoin || '').trim(),
     availability: (input.availability || '').trim(),
     portfolioUrl: (input.portfolioUrl || '').trim(),
+    paymentMethod: input.paymentMethod,
   }
 }
 
@@ -125,6 +163,7 @@ function toFirestorePayload(stored: StoredRegistration) {
     adminNotes: stored.adminNotes ?? '',
     amount: stored.amount,
     paymentRequired: stored.paymentRequired,
+    paymentMethod: stored.paymentMethod,
     tier: stored.tier,
     status: stored.status,
     allocationStatus: stored.allocationStatus,
@@ -141,7 +180,7 @@ export function formatRegistration(docData: Record<string, unknown>, id: string)
   const amount = Number(docData.amount ?? EARLY_BIRD_AMOUNT)
   return {
     id,
-    flowSlug: String(docData.flowSlug ?? 'delegate-r1-early-bird'),
+    flowSlug: String(docData.flowSlug ?? 'delegate-r1-internal'),
     flowType: (docData.flowType as Registration['flowType']) ?? 'delegate',
     round: Number(docData.round ?? 1),
     name: String(docData.name ?? ''),
@@ -164,7 +203,8 @@ export function formatRegistration(docData: Record<string, unknown>, id: string)
     adminNotes: String(docData.adminNotes ?? ''),
     amount,
     paymentRequired: docData.paymentRequired !== undefined ? Boolean(docData.paymentRequired) : amount > 0,
-    tier: String(docData.tier ?? 'early-bird'),
+    paymentMethod: docData.paymentMethod as Registration['paymentMethod'],
+    tier: String(docData.tier ?? 'internal'),
     status: (docData.status as RegistrationStatus) ?? 'pending',
     allocationStatus: (docData.allocationStatus as Registration['allocationStatus']) ?? 'unallocated',
     allocatedCommittee: (docData.allocatedCommittee as string | undefined) ?? undefined,
@@ -323,6 +363,7 @@ export async function updateRegistration(id: string, patch: RegistrationUpdate) 
   if (patch.whyJoin !== undefined) clean.whyJoin = patch.whyJoin.trim()
   if (patch.availability !== undefined) clean.availability = patch.availability.trim()
   if (patch.portfolioUrl !== undefined) clean.portfolioUrl = patch.portfolioUrl.trim()
+  if (patch.paymentMethod !== undefined) clean.paymentMethod = patch.paymentMethod
 
   updateLocalRegistration(id, clean)
 

@@ -111,6 +111,7 @@ export function inputToStored(
     adminNotes: '',
     amount: flow.amount,
     paymentRequired: flow.paymentRequired,
+    paymentMethod: input.paymentMethod,
     tier: flow.tier,
     status: 'pending',
     allocationStatus: 'unallocated',
@@ -130,7 +131,7 @@ export function inputToStored(
 export function storedToRegistration(reg: StoredRegistration): Registration {
   return {
     id: reg.id,
-    flowSlug: reg.flowSlug ?? 'delegate-r1-early-bird',
+    flowSlug: reg.flowSlug ?? 'delegate-r1-internal',
     flowType: reg.flowType ?? 'delegate',
     round: reg.round ?? 1,
     name: reg.name,
@@ -153,7 +154,8 @@ export function storedToRegistration(reg: StoredRegistration): Registration {
     adminNotes: reg.adminNotes ?? '',
     amount: reg.amount,
     paymentRequired: reg.paymentRequired ?? true,
-    tier: reg.tier ?? 'early-bird',
+    paymentMethod: reg.paymentMethod,
+    tier: reg.tier ?? 'internal',
     status: reg.status,
     allocationStatus: reg.allocationStatus ?? 'unallocated',
     allocatedCommittee: reg.allocatedCommittee,
@@ -169,10 +171,11 @@ export function storedToRegistration(reg: StoredRegistration): Registration {
 export function normalizeStored(reg: StoredRegistration): StoredRegistration {
   return {
     ...reg,
-    flowSlug: reg.flowSlug ?? 'delegate-r1-early-bird',
+    flowSlug: reg.flowSlug ?? 'delegate-r1-internal',
     flowType: reg.flowType ?? 'delegate',
     round: reg.round ?? 1,
     paymentRequired: reg.paymentRequired ?? reg.amount > 0,
+    paymentMethod: reg.paymentMethod,
     whyJoin: reg.whyJoin ?? '',
     availability: reg.availability ?? '',
     portfolioUrl: reg.portfolioUrl ?? '',

@@ -151,15 +151,21 @@ export function RegistrationDetailPanel({
               <div className="mt-6">
                 <DetailRow label="Email" value={registration.email} />
                 <DetailRow label="Phone" value={registration.phone} />
-                <DetailRow label="Experience level" value={registration.experience} />
+                {registration.experience?.trim() && (
+                  <DetailRow label="Experience summary" value={registration.experience} />
+                )}
                 <DetailRow
                   label="Committee prefs."
                   value={formatCommitteePreferencesDisplay(registration, getCommittees())}
                 />
                 <DetailBlock label="MUN experience" value={registration.experienceDetails} />
-                <DetailBlock label="Awards & achievements" value={registration.awardsAndAchievements} />
+                {registration.awardsAndAchievements?.trim() && (
+                  <DetailBlock label="Awards & achievements (legacy)" value={registration.awardsAndAchievements} />
+                )}
                 <DetailRow label="Country preference" value={registration.countryPreference} />
-                <DetailRow label="Portfolio preference" value={registration.portfolioPreference} />
+                {registration.portfolioPreference?.trim() && (
+                  <DetailRow label="Portfolio preference" value={registration.portfolioPreference} />
+                )}
                 <DetailRow label="Portfolio link" value={registration.portfolioUrl} />
                 <DetailRow label="Dietary / notes" value={registration.dietaryNotes} />
                 <DetailRow label="Admin notes" value={registration.adminNotes} />

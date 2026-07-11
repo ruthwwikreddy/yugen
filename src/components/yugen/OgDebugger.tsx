@@ -58,7 +58,7 @@ export function OgDebugger() {
             <div className="mt-6 p-4 bg-green-900/30 border border-green-500/30 rounded-lg">
               <h4 className="text-green-400 font-semibold mb-2">✅ Checklist</h4>
               <ul className="space-y-1 text-white/70 text-sm">
-                <li>✓ Image is present at /image.png</li>
+                <li>✓ Image is present at {YUGEN_SEO.ogImage}</li>
                 <li>✓ Aspect ratio 1200x630</li>
                 <li>✓ All meta tags are set</li>
                 <li>✓ SEO component updates tags</li>

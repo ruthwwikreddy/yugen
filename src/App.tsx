@@ -22,6 +22,7 @@ import { GalleryPage } from './pages/GalleryPage'
 import { ContactPage } from './pages/ContactPage'
 import { LegalPage } from './pages/LegalPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { PortfolioGuidePage } from './pages/PortfolioGuidePage'
 import { FEATURES, isApplyOpen } from './config/features'
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/committees" element={<CommitteesPage />} />
         <Route path="/committees/:id" element={<CommitteeDetailPage />} />
+        <Route path="/portfolio-guide" element={<PortfolioGuidePage />} />
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/resources" element={<ResourcesPage />} />

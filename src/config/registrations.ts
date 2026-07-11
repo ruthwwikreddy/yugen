@@ -2,10 +2,13 @@ import { FEATURES } from './features'
 
 export type FlowType = 'delegate' | 'oc' | 'chair' | 'ip'
 export type FlowCategory = 'register' | 'apply'
+export type RegistrationType = 'internal' | 'external'
+export type PaymentMethod = 'upi' | 'cash'
 
 export type FlowConfig = {
   slug: string
   type: FlowType
+  registrationType: RegistrationType
   round: number
   category: FlowCategory
   title: string
@@ -19,23 +22,44 @@ export type FlowConfig = {
   idPrefix: string
   tier: string
   seoDescription: string
+  paymentMethods?: PaymentMethod[]
 }
 
 export const REGISTRATION_FLOWS: FlowConfig[] = [
   {
-    slug: 'delegate-r1-early-bird',
+    slug: 'delegate-r1-internal',
     type: 'delegate',
+    registrationType: 'internal',
     round: 1,
     category: 'register',
-    title: 'Early Bird Registration',
-    subtitle: 'Round 1 delegate registration with UPI payment.',
-    eyebrow: 'Delegate · Round 1 · Early bird',
-    amount: 1200,
+    title: 'Internal Registration',
+    subtitle: 'Round 1 internal delegate registration for PORPS students.',
+    eyebrow: 'Internal · Round 1 · PORPS',
+    amount: 1000,
     paymentRequired: true,
     active: true,
-    idPrefix: 'EB',
-    tier: 'early-bird',
-    seoDescription: 'Register for Yūgen Summit 6.0 early bird delegate Round 1.',
+    idPrefix: 'INT',
+    tier: 'internal',
+    seoDescription: 'Register for Yūgen Summit 6.0 internal delegate Round 1.',
+    paymentMethods: ['upi', 'cash'],
+  },
+  {
+    slug: 'delegate-r1-external',
+    type: 'delegate',
+    registrationType: 'external',
+    round: 1,
+    category: 'register',
+    title: 'External Registration',
+    subtitle: 'Round 1 external delegate registration.',
+    eyebrow: 'External · Round 1',
+    amount: 1200,
+    paymentRequired: true,
+    active: false,
+    comingSoon: true,
+    idPrefix: 'EXT',
+    tier: 'external',
+    seoDescription: 'Register for Yūgen Summit 6.0 external delegate Round 1.',
+    paymentMethods: ['upi'],
   },
 ]
 

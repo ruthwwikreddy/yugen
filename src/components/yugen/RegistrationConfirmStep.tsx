@@ -18,7 +18,7 @@ export function RegistrationConfirmStep({ registration, cloudSynced }: Registrat
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.45 }}
-      className="space-y-5 pb-4 sm:space-y-6"
+      className="space-y-5 pb-6 sm:space-y-6 sm:pb-4"
     >
       <div className="overflow-hidden rounded-2xl border border-yugen-strong bg-surface-raised">
         <div className="border-b border-yugen bg-yugen-white px-4 py-3 text-center sm:px-6">
@@ -29,7 +29,7 @@ export function RegistrationConfirmStep({ registration, cloudSynced }: Registrat
 
         <div className="p-5 text-center sm:p-8">
           <p className="label-caps">Step 3 · Save this screen</p>
-          <h2 className="mt-3 font-display text-3xl uppercase tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="mt-3 font-display text-2xl uppercase tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
             Screenshot this
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted">

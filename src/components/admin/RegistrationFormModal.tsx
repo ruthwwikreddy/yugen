@@ -1,18 +1,16 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
-import { getCommittees } from '../../lib/yugen'
-import { EARLY_BIRD_AMOUNT, type Registration, type RegistrationInput } from '../../lib/registration'
-import { MUN_COUNTRIES } from '../../lib/mun-countries'
-import { MUN_PORTFOLIOS } from '../../lib/mun-portfolios'
+import { getAllocatableCommittees } from '../../lib/yugen'
+import { EARLY_BIRD_AMOUNT, combineMunExperienceForDisplay, prepareMunExperienceForSubmit, type Registration, type RegistrationInput } from '../../lib/registration'
+import { MUN_COUNTRIES, POPULAR_COUNTRIES } from '../../lib/mun-countries'
 import { SearchSelect } from '../yugen/SearchSelect'
 
 const inputClass =
   'w-full rounded-lg border border-yugen bg-yugen-black px-4 py-2.5 text-sm text-yugen-white placeholder:text-dim focus:border-yugen-strong focus:outline-none'
 
 const GRADES = ['8', '9', '10', '11', '12']
-const EXPERIENCE = ['First MUN', '1–3 conferences', '4+ conferences']
 
-const emptyForm: RegistrationInput = {
+const emptyForm: Omit<RegistrationInput, 'experience' | 'awardsAndAchievements'> = {
   name: '',
   email: '',
   phone: '',
@@ -21,11 +19,8 @@ const emptyForm: RegistrationInput = {
   committeePreference: '',
   committeePreference2: '',
   committeePreference3: '',
-  experience: '',
   experienceDetails: '',
-  awardsAndAchievements: '',
   countryPreference: '',
-  portfolioPreference: '',
   portfolioUrl: '',
   dietaryNotes: '',
 }
@@ -47,7 +42,7 @@ export function RegistrationFormModal({
   onClose,
   onSubmit,
 }: RegistrationFormModalProps) {
-  const [form, setForm] = useState<RegistrationInput>(emptyForm)
+  const [form, setForm] = useState<Omit<RegistrationInput, 'experience' | 'awardsAndAchievements'>>(emptyForm)
   const [adminNotes, setAdminNotes] = useState('')
 
   useEffect(() => {
@@ -62,11 +57,8 @@ export function RegistrationFormModal({
         committeePreference: initial.committeePreference,
         committeePreference2: initial.committeePreference2,
         committeePreference3: initial.committeePreference3,
-        experience: initial.experience,
-        experienceDetails: initial.experienceDetails,
-        awardsAndAchievements: initial.awardsAndAchievements,
+        experienceDetails: combineMunExperienceForDisplay(initial.experienceDetails, initial.awardsAndAchievements),
         countryPreference: initial.countryPreference,
-        portfolioPreference: initial.portfolioPreference,
         portfolioUrl: initial.portfolioUrl,
         dietaryNotes: initial.dietaryNotes,
       })
@@ -81,10 +73,11 @@ export function RegistrationFormModal({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    onSubmit({ ...form, adminNotes })
+    const munExperience = prepareMunExperienceForSubmit(form.experienceDetails ?? '')
+    onSubmit({ ...form, ...munExperience, adminNotes })
   }
 
-  const committees = getCommittees()
+  const committees = getAllocatableCommittees()
 
   return (
     <>
@@ -134,15 +127,6 @@ export function RegistrationFormModal({
                 ))}
               </select>
             </div>
-            <div>
-              <label className="label-caps mb-1.5 block">Experience</label>
-              <select required value={form.experience} onChange={(e) => setForm({ ...form, experience: e.target.value })} className={inputClass}>
-                <option value="" disabled>Select</option>
-                {EXPERIENCE.map((x) => (
-                  <option key={x} value={x}>{x}</option>
-                ))}
-              </select>
-            </div>
           </div>
 
           <div className="mt-4 space-y-3">
@@ -157,27 +141,18 @@ export function RegistrationFormModal({
             ))}
           </div>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="label-caps mb-1.5 block">Country preference</label>
-              <SearchSelect
-                value={form.countryPreference ?? ''}
-                onChange={(v) => setForm({ ...form, countryPreference: v })}
-                options={MUN_COUNTRIES}
-                placeholder="Search countries…"
-                inputClassName={inputClass}
-              />
-            </div>
-            <div>
-              <label className="label-caps mb-1.5 block">Portfolio preference</label>
-              <SearchSelect
-                value={form.portfolioPreference ?? ''}
-                onChange={(v) => setForm({ ...form, portfolioPreference: v })}
-                options={MUN_PORTFOLIOS}
-                placeholder="Search portfolios…"
-                inputClassName={inputClass}
-              />
-            </div>
+          <div className="mt-4">
+            <label className="label-caps mb-1.5 block">Country preference</label>
+            <SearchSelect
+              value={form.countryPreference ?? ''}
+              onChange={(v) => setForm({ ...form, countryPreference: v })}
+              options={MUN_COUNTRIES}
+              featuredOptions={POPULAR_COUNTRIES}
+              featuredLabel="Common countries"
+              placeholder="Search countries…"
+              showSelected={false}
+              inputClassName={inputClass}
+            />
           </div>
 
           <div className="mt-4">
@@ -186,13 +161,16 @@ export function RegistrationFormModal({
           </div>
 
           <div className="mt-4">
-            <label className="label-caps mb-1.5 block">Experience details</label>
-            <textarea rows={2} value={form.experienceDetails ?? ''} onChange={(e) => setForm({ ...form, experienceDetails: e.target.value })} className={inputClass} />
-          </div>
-
-          <div className="mt-4">
-            <label className="label-caps mb-1.5 block">Awards & achievements</label>
-            <textarea rows={2} value={form.awardsAndAchievements ?? ''} onChange={(e) => setForm({ ...form, awardsAndAchievements: e.target.value })} className={inputClass} />
+            <label className="label-caps mb-1.5 block">MUN experience</label>
+            <p className="mb-1.5 text-xs text-dim">One entry per line: Conference / Year / Awards (if any)</p>
+            <textarea
+              required
+              rows={4}
+              value={form.experienceDetails ?? ''}
+              onChange={(e) => setForm({ ...form, experienceDetails: e.target.value })}
+              placeholder={'Yūgen Summit / 2025 / Best Delegate\nHyderabad MUN / 2024'}
+              className={inputClass}
+            />
           </div>
 
           <div className="mt-4">

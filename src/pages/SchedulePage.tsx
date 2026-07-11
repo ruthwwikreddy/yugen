@@ -13,7 +13,7 @@ export function SchedulePage() {
       path="/schedule"
       eyebrow="Schedule"
       headline="Conference schedule"
-      subheadline="Opening ceremony, committee sessions, socials, and closing — the full run of show lands when dates are confirmed."
+      subheadline="Opening ceremony, committee sessions, socials, and closing — the full run of show for 22 & 23 August 2026."
     >
       {hasSchedule ? (
         <div className="space-y-8">
@@ -38,7 +38,7 @@ export function SchedulePage() {
         <ComingSoonBlock
           eyebrow="Schedule"
           title="Timeline coming soon"
-          description="Day 0 registration, Day 1–2 committees, social events, and closing ceremony — all times publish with confirmed dates."
+          description="Day 0 registration, Day 1–2 committees, social events, and closing ceremony — all times publish as we approach August 22."
         />
       )}
 

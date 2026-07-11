@@ -1,8 +1,13 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
 
 export type SearchSelectOption = {
   value: string
   label?: string
+}
+
+export type SearchSelectGroup = {
+  label: string
+  options: readonly string[] | SearchSelectOption[]
 }
 
 type SearchSelectProps = {
@@ -10,6 +15,11 @@ type SearchSelectProps = {
   value: string
   onChange: (value: string) => void
   options: readonly string[] | SearchSelectOption[]
+  /** Categorized options — shown with group headers when browsing */
+  groups?: readonly SearchSelectGroup[]
+  /** Shown at top when search is empty (e.g. popular picks) */
+  featuredOptions?: readonly string[]
+  featuredLabel?: string
   placeholder?: string
   emptyLabel?: string
   helperText?: string
@@ -18,21 +28,121 @@ type SearchSelectProps = {
   allowCustom?: boolean
   className?: string
   inputClassName?: string
-  /** Max visible options in dropdown */
+  /** Max visible options in flat (non-grouped) mode */
   maxVisible?: number
+  /** Show selected value below the input when closed */
+  showSelected?: boolean
 }
 
 const defaultInputClass =
   'input-touch w-full rounded-xl border border-yugen bg-yugen-black px-4 py-3.5 pr-10 text-yugen-white placeholder:text-dim transition-colors focus:border-yugen-strong focus:outline-none focus:ring-1 focus:ring-yugen-strong/30 sm:text-sm'
 
+type SelectableItem = {
+  kind: 'empty' | 'option'
+  option: SearchSelectOption
+  groupLabel?: string
+}
+
+type DisplayRow =
+  | { kind: 'empty'; option: SearchSelectOption }
+  | { kind: 'section-header'; label: string }
+  | { kind: 'option'; option: SearchSelectOption; groupLabel?: string }
+
 function normalizeOptions(options: readonly string[] | SearchSelectOption[]): SearchSelectOption[] {
   return options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o))
 }
 
-function filterOptions(options: SearchSelectOption[], query: string, maxVisible: number): SearchSelectOption[] {
+function matchesQuery(option: SearchSelectOption, query: string): boolean {
   const q = query.trim().toLowerCase()
-  if (!q) return options.slice(0, maxVisible)
-  return options.filter((o) => o.value.toLowerCase().includes(q) || o.label?.toLowerCase().includes(q)).slice(0, maxVisible)
+  if (!q) return true
+  return option.value.toLowerCase().includes(q) || (option.label?.toLowerCase().includes(q) ?? false)
+}
+
+function buildAllOptions(
+  options: readonly string[] | SearchSelectOption[],
+  groups?: readonly SearchSelectGroup[],
+): SearchSelectOption[] {
+  if (groups?.length) {
+    return groups.flatMap((g) => normalizeOptions(g.options))
+  }
+  return normalizeOptions(options)
+}
+
+function buildDisplayRows(params: {
+  allOptions: SearchSelectOption[]
+  groups?: readonly SearchSelectGroup[]
+  featuredOptions?: readonly string[]
+  featuredLabel: string
+  query: string
+  maxVisible: number
+  showEmpty: boolean
+  emptyLabel: string
+}): { rows: DisplayRow[]; selectable: SelectableItem[]; totalMatches: number } {
+  const { allOptions, groups, featuredOptions, featuredLabel, query, maxVisible, showEmpty, emptyLabel } = params
+  const q = query.trim()
+  const rows: DisplayRow[] = []
+  const selectable: SelectableItem[] = []
+
+  if (showEmpty) {
+    const emptyOpt = { value: '', label: emptyLabel }
+    rows.push({ kind: 'empty', option: emptyOpt })
+    selectable.push({ kind: 'empty', option: emptyOpt })
+  }
+
+  if (q) {
+    const matches = allOptions.filter((o) => matchesQuery(o, q))
+    for (const option of matches.slice(0, maxVisible)) {
+      rows.push({ kind: 'option', option })
+      selectable.push({ kind: 'option', option })
+    }
+    return { rows, selectable, totalMatches: matches.length }
+  }
+
+  if (featuredOptions?.length) {
+    rows.push({ kind: 'section-header', label: featuredLabel })
+    for (const item of featuredOptions) {
+      const option = typeof item === 'string' ? { value: item, label: item } : item
+      rows.push({ kind: 'option', option })
+      selectable.push({ kind: 'option', option })
+    }
+  }
+
+  if (groups?.length) {
+    for (const group of groups) {
+      const groupOptions = normalizeOptions(group.options)
+      if (groupOptions.length === 0) continue
+      rows.push({ kind: 'section-header', label: group.label })
+      for (const option of groupOptions) {
+        rows.push({ kind: 'option', option, groupLabel: group.label })
+        selectable.push({ kind: 'option', option, groupLabel: group.label })
+      }
+    }
+    return { rows, selectable, totalMatches: allOptions.length }
+  }
+
+  for (const option of allOptions.slice(0, maxVisible)) {
+    rows.push({ kind: 'option', option })
+    selectable.push({ kind: 'option', option })
+  }
+
+  return { rows, selectable, totalMatches: allOptions.length }
+}
+
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  const q = query.trim()
+  if (!q) return <>{text}</>
+
+  const lower = text.toLowerCase()
+  const idx = lower.indexOf(q.toLowerCase())
+  if (idx === -1) return <>{text}</>
+
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="rounded bg-yugen-white/20 px-0.5 text-yugen-white not-italic">{text.slice(idx, idx + q.length)}</mark>
+      {text.slice(idx + q.length)}
+    </>
+  )
 }
 
 export function SearchSelect({
@@ -40,6 +150,9 @@ export function SearchSelect({
   value,
   onChange,
   options,
+  groups,
+  featuredOptions,
+  featuredLabel = 'Popular',
   placeholder = 'Search or select…',
   emptyLabel = 'No preference',
   helperText,
@@ -49,26 +162,48 @@ export function SearchSelect({
   className = '',
   inputClassName = defaultInputClass,
   maxVisible = 50,
+  showSelected = true,
 }: SearchSelectProps) {
   const autoId = useId()
   const id = idProp ?? autoId
   const listId = `${id}-listbox`
 
-  const normalized = normalizeOptions(options)
+  const allOptions = useMemo(() => buildAllOptions(options, groups), [options, groups])
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
 
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [highlight, setHighlight] = useState(0)
+  const [dropdownStyle, setDropdownStyle] = useState<CSSProperties>({})
+  const [useFixedDropdown, setUseFixedDropdown] = useState(false)
 
-  const filtered = filterOptions(normalized, query, maxVisible)
   const showEmpty = !required && !query.trim()
-  const displayItems: SearchSelectOption[] = showEmpty
-    ? [{ value: '', label: emptyLabel }, ...filtered]
-    : filtered
+  const { rows, selectable, totalMatches } = buildDisplayRows({
+    allOptions,
+    groups,
+    featuredOptions,
+    featuredLabel,
+    query,
+    maxVisible,
+    showEmpty,
+    emptyLabel,
+  })
 
-  // Sync query when value changes externally
+  const statusText = useMemo(() => {
+    if (!open) return null
+    if (query.trim() && selectable.length === 0) return null
+    if (query.trim()) {
+      const n = totalMatches
+      return n === 1 ? '1 result' : `${n} results`
+    }
+    if (groups?.length) {
+      return 'Type to search'
+    }
+    return null
+  }, [open, query, selectable.length, totalMatches, groups, allOptions.length])
+
   useEffect(() => {
     if (!open) {
       setQuery(value)
@@ -86,6 +221,70 @@ export function SearchSelect({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [value])
 
+  useEffect(() => {
+    if (!open || !listRef.current) return
+    const active = listRef.current.querySelector('[data-active="true"]')
+    active?.scrollIntoView({ block: 'nearest' })
+  }, [highlight, open])
+
+  useEffect(() => {
+    setHighlight(0)
+  }, [query, open])
+
+  useEffect(() => {
+    if (!open) {
+      setDropdownStyle({})
+      setUseFixedDropdown(false)
+      return
+    }
+
+    function updateDropdownPosition() {
+      const input = inputRef.current
+      if (!input) return
+
+      const isMobile = window.matchMedia('(max-width: 639px)').matches
+      if (!isMobile) {
+        setUseFixedDropdown(false)
+        setDropdownStyle({})
+        return
+      }
+
+      const rect = input.getBoundingClientRect()
+      const viewport = window.visualViewport
+      const viewportHeight = viewport?.height ?? window.innerHeight
+      const maxHeight = Math.min(viewportHeight * 0.45, 288)
+      const spaceBelow = viewportHeight - rect.bottom - 8
+      const spaceAbove = rect.top - 8
+      const openAbove = spaceBelow < 160 && spaceAbove > spaceBelow
+
+      setUseFixedDropdown(true)
+      setDropdownStyle({
+        position: 'fixed',
+        left: Math.max(8, rect.left),
+        width: Math.min(rect.width, window.innerWidth - 16),
+        maxHeight,
+        zIndex: 9999,
+        ...(openAbove
+          ? { bottom: viewportHeight - rect.top + 6 }
+          : { top: rect.bottom + 6 }),
+      })
+    }
+
+    updateDropdownPosition()
+    const viewport = window.visualViewport
+    viewport?.addEventListener('resize', updateDropdownPosition)
+    viewport?.addEventListener('scroll', updateDropdownPosition)
+    window.addEventListener('resize', updateDropdownPosition)
+    window.addEventListener('scroll', updateDropdownPosition, true)
+
+    return () => {
+      viewport?.removeEventListener('resize', updateDropdownPosition)
+      viewport?.removeEventListener('scroll', updateDropdownPosition)
+      window.removeEventListener('resize', updateDropdownPosition)
+      window.removeEventListener('scroll', updateDropdownPosition, true)
+    }
+  }, [open])
+
   function selectOption(opt: SearchSelectOption) {
     onChange(opt.value)
     setQuery(opt.value)
@@ -96,7 +295,6 @@ export function SearchSelect({
   function handleInputChange(text: string) {
     setQuery(text)
     setOpen(true)
-    setHighlight(0)
     if (allowCustom) {
       onChange(text)
     } else if (!text.trim() && !required) {
@@ -113,16 +311,20 @@ export function SearchSelect({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
-        setHighlight((h) => Math.min(h + 1, displayItems.length - 1))
+        if (selectable.length > 0) {
+          setHighlight((h) => Math.min(h + 1, selectable.length - 1))
+        }
         break
       case 'ArrowUp':
         e.preventDefault()
-        setHighlight((h) => Math.max(h - 1, 0))
+        if (selectable.length > 0) {
+          setHighlight((h) => Math.max(h - 1, 0))
+        }
         break
       case 'Enter':
         e.preventDefault()
-        if (open && displayItems[highlight]) {
-          selectOption(displayItems[highlight])
+        if (open && selectable[highlight]) {
+          selectOption(selectable[highlight].option)
         } else if (allowCustom && query.trim()) {
           onChange(query.trim())
           setOpen(false)
@@ -148,9 +350,12 @@ export function SearchSelect({
   }
 
   const hasValue = Boolean(value)
+  let selectableIndex = -1
+
+  const displayValue = open ? query : value || ''
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative min-w-0 ${className}`}>
       <div className="relative">
         <input
           ref={inputRef}
@@ -163,7 +368,7 @@ export function SearchSelect({
           aria-required={required}
           autoComplete="off"
           disabled={disabled}
-          value={open ? query : value || ''}
+          value={displayValue}
           placeholder={placeholder}
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={() => {
@@ -171,16 +376,16 @@ export function SearchSelect({
             setQuery(value)
           }}
           onKeyDown={handleKeyDown}
-          className={inputClassName}
+          className={`${inputClassName} ${!open && hasValue ? 'font-medium' : ''}`}
         />
 
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center gap-0.5 pr-2 sm:pr-3">
           {hasValue && !disabled && (
             <button
               type="button"
               tabIndex={-1}
               onClick={handleClear}
-              className="pointer-events-auto touch-target flex h-7 w-7 items-center justify-center rounded-md text-dim transition-colors hover:bg-surface-raised hover:text-yugen-white"
+              className="pointer-events-auto touch-target flex h-9 w-9 items-center justify-center rounded-lg text-dim transition-colors hover:bg-surface-raised hover:text-yugen-white sm:h-7 sm:w-7 sm:rounded-md"
               aria-label="Clear selection"
             >
               ✕
@@ -199,44 +404,93 @@ export function SearchSelect({
         </div>
       </div>
 
-      {helperText && <p className="mt-1.5 text-xs text-dim">{helperText}</p>}
-
-      {open && displayItems.length > 0 && (
-        <ul
-          id={listId}
-          role="listbox"
-          className="absolute z-50 mt-1.5 max-h-60 w-full overflow-y-auto overscroll-contain rounded-xl border border-yugen-strong bg-surface-raised py-1 shadow-xl"
-        >
-          {displayItems.map((opt, i) => {
-            const selected = opt.value === value
-            const active = i === highlight
-            return (
-              <li
-                key={opt.value || '__empty__'}
-                role="option"
-                aria-selected={selected}
-                onMouseEnter={() => setHighlight(i)}
-                onMouseDown={(e) => {
-                  e.preventDefault()
-                  selectOption(opt)
-                }}
-                className={`cursor-pointer px-4 py-2.5 text-sm transition-colors ${
-                  active ? 'bg-yugen-white/10 text-yugen-white' : 'text-muted hover:bg-surface hover:text-yugen-white'
-                } ${selected ? 'font-medium' : ''} ${!opt.value ? 'text-dim italic' : ''}`}
-              >
-                {opt.label ?? opt.value}
-              </li>
-            )
-          })}
-        </ul>
+      {showSelected && hasValue && !open && (
+        <p className="mt-1.5 flex items-start gap-1.5 text-xs sm:text-sm">
+          <span className="mt-0.5 shrink-0 rounded bg-yugen-white/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-dim">
+            Selected
+          </span>
+          <span className="min-w-0 break-words text-yugen-white/90">{value}</span>
+        </p>
       )}
 
-      {open && displayItems.length === 0 && query.trim() && (
-        <div className="absolute z-50 mt-1.5 w-full rounded-xl border border-yugen bg-surface-raised px-4 py-3 text-sm text-dim shadow-xl">
+      {helperText && open && <p className="mt-1 text-xs text-dim">{helperText}</p>}
+
+      {open && rows.length > 0 && (
+        <div
+          className={`${useFixedDropdown ? '' : 'absolute mt-1.5 w-full'} z-50 overflow-hidden rounded-xl border border-yugen-strong bg-surface-raised shadow-xl`}
+          style={useFixedDropdown ? dropdownStyle : undefined}
+        >
+          <ul
+            id={listId}
+            ref={listRef}
+            role="listbox"
+            className="max-h-[min(45dvh,18rem)] overflow-y-auto overscroll-contain py-1 sm:max-h-60"
+          >
+            {rows.map((row, i) => {
+              if (row.kind === 'section-header') {
+                return (
+                  <li
+                    key={`header-${row.label}-${i}`}
+                    role="presentation"
+                    className="sticky top-0 z-10 border-b border-yugen/50 bg-surface-raised/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-dim backdrop-blur-sm"
+                  >
+                    {row.label}
+                  </li>
+                )
+              }
+
+              if (row.kind === 'empty') {
+                selectableIndex += 1
+                const idx = selectableIndex
+                const selected = row.option.value === value
+                const active = idx === highlight
+                return (
+                  <OptionRow
+                    key="__empty__"
+                    active={active}
+                    selected={selected}
+                    italic
+                    onMouseEnter={() => setHighlight(idx)}
+                    onSelect={() => selectOption(row.option)}
+                  >
+                    {row.option.label ?? row.option.value}
+                  </OptionRow>
+                )
+              }
+
+              selectableIndex += 1
+              const idx = selectableIndex
+              const selected = row.option.value === value
+              const active = idx === highlight
+
+              return (
+                <OptionRow
+                  key={`opt-${i}-${row.option.value}`}
+                  active={active}
+                  selected={selected}
+                  onMouseEnter={() => setHighlight(idx)}
+                  onSelect={() => selectOption(row.option)}
+                >
+                  <HighlightMatch text={row.option.label ?? row.option.value} query={query} />
+                </OptionRow>
+              )
+            })}
+          </ul>
+          {statusText && (
+            <div className="hidden border-t border-yugen/50 px-4 py-1.5 text-xs text-dim sm:block">{statusText}</div>
+          )}
+        </div>
+      )}
+
+      {open && rows.length === 0 && query.trim() && (
+        <div
+          className={`${useFixedDropdown ? '' : 'absolute mt-1.5 w-full'} z-50 rounded-xl border border-yugen bg-surface-raised px-4 py-4 text-sm shadow-xl`}
+          style={useFixedDropdown ? dropdownStyle : undefined}
+        >
           {allowCustom ? (
             <button
               type="button"
-              className="w-full text-left text-yugen-white hover:underline"
+              className="touch-target w-full rounded-lg py-2 text-left text-yugen-white hover:underline"
               onMouseDown={(e) => {
                 e.preventDefault()
                 onChange(query.trim())
@@ -246,10 +500,44 @@ export function SearchSelect({
               Use &ldquo;{query.trim()}&rdquo;
             </button>
           ) : (
-            'No matches — try a different search'
+            <p className="text-dim">No matches — try another search</p>
           )}
         </div>
       )}
     </div>
+  )
+}
+
+function OptionRow({
+  children,
+  active,
+  selected,
+  italic,
+  onMouseEnter,
+  onSelect,
+}: {
+  children: ReactNode
+  active: boolean
+  selected: boolean
+  italic?: boolean
+  onMouseEnter: () => void
+  onSelect: () => void
+}) {
+  return (
+    <li
+      role="option"
+      aria-selected={selected}
+      data-active={active ? 'true' : undefined}
+      onMouseEnter={onMouseEnter}
+      onMouseDown={(e) => {
+        e.preventDefault()
+        onSelect()
+      }}
+      className={`cursor-pointer px-4 py-3.5 text-sm transition-colors sm:py-2.5 ${
+        active ? 'bg-yugen-white/10 text-yugen-white' : 'text-muted hover:bg-surface hover:text-yugen-white'
+      } ${selected ? 'font-medium' : ''} ${italic ? 'text-dim italic' : ''}`}
+    >
+      <span className="block break-words">{children}</span>
+    </li>
   )
 }

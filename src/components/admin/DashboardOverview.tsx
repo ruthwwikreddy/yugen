@@ -30,16 +30,11 @@ export function DashboardOverview({
   onAcceptPayment,
   onRejectPayment,
 }: DashboardOverviewProps) {
-  const topSchools = Object.entries(stats.bySchool).sort((a, b) => b[1] - a[1]).slice(0, 6)
-  const maxSchool = topSchools[0]?.[1] ?? 1
-  const grades = Object.entries(stats.byGrade).sort((a, b) => Number(a[0]) - Number(b[0]))
-  const maxGrade = Math.max(...grades.map(([, c]) => c), 1)
   const unallocated = Math.max(0, stats.verified - stats.allocated - stats.waitlisted)
-  const conversion = stats.total > 0 ? Math.round((stats.verified / stats.total) * 100) : 0
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-3">
         <AdminQuickAction
           label="Action needed"
           description="Review paid registrations"
@@ -62,17 +57,16 @@ export function DashboardOverview({
         />
       </div>
 
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-5">
         <AdminStatCard label="Total" value={stats.total} sub={`${stats.schools} schools`} accent onClick={onGoToRegistrations} />
         <AdminStatCard label="Pending" value={stats.pending} sub={formatInr(stats.pending * EARLY_BIRD_AMOUNT)} />
-        <AdminStatCard label="Awaiting verify" value={stats.paid} sub="Paid · needs review" highlight="amber" onClick={onGoToRegistrations} />
-        <AdminStatCard label="Verified" value={stats.verified} sub={formatInr(stats.revenueVerified)} accent />
+        <AdminStatCard label="Awaiting verify" value={stats.paid} highlight="amber" onClick={onGoToRegistrations} />
+        <AdminStatCard label="Verified" value={stats.verified} accent />
         <AdminStatCard label="Allocated" value={stats.allocated} sub={`${stats.waitlisted} waitlisted`} onClick={onGoToAllocations} />
-        <AdminStatCard label="Revenue" value={formatInr(stats.revenueVerified)} sub={`${conversion}% conversion`} highlight="green" onClick={onGoToRevenue} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <AdminCard title="Allocation progress" description="Verified delegates with committee assignments" className="lg:col-span-1">
+        <AdminCard title="Allocation progress" className="lg:col-span-1">
           <AdminProgressRing
             value={stats.allocated}
             max={Math.max(stats.verified, 1)}
@@ -82,7 +76,7 @@ export function DashboardOverview({
           {unallocated > 0 && (
             <div className="mt-4">
               <AdminAlert tone="amber">
-              <span className="font-medium text-amber-100">{unallocated}</span> verified delegate{unallocated === 1 ? '' : 's'} still need allocation.
+                <span className="font-medium text-amber-100">{unallocated}</span> verified delegate{unallocated === 1 ? '' : 's'} still need allocation.
               </AdminAlert>
             </div>
           )}
@@ -90,7 +84,6 @@ export function DashboardOverview({
 
         <AdminCard
           title="Recent registrations"
-          description="Latest sign-ups across all schools"
           className="lg:col-span-2"
           action={
             <button type="button" onClick={onGoToRegistrations} className="btn-ghost text-[10px]">
@@ -127,7 +120,6 @@ export function DashboardOverview({
       {(stats.paid > 0 || stats.pending > 0) && (
         <AdminCard
           title="Payment review queue"
-          description={`${stats.paid} paid awaiting verification · ${stats.pending} not yet paid`}
           action={
             <button type="button" onClick={onGoToRegistrations} className="btn-ghost text-[10px]">
               Open registrations
@@ -169,54 +161,13 @@ export function DashboardOverview({
         </AdminCard>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <AdminCard title="Revenue snapshot">
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted">Confirmed</span>
-              <span className="font-semibold text-green-300">{formatInr(stats.revenueVerified)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">In pipeline</span>
-              <span>{formatInr(stats.revenuePending)}</span>
-            </div>
-            <div className="flex justify-between border-t border-yugen pt-3">
-              <span className="text-muted">Per delegate</span>
-              <span>{formatInr(EARLY_BIRD_AMOUNT)}</span>
-            </div>
-          </div>
-        </AdminCard>
-
-        <AdminCard title="Status breakdown">
-          <div className="space-y-3">
-            {(['pending', 'paid', 'verified', 'rejected'] as RegistrationStatus[]).map((s) => (
-              <AdminBarRow key={s} label={s === 'paid' ? 'Awaiting verify' : s.charAt(0).toUpperCase() + s.slice(1)} count={stats[s]} max={stats.total || 1} />
-            ))}
-          </div>
-        </AdminCard>
-
-        <AdminCard title="Top schools">
-          {topSchools.length === 0 ? (
-            <p className="text-sm text-dim">No data yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {topSchools.map(([school, count]) => (
-                <AdminBarRow key={school} label={school} count={count} max={maxSchool} />
-              ))}
-            </div>
-          )}
-        </AdminCard>
-      </div>
-
-      {grades.length > 0 && (
-        <AdminCard title="By grade">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {grades.map(([grade, count]) => (
-              <AdminBarRow key={grade} label={`Grade ${grade}`} count={count} max={maxGrade} />
-            ))}
-          </div>
-        </AdminCard>
-      )}
+      <AdminCard title="Status breakdown">
+        <div className="space-y-3">
+          {(['pending', 'paid', 'verified', 'rejected'] as RegistrationStatus[]).map((s) => (
+            <AdminBarRow key={s} label={s === 'paid' ? 'Awaiting verify' : s.charAt(0).toUpperCase() + s.slice(1)} count={stats[s]} max={stats.total || 1} />
+          ))}
+        </div>
+      </AdminCard>
     </div>
   )
 }

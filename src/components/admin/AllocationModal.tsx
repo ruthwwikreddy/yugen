@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { getCommittees } from '../../lib/yugen'
+import { getAllocatableCommittees } from '../../lib/yugen'
 import type { Registration } from '../../lib/registration'
-import { MUN_COUNTRIES } from '../../lib/mun-countries'
+import { MUN_COUNTRIES, POPULAR_COUNTRIES } from '../../lib/mun-countries'
 import { SearchSelect } from '../yugen/SearchSelect'
 import { AllocationEmailPreview } from './AllocationEmailPreview'
 
@@ -30,7 +30,7 @@ export function AllocationModal({
   const [loading, setLoading] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
 
-  const committees = getCommittees().map((c) => ({
+  const committees = getAllocatableCommittees().map((c) => ({
     id: c.id,
     name: c.name,
     acronym: c.acronym,
@@ -42,6 +42,7 @@ export function AllocationModal({
     delegateEmail: registration.email,
     committee,
     country: country || undefined,
+    notes: notes || undefined,
     registrationId: registration.id,
     school: registration.school,
   }
@@ -162,8 +163,11 @@ export function AllocationModal({
                   value={country}
                   onChange={setCountry}
                   options={MUN_COUNTRIES}
+                  featuredOptions={POPULAR_COUNTRIES}
+                  featuredLabel="Common countries"
                   placeholder="Search countries…"
                   emptyLabel="No country assigned"
+                  showSelected={false}
                   className="mt-1"
                   inputClassName="input-field mt-0"
                 />

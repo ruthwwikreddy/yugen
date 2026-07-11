@@ -16,27 +16,12 @@ type AdminLayoutProps = {
 
 export type AdminNav = 'overview' | 'registrations' | 'allocations' | 'revenue' | 'settings'
 
-const PAGE_META: Record<AdminNav, { title: string; description: string }> = {
-  overview: {
-    title: 'Overview',
-    description: 'Live snapshot of registrations, payments, and allocations.',
-  },
-  registrations: {
-    title: 'Registrations',
-    description: 'Search, verify, and manage delegate registrations.',
-  },
-  allocations: {
-    title: 'Allocations',
-    description: 'Assign committees and send allocation emails to verified delegates.',
-  },
-  revenue: {
-    title: 'Revenue',
-    description: 'Track collected fees, pipeline, and payment breakdowns.',
-  },
-  settings: {
-    title: 'Settings',
-    description: 'Payment config, storage status, and admin access.',
-  },
+const PAGE_META: Record<AdminNav, { title: string }> = {
+  overview: { title: 'Overview' },
+  registrations: { title: 'Registrations' },
+  allocations: { title: 'Allocations' },
+  revenue: { title: 'Revenue' },
+  settings: { title: 'Settings' },
 }
 
 const NAV: {
@@ -247,11 +232,6 @@ export function AdminLayout({
               </span>
             </div>
           </div>
-          {(activeNav === 'overview' || activeNav === 'settings') && (
-            <div className="hidden border-t border-yugen/60 px-6 py-2 sm:block">
-              <p className="text-xs text-dim">{meta.description}</p>
-            </div>
-          )}
         </header>
 
         <main className="relative flex-1 p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">

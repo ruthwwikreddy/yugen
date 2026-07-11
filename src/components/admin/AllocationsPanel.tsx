@@ -13,7 +13,7 @@ import {
 } from '../../lib/allocation-utils'
 import { ALLOCATION_STATUS_COLORS, ALLOCATION_STATUS_LABELS, formatTimestamp } from '../../lib/admin-utils'
 import type { Committee } from '../../lib/yugen'
-import { getCommittees } from '../../lib/yugen'
+import { getAllocatableCommittees, getCommittees } from '../../lib/yugen'
 import { AdminBarRow, AdminCard, AdminEmptyState, AdminProgressRing, AdminStatCard } from './admin-ui'
 
 type AllocationsPanelProps = {
@@ -45,7 +45,7 @@ export function AllocationsPanel({
   const [sortBy, setSortBy] = useState<AllocationSort>('name')
   const [expandedCommittee, setExpandedCommittee] = useState<string | null>(null)
 
-  const committees = getCommittees()
+  const committees = getAllocatableCommittees()
   const committeeStats = useMemo(() => getCommitteeAllocationStats(registrations), [registrations])
 
   const filtered = useMemo(() => {

@@ -10,7 +10,7 @@ export function Shell({ children }: ShellProps) {
   return (
     <div className="flex min-h-[100dvh] flex-col bg-yugen-black">
       <Header />
-      <main className="flex-1 pt-[5.5rem] sm:pt-24">{children}</main>
+      <main className="flex-1 overflow-x-hidden pt-[5.5rem] sm:pt-24">{children}</main>
       <Footer />
     </div>
   )

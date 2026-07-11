@@ -1,3 +1,5 @@
+import { YUGEN_SEO } from '../../lib/yugen'
+
 export function OGImagePreview() {
   return (
     <div 
@@ -5,7 +7,7 @@ export function OGImagePreview() {
       style={{ aspectRatio: '1200/630' }}
     >
       <img 
-        src="/image.png" 
+        src={YUGEN_SEO.ogImage} 
         alt="Yūgen Summit 6.0 OG Image"
         className="w-full h-full object-cover rounded-lg shadow-xl"
       />

@@ -1,10 +1,15 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { getCommittees, YUGEN } from '../../lib/yugen'
-import { createRegistration, EARLY_BIRD_AMOUNT, type Registration, type RegistrationInput } from '../../lib/registration'
+import { getAllocatableCommittees, YUGEN } from '../../lib/yugen'
+import {
+  createRegistration,
+  prepareMunExperienceForSubmit,
+  type Registration,
+  type RegistrationInput,
+} from '../../lib/registration'
 import { friendlyFirebaseError } from '../../lib/firebase-errors'
-import { MUN_COUNTRIES } from '../../lib/mun-countries'
-import { MUN_PORTFOLIOS } from '../../lib/mun-portfolios'
+import { MUN_COUNTRIES, POPULAR_COUNTRIES } from '../../lib/mun-countries'
 import { RegistrationBanner } from './RegistrationWizard'
 import { SearchSelect } from './SearchSelect'
 
@@ -12,11 +17,10 @@ const inputClass =
   'input-touch w-full rounded-xl border border-yugen bg-yugen-black px-4 py-3.5 text-yugen-white placeholder:text-dim transition-colors focus:border-yugen-strong focus:outline-none focus:ring-1 focus:ring-yugen-strong/30 sm:text-sm'
 
 const GRADES = ['8', '9', '10', '11', '12']
-const EXPERIENCE = ['First MUN', '1–3 conferences', '4+ conferences']
 
-const FLOW_SLUG = 'delegate-r1-early-bird'
+const FLOW_SLUG = 'delegate-r1-internal'
 
-type FormState = RegistrationInput & {
+type FormState = Omit<RegistrationInput, 'experience' | 'awardsAndAchievements'> & {
   committeePreference: string
   committeePreference2: string
   committeePreference3: string
@@ -31,13 +35,11 @@ const initialForm: FormState = {
   committeePreference: '',
   committeePreference2: '',
   committeePreference3: '',
-  experience: '',
   experienceDetails: '',
-  awardsAndAchievements: '',
   countryPreference: '',
-  portfolioPreference: '',
   portfolioUrl: '',
   dietaryNotes: '',
+  paymentMethod: 'upi',
 }
 
 type RegistrationFormFieldsProps = {
@@ -65,9 +67,9 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
       return
     }
 
-    if (!form.grade || !form.experience) {
+    if (!form.grade) {
       setStatus('error')
-      setError('Please select your grade and MUN experience level')
+      setError('Please select your grade')
       return
     }
 
@@ -86,7 +88,7 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
 
     if (!form.experienceDetails?.trim()) {
       setStatus('error')
-      setError('Please describe your MUN experience')
+      setError('Please enter your MUN experience')
       return
     }
 
@@ -101,7 +103,8 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
     }
 
     try {
-      const result = await createRegistration(FLOW_SLUG, form)
+      const munExperience = prepareMunExperienceForSubmit(form.experienceDetails ?? '')
+      const result = await createRegistration(FLOW_SLUG, { ...form, ...munExperience })
       onSuccess({
         id: result.id,
         registration: result.registration,
@@ -113,7 +116,7 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
     }
   }
 
-  const committees = getCommittees()
+  const committees = getAllocatableCommittees()
 
   return (
     <motion.form
@@ -121,9 +124,9 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="space-y-5 sm:space-y-6"
     >
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid min-w-0 gap-5 md:grid-cols-2">
         <Field label="Full name" id="reg-name" required>
           <input
             id="reg-name"
@@ -189,31 +192,15 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
           </select>
         </Field>
 
-        <Field label="MUN experience" id="reg-experience" required>
-          <select
-            id="reg-experience"
-            required
-            value={form.experience}
-            onChange={(e) => updateField('experience', e.target.value)}
-            className={inputClass}
-          >
-            <option value="">Select experience</option>
-            {EXPERIENCE.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </Field>
       </div>
 
       <Field
         label="Committee preferences"
         id="reg-committee-1"
         required
-        hint="Rank your top three committees in order. Each choice must be different."
+        hint="Pick three different committees in order."
       >
-        <div className="space-y-3">
+        <div className="space-y-3 min-w-0">
           {(['committeePreference', 'committeePreference2', 'committeePreference3'] as const).map((key, i) => (
             <select
               key={key}
@@ -234,57 +221,49 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
         </div>
       </Field>
 
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field
-          label="Country preference"
-          id="reg-country"
-          hint="Country you'd like to represent — final allocation is at the discretion of the Secretariat"
-        >
+      <div className="min-w-0">
+        <p className="label-caps mb-1">Preferences</p>
+        <p className="mb-3 text-xs text-dim">
+          Optional — final allocation at Secretariat discretion.{' '}
+          <Link
+            to="/portfolio-guide"
+            className="text-yugen-white underline underline-offset-2 hover:no-underline"
+          >
+            Browse portfolios →
+          </Link>
+        </p>
+        <Field label="Country preference" id="reg-country" hint="Optional">
           <SearchSelect
             id="reg-country"
             value={form.countryPreference ?? ''}
             onChange={(v) => updateField('countryPreference', v)}
             options={MUN_COUNTRIES}
+            featuredOptions={POPULAR_COUNTRIES}
+            featuredLabel="Common countries"
             placeholder="Search countries…"
             emptyLabel="No preference"
-            helperText="Type to filter 190+ countries"
-          />
-        </Field>
-
-        <Field
-          label="Portfolio preference"
-          id="reg-portfolio"
-          hint="Cabinet position or role you'd prefer within your committee"
-        >
-          <SearchSelect
-            id="reg-portfolio"
-            value={form.portfolioPreference ?? ''}
-            onChange={(v) => updateField('portfolioPreference', v)}
-            options={MUN_PORTFOLIOS}
-            placeholder="Search portfolios…"
-            emptyLabel="No preference"
-            helperText="Ministers, ambassadors, agency heads & more"
+            showSelected={false}
           />
         </Field>
       </div>
 
-      <Field label="Portfolio link" id="reg-portfolio-url" hint="Optional — link to a position paper, past portfolio, or relevant work">
+      <Field label="Portfolio link" id="reg-portfolio-url" hint="Optional">
         <input
           id="reg-portfolio-url"
           type="url"
           inputMode="url"
           value={form.portfolioUrl ?? ''}
           onChange={(e) => updateField('portfolioUrl', e.target.value)}
-          placeholder="https://docs.google.com/…"
+          placeholder="https://…"
           className={inputClass}
         />
       </Field>
 
       <Field
-        label="Your MUN experience"
+        label="MUN experience"
         id="reg-exp-details"
         required
-        hint="Describe conferences you've attended, committees you've served on, roles you've held, and skills you've developed."
+        hint="One entry per line: Conference / Year / Awards (if any)"
       >
         <textarea
           id="reg-exp-details"
@@ -292,50 +271,64 @@ export function RegistrationFormFields({ onSuccess }: RegistrationFormFieldsProp
           rows={5}
           value={form.experienceDetails ?? ''}
           onChange={(e) => updateField('experienceDetails', e.target.value)}
-          placeholder="e.g. DISEC delegate at XYZ MUN 2024, researched nuclear disarmament and co-authored working papers…"
+          placeholder={'Yūgen Summit / 2025 / Best Delegate\nHyderabad MUN / 2024\nFirst MUN — no awards yet'}
           className={inputClass}
         />
       </Field>
 
-      <Field
-        label="Awards & achievements"
-        id="reg-awards"
-        hint="List any Best Delegate, High Commendation, Verbal Mention, or other recognitions from your MUN experience."
-      >
-        <textarea
-          id="reg-awards"
-          rows={3}
-          value={form.awardsAndAchievements ?? ''}
-          onChange={(e) => updateField('awardsAndAchievements', e.target.value)}
-          placeholder="Optional — include conference name and award if applicable"
-          className={inputClass}
-        />
-      </Field>
-
-      <Field label="Dietary / accessibility notes" id="reg-dietary">
+      <Field label="Dietary / accessibility" id="reg-dietary" hint="Optional">
         <textarea
           id="reg-dietary"
           rows={3}
           value={form.dietaryNotes ?? ''}
           onChange={(e) => updateField('dietaryNotes', e.target.value)}
-          placeholder="Optional"
+          placeholder="Any requirements"
           className={inputClass}
         />
+      </Field>
+
+      <Field label="Payment method" id="reg-payment" required>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => updateField('paymentMethod', 'upi')}
+            className={`rounded-lg border p-3 text-left transition-colors ${
+              form.paymentMethod === 'upi'
+                ? 'border-accent bg-accent/10 text-accent-light'
+                : 'border-yugen bg-surface hover:border-yugen-strong'
+            }`}
+          >
+            <p className="font-body text-sm font-medium">UPI</p>
+            <p className="mt-1 text-xs text-dim">Pay via QR code</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => updateField('paymentMethod', 'cash')}
+            className={`rounded-lg border p-3 text-left transition-colors ${
+              form.paymentMethod === 'cash'
+                ? 'border-accent bg-accent/10 text-accent-light'
+                : 'border-yugen bg-surface hover:border-yugen-strong'
+            }`}
+          >
+            <p className="font-body text-sm font-medium">Cash</p>
+            <p className="mt-1 text-xs text-dim">Pay at school</p>
+          </button>
+        </div>
       </Field>
 
       <div className="rounded-xl border border-yugen-strong bg-gradient-to-br from-surface-raised to-surface p-4 sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="label-caps">Early bird fee</p>
-            <p className="mt-1 font-display text-3xl uppercase sm:text-4xl">₹{EARLY_BIRD_AMOUNT.toLocaleString('en-IN')}</p>
+            <p className="label-caps">Internal fee</p>
+            <p className="mt-1 font-display text-3xl uppercase sm:text-4xl">₹1,000</p>
           </div>
           <p className="text-xs text-dim sm:text-right">
-            Round 1 · UPI on next step
+            PORPS students · Round 1
           </p>
         </div>
       </div>
 
-      <div className="mobile-sticky-bar sm:!static">
+      <div className="mobile-sticky-bar -mx-4 sm:!static sm:mx-0">
         <button
           type="submit"
           disabled={status === 'loading'}
@@ -376,16 +369,16 @@ function Field({
   label: string
   id: string
   required?: boolean
-  hint?: string
+  hint?: ReactNode
   children: ReactNode
 }) {
   return (
-    <div>
-      <label htmlFor={id} className="label-caps mb-2 block">
+    <div className="min-w-0">
+      <label htmlFor={id} className="label-caps mb-1 block">
         {label}
         {required && <span className="text-dim"> *</span>}
       </label>
-      {hint && <p className="mb-2 text-xs text-dim">{hint}</p>}
+      {hint && <p className="mb-1.5 text-xs text-dim break-words">{hint}</p>}
       {children}
     </div>
   )

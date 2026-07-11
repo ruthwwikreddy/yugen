@@ -12,7 +12,7 @@ export function CommitteeCard({ committee, compact = false }: CommitteeCardProps
   return (
     <Link
       to={`/committees/${committee.id}`}
-      className="group block overflow-hidden rounded-lg border border-yugen bg-surface-raised transition-colors hover:border-yugen-strong"
+      className="group block overflow-hidden rounded-lg border border-yugen bg-surface-raised transition-all hover:border-accent hover:shadow-lg hover:shadow-accent/10"
     >
       <div className={compact ? 'p-5' : 'p-6'}>
         <div className="flex items-start justify-between gap-3">
@@ -36,7 +36,7 @@ export function CommitteeCard({ committee, compact = false }: CommitteeCardProps
             </span>
           </div>
         )}
-        <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-dim opacity-0 transition-opacity group-hover:opacity-100">
+        <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-accent opacity-0 transition-opacity group-hover:opacity-100">
           View committee →
         </p>
       </div>
@@ -77,8 +77,8 @@ export function CommitteeFilter({ types, active, onChange }: CommitteeFilterProp
           onClick={() => onChange(type)}
           className={`rounded-full border px-4 py-1.5 font-body text-[10px] font-medium uppercase tracking-[0.16em] transition-colors ${
             active === type
-              ? 'border-yugen-strong bg-yugen-white text-yugen-black'
-              : 'border-yugen text-yugen-muted hover:border-yugen-strong hover:text-yugen-white'
+              ? 'border-accent bg-accent text-yugen-white'
+              : 'border-yugen text-yugen-muted hover:border-accent hover:text-accent-light'
           }`}
         >
           {type}

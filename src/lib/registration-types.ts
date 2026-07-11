@@ -1,4 +1,4 @@
-import type { FlowType } from '../config/registrations'
+import type { FlowType, PaymentMethod } from '../config/registrations'
 
 export type RegistrationStatus = 'pending' | 'paid' | 'verified' | 'rejected'
 
@@ -29,6 +29,7 @@ export type Registration = {
   adminNotes: string
   amount: number
   paymentRequired: boolean
+  paymentMethod?: PaymentMethod
   tier: string
   status: RegistrationStatus
   allocationStatus: AllocationStatus
@@ -58,6 +59,7 @@ export type RegistrationInput = {
   whyJoin?: string
   availability?: string
   portfolioUrl?: string
+  paymentMethod?: PaymentMethod
 }
 
 export type RegistrationUpdate = Partial<RegistrationInput> & {
