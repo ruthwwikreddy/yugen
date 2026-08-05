@@ -24,6 +24,7 @@ type AllocationsPanelProps = {
   onSelectId: (id: string) => void
   onSelectAll: (filteredIds: string[]) => void
   onExport: () => void
+  onImport?: () => void
 }
 
 type StatusFilter = 'all' | 'allocated' | 'unallocated' | 'waitlisted'
@@ -37,6 +38,7 @@ export function AllocationsPanel({
   onSelectId,
   onSelectAll,
   onExport,
+  onImport,
 }: AllocationsPanelProps) {
   const [view, setView] = useState<ViewMode>('master')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -105,6 +107,15 @@ export function AllocationsPanel({
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
+          {onImport && (
+            <button
+              type="button"
+              onClick={onImport}
+              className="rounded-lg border border-yugen-strong bg-surface px-3 py-1.5 text-xs font-semibold text-yugen-white hover:bg-surface-raised"
+            >
+              📥 Import Google Forms
+            </button>
+          )}
           <button type="button" onClick={onExport} className="btn-ghost text-xs">
             Export CSV
           </button>

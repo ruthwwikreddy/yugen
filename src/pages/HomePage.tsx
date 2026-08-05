@@ -3,7 +3,6 @@ import { SEO } from '../components/yugen/SEO'
 import { Hero } from '../components/yugen/Hero'
 import { StatsSection } from '../components/yugen/StatsSection'
 import { AboutSection } from '../components/yugen/AboutSection'
-import { LegacySection } from '../components/yugen/LegacySection'
 import { CommitteesSection } from '../components/yugen/CommitteesSection'
 import { ScheduleSection } from '../components/yugen/ScheduleSection'
 import { VenuesSection } from '../components/yugen/VenuesSection'
@@ -19,7 +18,6 @@ export function HomePage() {
       <Hero />
       <StatsSection />
       <AboutSection />
-      <LegacySection />
       <CommitteesSection />
       <ScheduleSection />
       <VenuesSection />

@@ -6,6 +6,7 @@ import { ToastProvider, useToast } from '../components/admin/Toast'
 import { ConfirmDialog } from '../components/admin/ConfirmDialog'
 import { RegistrationFormModal } from '../components/admin/RegistrationFormModal'
 import { AllocationModal } from '../components/admin/AllocationModal'
+import { ImportModal } from '../components/admin/ImportModal'
 import { isAdminAuthed, setAdminAuthed } from '../lib/admin-utils'
 import { DashboardOverview } from '../components/admin/DashboardOverview'
 import { RegistrationsPanel } from '../components/admin/RegistrationsPanel'
@@ -51,6 +52,7 @@ function AdminPageContent() {
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [allocationModal, setAllocationModal] = useState<Registration | null>(null)
+  const [importModalOpen, setImportModalOpen] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -252,6 +254,7 @@ function AdminPageContent() {
         onSignOut={handleSignOut}
         onRefresh={loadData}
         onAdd={() => setFormModal({ mode: 'add' })}
+        onImport={() => setImportModalOpen(true)}
         refreshing={loading}
         stats={stats}
       >
@@ -300,6 +303,7 @@ function AdminPageContent() {
               toast('CSV exported', 'success')
             }}
             onAdd={() => setFormModal({ mode: 'add' })}
+            onImport={() => setImportModalOpen(true)}
           />
         )}
 
@@ -318,6 +322,7 @@ function AdminPageContent() {
               exportAllocationsCsv(registrations.filter((r) => r.status === 'verified'))
               toast('Allocations CSV exported', 'success')
             }}
+            onImport={() => setImportModalOpen(true)}
           />
         )}
 
@@ -352,6 +357,18 @@ function AdminPageContent() {
         loading={formLoading}
         onClose={() => setFormModal(null)}
         onSubmit={handleFormSubmit}
+      />
+
+      <ImportModal
+        open={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        onSuccess={(count) => {
+          loadData()
+          toast(`Successfully imported ${count} delegate(s)`, 'success')
+        }}
+        onNavigateAllocations={() => {
+          setActiveNav('allocations')
+        }}
       />
 
       <ConfirmDialog

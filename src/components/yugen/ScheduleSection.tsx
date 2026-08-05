@@ -13,7 +13,7 @@ export function ScheduleSection() {
         viewport={{ once: true }}
       >
         <p className="label-caps mb-4">Schedule</p>
-        <h2 className="section-title">Three days of debate</h2>
+        <h2 className="section-title">Two days of debate</h2>
         <p className="mt-4 max-w-xl text-muted">Full schedule publishes when dates are confirmed.</p>
       </motion.div>
 

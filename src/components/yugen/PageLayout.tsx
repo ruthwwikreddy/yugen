@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Shell } from './Shell'
 import { SEO } from './SEO'
+import { EasterEggSecretary } from './EasterEggSecretary'
 
 interface PageLayoutProps {
   title: string
@@ -89,7 +90,13 @@ export function TeamCard({ name, role, initials, image }: TeamCardProps) {
       <div className="border-t border-yugen bg-surface-raised p-4 text-center">
         {name === 'TBA' && <span className="coming-soon-pill text-[9px]">TBA</span>}
         <p className="mt-2 font-heading text-sm font-bold uppercase tracking-wide">{role}</p>
-        <p className="mt-1 text-xs text-dim">{name}</p>
+        <div className="mt-1 text-xs text-dim">
+          {name === 'Dhruv Methukupally' && role === 'Secretary General' ? (
+            <EasterEggSecretary text={name} />
+          ) : (
+            name
+          )}
+        </div>
       </div>
     </article>
   )

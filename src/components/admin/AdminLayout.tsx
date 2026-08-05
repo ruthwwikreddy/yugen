@@ -10,6 +10,7 @@ type AdminLayoutProps = {
   onSignOut: () => void
   onRefresh: () => void
   onAdd?: () => void
+  onImport?: () => void
   refreshing?: boolean
   stats?: RegistrationStats
 }
@@ -99,6 +100,7 @@ export function AdminLayout({
   onSignOut,
   onRefresh,
   onAdd,
+  onImport,
   refreshing,
   stats,
 }: AdminLayoutProps) {
@@ -202,6 +204,15 @@ export function AdminLayout({
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              {onImport && (activeNav === 'registrations' || activeNav === 'allocations') && (
+                <button
+                  type="button"
+                  onClick={onImport}
+                  className="rounded-xl border border-yugen-strong bg-surface px-3 py-2 text-xs font-semibold text-yugen-white hover:bg-surface-raised hidden sm:inline-flex items-center gap-1.5"
+                >
+                  <span>📥</span> Import Forms
+                </button>
+              )}
               {onAdd && activeNav === 'registrations' && (
                 <button type="button" onClick={onAdd} className="btn-primary hidden text-xs sm:inline-flex">
                   + Add delegate

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { TornCardTop } from './TornEdge'
-import { EARLY_BIRD_REGISTER_PATH, isApplyOpen } from '../../config/features'
 import type { Committee, CommitteeChair } from '../../lib/yugen'
 
 function ChairCard({ chair, committeeName }: { chair: CommitteeChair; committeeName: string }) {
@@ -79,6 +78,19 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
             </div>
           ))}
         </div>
+        {committee.subRoles && committee.subRoles.length > 0 && (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {committee.subRoles.map((role) => (
+              <div
+                key={role.label}
+                className="flex items-center justify-between rounded-lg border border-yugen bg-surface-raised p-4"
+              >
+                <p className="font-heading text-sm font-semibold">{role.label}</p>
+                <p className="font-display text-2xl uppercase tracking-tight">{role.capacity}</p>
+              </div>
+            ))}
+          </div>
+        )}
         {committee.portfolioNote && (
           <p className="mt-4 text-sm text-dim">{committee.portfolioNote}</p>
         )}
@@ -115,17 +127,15 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
       </section>
 
       <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
-        <p className="label-caps">Registration</p>
-        <h2 className="mt-3 font-heading text-2xl font-bold">Early bird delegate registration is open</h2>
+        <p className="label-caps">Showcase</p>
+        <h2 className="mt-3 font-heading text-2xl font-bold">Explore this committee</h2>
         <p className="mt-2 text-sm text-muted">
-          Committee preferences are collected during registration. Chair applications open later.
+          This site previews the Yūgen 6.0 committee line-up. Allocations and committee preferences are managed by the secretariat directly.
         </p>
         <div className="mt-6 flex flex-wrap gap-4">
-          <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary">Register now</Link>
+          <Link to="/committees" className="btn-primary">Browse all committees</Link>
           <Link to="/resources" className="btn-ghost">All resources</Link>
-          {isApplyOpen() && (
-            <Link to="/apply" className="btn-ghost">Apply to chair</Link>
-          )}
+          <Link to="/contact" className="btn-ghost">Contact secretariat</Link>
         </div>
       </section>
     </>

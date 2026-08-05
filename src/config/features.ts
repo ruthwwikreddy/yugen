@@ -1,7 +1,7 @@
 /** Feature flags — flip to re-enable hidden surfaces without deleting code. */
 export const FEATURES = {
   /** Delegate early bird registration (only open registration flow) */
-  earlyBirdRegistration: true,
+  earlyBirdRegistration: false,
   /** Chair & International Press applications on /apply */
   applyApplications: false,
   /** OC application flows, routes, and apply-page OC card */

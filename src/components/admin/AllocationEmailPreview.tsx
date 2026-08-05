@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { YUGEN_SEO } from '../../lib/yugen'
 import {
   buildAllocationHtml,
   buildAllocationMailtoUrl,
@@ -55,18 +54,15 @@ export function AllocationEmailPreview({ data, onCopied }: AllocationEmailPrevie
   const [copied, setCopied] = useState<'plain' | 'html' | null>(null)
   const systemDark = useSystemPrefersDark()
 
-  const logoBaseUrl =
-    typeof window !== 'undefined' ? window.location.origin : YUGEN_SEO.siteUrl
-
   const plainText = buildAllocationPlainText(data)
-  const htmlForCopy = buildAllocationHtml(data, { theme: 'auto', logoBaseUrl })
+  const htmlForCopy = buildAllocationHtml(data, { theme: 'auto' })
 
   const previewHtml = useMemo(() => {
     if (previewTheme === 'auto') {
-      return buildAllocationHtml(data, { theme: 'auto', logoBaseUrl })
+      return buildAllocationHtml(data, { theme: 'auto' })
     }
-    return buildAllocationHtml(data, { theme: previewTheme, logoBaseUrl })
-  }, [data, previewTheme, logoBaseUrl])
+    return buildAllocationHtml(data, { theme: previewTheme })
+  }, [data, previewTheme])
 
   const previewBackground = resolvePreviewBackground(previewTheme, systemDark)
   const iframeColorScheme =

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { PageLayout } from '../components/yugen/PageLayout'
+import { GalleryMarquee } from '../components/yugen/GalleryMarquee'
 import { getGalleryItems } from '../lib/yugen'
 import { YUGEN } from '../lib/yugen'
 
@@ -35,11 +36,11 @@ export function GalleryPage() {
                 <span className="coming-soon-pill mt-3 text-[8px]">TBA</span>
               </div>
             )}
-            {item.caption && (
+            {item.caption ? (
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                 <p className="text-xs text-yugen-white/80">{item.caption}</p>
               </figcaption>
-            )}
+            ) : null}
           </motion.figure>
         ))}
       </div>
@@ -57,8 +58,6 @@ export function GalleryPage() {
 }
 
 export function GallerySection() {
-  const items = getGalleryItems().slice(0, 6)
-
   return (
     <section id="gallery" className="border-t border-yugen bg-surface section-padding">
       <div className="mx-auto max-w-7xl">
@@ -75,25 +74,8 @@ export function GallerySection() {
           <Link to="/gallery" className="btn-ghost shrink-0">View all</Link>
         </motion.div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 md:gap-4">
-          {items.map((item, i) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
-              className="aspect-square overflow-hidden rounded-lg border border-yugen bg-surface-raised"
-            >
-              {item.src ? (
-                <img src={item.src} alt={item.alt} className="h-full w-full object-cover grayscale" />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <span className="font-display text-lg uppercase text-yugen-white/10">Ü</span>
-                </div>
-              )}
-            </motion.div>
-          ))}
+        <div className="mt-10">
+          <GalleryMarquee />
         </div>
       </div>
     </section>

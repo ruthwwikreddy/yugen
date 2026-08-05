@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LogoLockup } from './Logo'
 import { YUGEN } from '../../lib/yugen'
-import { EARLY_BIRD_REGISTER_PATH } from '../../config/features'
 
 export function Header() {
   const [open, setOpen] = useState(false)
@@ -60,8 +59,8 @@ export function Header() {
             >
               Portfolios
             </Link>
-            <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary hidden sm:inline-flex">
-              Register
+            <Link to="/contact" className="btn-primary hidden sm:inline-flex">
+              Contact
             </Link>
             <button
               type="button"
@@ -108,11 +107,11 @@ export function Header() {
                   Portfolio guide
                 </Link>
                 <Link
-                  to={EARLY_BIRD_REGISTER_PATH}
+                  to="/contact"
                   onClick={() => setOpen(false)}
                   className="btn-primary mt-3 w-full"
                 >
-                  Register now
+                  Contact secretariat
                 </Link>
                 {!isHome && (
                   <Link

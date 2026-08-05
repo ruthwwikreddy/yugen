@@ -6,7 +6,6 @@ import {
 } from 'framer-motion'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { EARLY_BIRD_REGISTER_PATH } from '../../config/features'
 import { YUGEN } from '../../lib/yugen'
 import { Logo } from './Logo'
 import { TornEdge } from './TornEdge'
@@ -182,12 +181,12 @@ export function Hero() {
               animate="visible"
               className="mt-8 flex flex-wrap gap-3 md:mt-10"
             >
-              <Link to={EARLY_BIRD_REGISTER_PATH} className="btn-primary hero-cta group inline-flex gap-2">
-                Register now
+              <Link to="/committees" className="btn-primary hero-cta group inline-flex gap-2">
+                Explore committees
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
-              <Link to="/committees" className="btn-ghost hero-cta">
-                Committees
+              <Link to="/contact" className="btn-ghost hero-cta">
+                Contact secretariat
               </Link>
               <a
                 href={YUGEN.social.instagramUrl}

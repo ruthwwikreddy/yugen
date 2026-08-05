@@ -463,4 +463,54 @@
   .admin-sidebar {
     box-shadow: 12px 0 48px rgba(0, 0, 0, 0.35);
   }
+
+  /* Continuous marquee for gallery */
+  .gallery-marquee {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 6%,
+      #000 94%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 6%,
+      #000 94%,
+      transparent 100%
+    );
+    overflow: hidden;
+  }
+
+  .gallery-marquee__track {
+    display: flex;
+    width: max-content;
+    gap: 1rem;
+    will-change: transform;
+    animation: gallery-marquee-scroll linear infinite;
+  }
+
+  .gallery-marquee__track--reverse {
+    animation-direction: reverse;
+  }
+
+  .gallery-marquee:hover .gallery-marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes gallery-marquee-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-marquee__track {
+      animation: none;
+    }
+  }
 }

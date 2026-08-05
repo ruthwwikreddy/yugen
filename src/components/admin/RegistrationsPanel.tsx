@@ -22,6 +22,7 @@ type RegistrationsPanelProps = {
   onBulkDelete: (ids: string[]) => void
   onExport: () => void
   onAdd: () => void
+  onImport?: () => void
 }
 
 export function RegistrationsPanel({
@@ -36,6 +37,7 @@ export function RegistrationsPanel({
   onBulkDelete,
   onExport,
   onAdd,
+  onImport,
 }: RegistrationsPanelProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<RegistrationStatus | 'all'>('all')
@@ -119,10 +121,19 @@ export function RegistrationsPanel({
             <option value="name">Name A–Z</option>
           </select>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:flex">
+        <div className="grid grid-cols-3 gap-2 sm:flex">
           <button type="button" onClick={onAdd} className="btn-primary w-full sm:w-auto">
             + Add
           </button>
+          {onImport && (
+            <button
+              type="button"
+              onClick={onImport}
+              className="rounded-lg border border-yugen-strong bg-surface px-3 py-2.5 text-xs font-semibold text-yugen-white hover:bg-surface-raised sm:py-2"
+            >
+              📥 Import Forms
+            </button>
+          )}
           <button type="button" onClick={onExport} className="btn-ghost w-full sm:w-auto">
             Export
           </button>

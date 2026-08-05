@@ -270,6 +270,54 @@ export async function createRegistration(
   }
 }
 
+export type BulkImportResult = {
+  total: number
+  successCount: number
+  failedCount: number
+  registrations: Registration[]
+}
+
+export async function bulkImportRegistrations(
+  flowSlug: string,
+  entries: Array<{ input: RegistrationInput; status?: RegistrationStatus; adminNotes?: string }>,
+  onProgress?: (processed: number, total: number) => void
+): Promise<BulkImportResult> {
+  const registrations: Registration[] = []
+  let successCount = 0
+  let failedCount = 0
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i]
+    try {
+      const res = await createRegistration(flowSlug, entry.input)
+      let reg = res.registration
+
+      if (entry.status && entry.status !== reg.status) {
+        await updateRegistrationStatus(reg.id, entry.status)
+        reg.status = entry.status
+      }
+
+      if (entry.adminNotes) {
+        await updateRegistration(reg.id, { adminNotes: entry.adminNotes })
+        reg.adminNotes = entry.adminNotes
+      }
+
+      registrations.push(reg)
+      successCount++
+    } catch {
+      failedCount++
+    }
+    if (onProgress) onProgress(i + 1, entries.length)
+  }
+
+  return {
+    total: entries.length,
+    successCount,
+    failedCount,
+    registrations,
+  }
+}
+
 export async function getRegistration(id: string): Promise<Registration | null> {
   const local = getLocalRegistration(id)
   if (local) return storedToRegistration(normalizeStored(local))
