@@ -203,7 +203,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'TBA — room assignment',
+      venue: 'Main Block Auditorium',
       studyGuideUrl: '/papers/YUGEN-PROPS MUN 2026- AIPPM BG.pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -225,7 +225,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — journalism portfolio requirements.',
-      venue: 'TBA — press room',
+      venue: '11-H',
       studyGuideUrls: [
         '/papers/ip jounlism.pdf',
         '/papers/BACKGROUND GUIDE FOR IP PHOTOJOURNALISM..pdf',
@@ -251,7 +251,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'TBA — room assignment',
+      venue: 'Indoor Sports Complex',
       studyGuideStatus: 'coming-soon',
       status: 'live',
       chairs: [
@@ -273,7 +273,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'TBA — room assignment',
+      venue: '12-H',
       studyGuideUrl: '/papers/DISEC_BG_PORPS MUN 6.pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -295,7 +295,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'TBA — room assignment',
+      venue: '11-D',
       studyGuideUrl: '/papers/YUGEN 6.0 UNSC BG (2).pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -318,7 +318,7 @@ export const YUGEN = {
       delegateCapacity: 'TBA',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'TBA — room assignment',
+      venue: '12-D',
       studyGuideStatus: 'coming-soon',
       status: 'live',
       chairs: [
@@ -339,7 +339,7 @@ export const YUGEN = {
       delegateCapacity: '10',
       portfolioRequired: true,
       portfolioNote: 'TBA — crisis portfolio format announcing soon.',
-      venue: 'TBA — room assignment',
+      venue: '12-A',
       studyGuideUrl: '/papers/YUGEN_CCC.pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -678,6 +678,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
       'Deliberation on the impact of the Foreign Contribution Regulations on NGOs and civil society operations in India, while balancing national security and economic growth, with special emphasis on the Foreign Contribution (Regulation) Amendment Bill, 2026.',
     topicExpanded:
       'AIPPM will deliberate the impact of the Foreign Contribution Regulations on NGOs and civil society operations in India, balancing national security and economic growth, with special emphasis on the Foreign Contribution (Regulation) Amendment Bill, 2026. Party portfolios and position paper requirements publish with the study guide.',
+    venue: 'Main Block Auditorium',
   }),
   defaultCommittee({
     id: 'ip',
@@ -687,7 +688,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     topic: 'Coverage brief announcing soon',
     topicExpanded: 'IP corps briefing, beat assignments, and portfolio requirements publish with the study guide.',
     portfolioNote: 'TBA — journalism portfolio requirements.',
-    venue: 'TBA — press room',
+    venue: '11-H',
     chairs: IP_CHAIRS,
   }),
   defaultCommittee({
@@ -699,6 +700,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
       'Deliberation on Safeguarding Human Rights in the Context of Climate Change, Environmental Degradation, and Loss of Livelihoods.',
     topicExpanded:
       'UNHRC final agenda (set by the EB): Deliberation on Safeguarding Human Rights in the Context of Climate Change, Environmental Degradation, and Loss of Livelihoods. Country allocations and position paper format publish with the study guide.',
+    venue: 'Indoor Sports Complex',
   }),
   defaultCommittee({
     id: 'unsc',
@@ -708,6 +710,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     topic: 'UNSC Summit Meeting',
     topicExpanded:
       'UNSC agenda — UNSC Summit Meeting. Freeze date: 30 January 1992. The Security Council convenes in the immediate aftermath of the Soviet Union\'s dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order. Country allocations, position paper format, and background materials publish with the study guide.',
+    venue: '11-D',
   }),
   defaultCommittee({
     id: 'ccpcj',
@@ -718,6 +721,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
       'Combating Illicit Trafficking of Drugs, Firearms, and Wildlife in Central Africa through Strengthened Regional Law Enforcement Cooperation.',
     topicExpanded:
       'CCPCJ agenda: Combating Illicit Trafficking of Drugs, Firearms, and Wildlife in Central Africa through Strengthened Regional Law Enforcement Cooperation. Background guide and country portfolios publish with the study guide.',
+    venue: '12-D',
   }),
   defaultCommittee({
     id: 'ccc',
@@ -729,6 +733,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     topicExpanded:
       'CCC agenda — The Suez Crisis. Freeze date: 1 November 1956. The arc, directives, character briefs, and portfolio requirements publish with the full crisis roster.',
     portfolioNote: 'TBA — crisis portfolio format announcing soon.',
+    venue: '12-A',
     chairs: CRISIS_CHAIRS,
   }),
 ]

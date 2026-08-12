@@ -31,6 +31,17 @@ All notable changes to the Yūgen Summit 6.0 site.
 - Agenda set to **UNSC Summit Meeting**.
 - Freeze date: **30 January 1992** — Council convenes in the immediate aftermath of the Soviet Union's dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order.
 
+### Committee venues
+- All 7 committees now have confirmed venues:
+  - UNHRC — Indoor Sports Complex
+  - AIPPM — Main Block Auditorium
+  - CCPCJ — 12-D
+  - DISEC — 12-H
+  - CCC — 12-A
+  - UNSC — 11-D
+  - IP — 11-H
+- Applied to both `YUGEN.committees` and the `DEFAULT_COMMITTEES` fallback.
+
 ### Files touched
 - `src/lib/yugen.ts` — committee data, `studyGuideUrl`/`studyGuideUrls`, gallery, resources.
 - `src/components/yugen/CommitteeDetailContent.tsx` — colour photo rendering, multi-PDF preview, Open/Download buttons, IP label.
