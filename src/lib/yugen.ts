@@ -288,8 +288,9 @@ export const YUGEN = {
       acronym: 'UNSC',
       name: 'UN Security Council',
       type: 'UNSC',
-      topic: 'Agenda announcing soon',
-      topicExpanded: 'Security Council agenda and background guide for Yūgen 6.0 publish here first.',
+      topic: 'UNSC Summit Meeting',
+      topicExpanded:
+        'UNSC agenda — UNSC Summit Meeting. Freeze date: 30 January 1992. The Security Council convenes in the immediate aftermath of the Soviet Union\'s dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order. Country allocations, position paper format, and background materials publish with the study guide.',
       difficulty: 'Intermediate',
       delegateCapacity: 'TBA',
       portfolioRequired: true,
@@ -704,7 +705,9 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     acronym: 'UNSC',
     name: 'UN Security Council',
     type: 'UNSC',
-    topicExpanded: 'Security Council agenda and background guide for Yūgen 6.0 publish here first.',
+    topic: 'UNSC Summit Meeting',
+    topicExpanded:
+      'UNSC agenda — UNSC Summit Meeting. Freeze date: 30 January 1992. The Security Council convenes in the immediate aftermath of the Soviet Union\'s dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order. Country allocations, position paper format, and background materials publish with the study guide.',
   }),
   defaultCommittee({
     id: 'ccpcj',

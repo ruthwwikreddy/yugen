@@ -27,6 +27,10 @@ All notable changes to the Yūgen Summit 6.0 site.
   - Photojournalism Background Guide (`BACKGROUND GUIDE FOR IP PHOTOJOURNALISM..pdf`)
 - The IP page now uses "Coverage brief" as the section heading instead of "Agenda" to match the corps' framing.
 
+### UNSC agenda
+- Agenda set to **UNSC Summit Meeting**.
+- Freeze date: **30 January 1992** — Council convenes in the immediate aftermath of the Soviet Union's dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order.
+
 ### Files touched
 - `src/lib/yugen.ts` — committee data, `studyGuideUrl`/`studyGuideUrls`, gallery, resources.
 - `src/components/yugen/CommitteeDetailContent.tsx` — colour photo rendering, multi-PDF preview, Open/Download buttons, IP label.
