@@ -9,13 +9,12 @@ function ChairCard({ chair, committeeName }: { chair: CommitteeChair; committeeN
       <div className="bg-surface-raised px-4 pb-5 pt-1">
         <div className="relative mx-auto aspect-[3/4] max-w-[180px] overflow-hidden bg-yugen-black">
           {chair.image ? (
-            <img src={chair.image} alt={chair.name} className="h-full w-full object-cover grayscale" />
+            <img src={chair.image} alt={chair.name} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center">
               <span className="font-display text-4xl uppercase text-yugen-white/20">{chair.initials}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
         </div>
         <div className="mt-4 text-center">
           {chair.name === 'TBA' && <span className="coming-soon-pill text-[8px]">TBA</span>}
@@ -34,6 +33,8 @@ interface CommitteeDetailContentProps {
 
 export function CommitteeDetailContent({ committee }: CommitteeDetailContentProps) {
   const isAnnouncing = committee.status === 'announcing-soon'
+  const isIP = committee.id === 'ip'
+  const agendaLabel = isIP ? 'Coverage brief' : 'Agenda'
 
   return (
     <>
@@ -55,7 +56,7 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
       </div>
 
       <section className="mt-12">
-        <h2 className="label-caps mb-4">Agenda</h2>
+        <h2 className="label-caps mb-4">{agendaLabel}</h2>
         <div className="rounded-lg border border-yugen bg-surface-raised p-6 md:p-8">
           <p className="leading-relaxed text-muted">
             {committee.topicExpanded ?? committee.topic}
@@ -112,18 +113,49 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
             <p className="font-heading font-bold">{committee.name} — Study Guide</p>
             <p className="mt-1 text-sm text-muted">
               {committee.studyGuideStatus === 'available'
-                ? 'Download the background guide for this committee.'
+                ? committee.studyGuideUrls && committee.studyGuideUrls.length > 1
+                  ? `${committee.studyGuideUrls.length} background guides available for this committee.`
+                  : 'Download the background guide for this committee.'
                 : 'Background guide publishes when the agenda is confirmed.'}
             </p>
           </div>
           {committee.studyGuideStatus === 'available' && committee.studyGuideUrl ? (
-            <a href={committee.studyGuideUrl} target="_blank" rel="noopener noreferrer" className="btn-primary shrink-0">
-              Download PDF
-            </a>
+            <div className="flex flex-wrap gap-3 shrink-0">
+              <a href={committee.studyGuideUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                Open in new tab
+              </a>
+              <a href={committee.studyGuideUrl} download className="btn-primary">
+                Download PDF
+              </a>
+            </div>
           ) : (
             <span className="coming-soon-pill shrink-0">Coming soon</span>
           )}
         </div>
+        {committee.studyGuideStatus === 'available' && (committee.studyGuideUrl || (committee.studyGuideUrls && committee.studyGuideUrls.length > 0)) && (
+          <div className="mt-4 space-y-6">
+            {((committee.studyGuideUrls && committee.studyGuideUrls.length > 0) ? committee.studyGuideUrls : [committee.studyGuideUrl!]).map((url, idx, arr) => {
+              const fileName = decodeURIComponent(url.split('/').pop() ?? '')
+              const prettyName = fileName
+                .replace(/\.pdf$/i, '')
+                .replace(/\.+$/, '')
+                .replace(/[_-]+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+              const label = arr.length > 1 ? `${committee.name} — Guide ${idx + 1} of ${arr.length}${prettyName ? ` · ${prettyName}` : ''}` : `${committee.name} study guide preview`
+              return (
+                <div key={url} className="overflow-hidden rounded-lg border border-yugen bg-yugen-black">
+                  <iframe
+                    src={url}
+                    title={label}
+                    className="h-[640px] w-full"
+                    loading="lazy"
+                  />
+                </div>
+              )
+            })}
+          </div>
+        )}
       </section>
 
       <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">

@@ -79,13 +79,12 @@ export function TeamCard({ name, role, initials, image }: TeamCardProps) {
     <article className="overflow-hidden rounded-lg border border-yugen bg-yugen-black">
       <div className="relative aspect-[3/4] bg-surface-raised">
         {image ? (
-          <img src={image} alt={name} className="h-full w-full object-cover grayscale" />
+          <img src={image} alt={name} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center">
             <span className="font-display text-5xl uppercase text-yugen-white/20">{initials}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
       </div>
       <div className="border-t border-yugen bg-surface-raised p-4 text-center">
         {name === 'TBA' && <span className="coming-soon-pill text-[9px]">TBA</span>}
@@ -110,22 +109,41 @@ export function ResourceList({ items }: ResourceListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {items.map((item) => (
-        <div key={item.id} className="rounded-lg border border-yugen bg-surface-raised p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-heading text-lg font-bold">{item.title}</p>
-              <p className="mt-2 text-sm text-muted">{item.description}</p>
+        <div key={item.id} className="overflow-hidden rounded-lg border border-yugen bg-surface-raised">
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="font-heading text-lg font-bold">{item.title}</p>
+                <p className="mt-2 text-sm text-muted">{item.description}</p>
+              </div>
+              <span className="coming-soon-pill shrink-0 text-[9px]">
+                {item.status === 'available' ? 'PDF' : 'Soon'}
+              </span>
             </div>
-            <span className="coming-soon-pill shrink-0 text-[9px]">
-              {item.status === 'available' ? 'PDF' : 'Soon'}
-            </span>
           </div>
           {item.status === 'available' && item.url ? (
-            <a href={item.url} target="_blank" rel="noopener noreferrer" className="btn-ghost mt-4 inline-flex">
-              Download
-            </a>
+            <>
+              <div className="border-t border-yugen bg-yugen-black">
+                <iframe
+                  src={item.url}
+                  title={`${item.title} preview`}
+                  className="h-[520px] w-full"
+                  loading="lazy"
+                />
+              </div>
+              <div className="flex flex-wrap gap-3 border-t border-yugen p-6">
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                  Open in new tab
+                </a>
+                <a href={item.url} download className="btn-primary">
+                  Download PDF
+                </a>
+              </div>
+            </>
           ) : (
-            <p className="mt-4 text-xs text-dim">Publishes when confirmed by the organizing committee.</p>
+            <p className="border-t border-yugen px-6 py-4 text-xs text-dim">
+              Publishes when confirmed by the organizing committee.
+            </p>
           )}
         </div>
       ))}

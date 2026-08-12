@@ -18,6 +18,7 @@ export type Committee = {
   portfolioNote?: string
   venue?: string
   studyGuideUrl?: string
+  studyGuideUrls?: string[]
   studyGuideStatus: 'available' | 'coming-soon'
   status: 'announcing-soon' | 'live'
   chairs: CommitteeChair[]
@@ -113,7 +114,6 @@ export const YUGEN = {
     ],
   },
   gallery: [
-    { id: '0057f79b-6974-41fd-8d2b-5a6f0ac97c06', src: '/gallery/0057f79b-6974-41fd-8d2b-5a6f0ac97c06.JPG', alt: 'Yūgen Summit moments' },
     { id: '0386bda9-72e8-42d4-8ed5-734a64c30abe', src: '/gallery/0386bda9-72e8-42d4-8ed5-734a64c30abe.JPG', alt: 'Yūgen Summit moments' },
     { id: '05887dad-6903-4973-804f-6eb7e88f031f', src: '/gallery/05887dad-6903-4973-804f-6eb7e88f031f.JPG', alt: 'Yūgen Summit moments' },
     { id: '05ff34b1-6349-47e1-a741-9585da8d9f61', src: '/gallery/05ff34b1-6349-47e1-a741-9585da8d9f61.JPG', alt: 'Yūgen Summit moments' },
@@ -141,7 +141,6 @@ export const YUGEN = {
     { id: '45324398-d931-420e-9b84-da04e39c2b10', src: '/gallery/45324398-d931-420e-9b84-da04e39c2b10.JPG', alt: 'Yūgen Summit moments' },
     { id: '45434017-9b5c-4bd0-9929-a7267841f3fb', src: '/gallery/45434017-9b5c-4bd0-9929-a7267841f3fb.JPG', alt: 'Yūgen Summit moments' },
     { id: '4d13ac2f-2a19-438d-b5dc-d39f4123bb7b', src: '/gallery/4d13ac2f-2a19-438d-b5dc-d39f4123bb7b.JPG', alt: 'Yūgen Summit moments' },
-    { id: '4ea7fc1e-b8be-4866-a68b-dbffad3f4e6b', src: '/gallery/4ea7fc1e-b8be-4866-a68b-dbffad3f4e6b.JPG', alt: 'Yūgen Summit moments' },
     { id: '5176ff91-a2f9-4cfd-8869-1393d822bafa', src: '/gallery/5176ff91-a2f9-4cfd-8869-1393d822bafa.JPG', alt: 'Yūgen Summit moments' },
     { id: '56578912-5db3-40c6-907c-481712366086', src: '/gallery/56578912-5db3-40c6-907c-481712366086.JPG', alt: 'Yūgen Summit moments' },
     { id: '596aa2bc-82ef-48a8-aa84-105ddcdd765b', src: '/gallery/596aa2bc-82ef-48a8-aa84-105ddcdd765b.JPG', alt: 'Yūgen Summit moments' },
@@ -205,13 +204,14 @@ export const YUGEN = {
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: 'TBA — room assignment',
-      studyGuideStatus: 'coming-soon',
+      studyGuideUrl: '/papers/YUGEN-PROPS MUN 2026- AIPPM BG.pdf',
+      studyGuideStatus: 'available',
       status: 'live',
       chairs: [
-        { name: 'Charan Teja', role: 'Speaker', initials: 'CT' },
-        { name: 'Tanish Manem', role: 'Deputy Speaker', initials: 'TM' },
-        { name: 'Bani Saxena', role: 'Co-Scribe', initials: 'BS' },
-        { name: 'Rishith Balakrishnan', role: 'Co-Scribe', initials: 'RB' },
+        { name: 'Charan Teja', role: 'Speaker', initials: 'CT', image: '/ebs/charan tejh.png' },
+        { name: 'Tanish Manem', role: 'Deputy Speaker', initials: 'TM', image: '/ebs/tanish.png' },
+        { name: 'Bani Saxena', role: 'Co-Scribe', initials: 'BS', image: '/ebs/bani.png' },
+        { name: 'Rishith Balakrishnan', role: 'Co-Scribe', initials: 'RB', image: '/ebs/rishit.png' },
       ],
     },
     {
@@ -226,12 +226,16 @@ export const YUGEN = {
       portfolioRequired: true,
       portfolioNote: 'TBA — journalism portfolio requirements.',
       venue: 'TBA — press room',
-      studyGuideStatus: 'coming-soon',
+      studyGuideUrls: [
+        '/papers/ip jounlism.pdf',
+        '/papers/BACKGROUND GUIDE FOR IP PHOTOJOURNALISM..pdf',
+      ],
+      studyGuideStatus: 'available',
       status: 'live',
       chairs: [
-        { name: 'Shreyal Kothapalli', role: 'IP Head', initials: 'SK' },
-        { name: 'Tvisha Nahata', role: 'Director of Photography', initials: 'TN' },
-        { name: 'Prasatti Burla', role: 'Editor-in-Chief', initials: 'PB' },
+        { name: 'Shreyal Kothapalli', role: 'IP Head', initials: 'SK', image: '/ebs/shreyal.png' },
+        { name: 'Tvisha Nahata', role: 'Director of Photography', initials: 'TN', image: '/ebs/tvisha.png' },
+        { name: 'Prasatti Burli', role: 'Editor-in-Chief', initials: 'PB', image: '/ebs/prasati.png' },
       ],
     },
     {
@@ -251,9 +255,9 @@ export const YUGEN = {
       studyGuideStatus: 'coming-soon',
       status: 'live',
       chairs: [
-        { name: 'Neela Siddhartha', role: 'Chairperson', initials: 'NS' },
-        { name: 'Lalitaanjali', role: 'Co-Vice Chairperson', initials: 'LA' },
-        { name: 'Nandini Thakur', role: 'Co-Vice Chairperson', initials: 'NT' },
+        { name: 'Neela Siddhartha', role: 'Chairperson', initials: 'NS', image: '/ebs/siddartha.png' },
+        { name: 'Lalitaanjali', role: 'Co-Vice Chairperson', initials: 'LA', image: '/ebs/anjali.png' },
+        { name: 'Nandini Thakur', role: 'Co-Vice Chairperson', initials: 'NT', image: '/ebs/nandini.png' },
       ],
     },
     {
@@ -270,12 +274,13 @@ export const YUGEN = {
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: 'TBA — room assignment',
-      studyGuideStatus: 'coming-soon',
+      studyGuideUrl: '/papers/DISEC_BG_PORPS MUN 6.pdf',
+      studyGuideStatus: 'available',
       status: 'live',
       chairs: [
-        { name: 'Shyam Vasavi', role: 'Chairperson', initials: 'SV' },
-        { name: 'Rithik', role: 'Vice Chairperson', initials: 'RI' },
-        { name: 'Shrikar', role: 'Rapporteur', initials: 'SH' },
+        { name: 'Shyam Vasavi', role: 'Chairperson', initials: 'SV', image: '/ebs/shyam.png' },
+        { name: 'Rithvik', role: 'Vice Chairperson', initials: 'RI', image: '/ebs/rithik.png' },
+        { name: 'Shrikar', role: 'Rapporteur', initials: 'SH', image: '/ebs/shrikar.png' },
       ],
     },
     {
@@ -290,12 +295,13 @@ export const YUGEN = {
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: 'TBA — room assignment',
-      studyGuideStatus: 'coming-soon',
+      studyGuideUrl: '/papers/YUGEN 6.0 UNSC BG (2).pdf',
+      studyGuideStatus: 'available',
       status: 'live',
       chairs: [
-        { name: 'Kumara Shivanand', role: 'Chairperson', initials: 'KS' },
-        { name: 'Advay', role: 'Vice Chairperson', initials: 'AD' },
-        { name: 'Mahesh', role: 'Rapporteur', initials: 'MA' },
+        { name: 'Kumara Shivanand', role: 'Chairperson', initials: 'KS', image: '/ebs/shivanand.png' },
+        { name: 'Advay', role: 'Vice Chairperson', initials: 'AD', image: '/ebs/advay.png' },
+        { name: 'Mahesh', role: 'Rapporteur', initials: 'MA', image: '/ebs/mahesh.png' },
       ],
     },
     {
@@ -315,9 +321,9 @@ export const YUGEN = {
       studyGuideStatus: 'coming-soon',
       status: 'live',
       chairs: [
-        { name: 'Kingshuk', role: 'Chairperson', initials: 'KI' },
-        { name: 'Kautilya', role: 'Vice Chairperson', initials: 'KA' },
-        { name: 'Venya Reddy', role: 'Rapporteur', initials: 'VR' },
+        { name: 'Kingshuk', role: 'Chairperson', initials: 'KI', image: '/ebs/kingshuk.png' },
+        { name: 'Kautilya', role: 'Vice Chairperson', initials: 'KA', image: '/ebs/kautilya.png' },
+        { name: 'Venya Reddy', role: 'Rapporteur', initials: 'VR', image: '/ebs/venya.png' },
       ],
     },
     {
@@ -333,11 +339,12 @@ export const YUGEN = {
       portfolioRequired: true,
       portfolioNote: 'TBA — crisis portfolio format announcing soon.',
       venue: 'TBA — room assignment',
-      studyGuideStatus: 'coming-soon',
+      studyGuideUrl: '/papers/YUGEN_CCC.pdf',
+      studyGuideStatus: 'available',
       status: 'live',
       chairs: [
-        { name: 'Ayaan Khan', role: 'Moderator', initials: 'AK' },
-        { name: 'Adhrit Gande', role: 'Deputy Moderator', initials: 'AG' },
+        { name: 'Ayaan Khan', role: 'Moderator', initials: 'AK', image: '/ebs/ayaan.png' },
+        { name: 'Adhrit Gande', role: 'Deputy Moderator', initials: 'AG', image: '/ebs/adhrit.png' },
       ],
     },
   ] as Committee[],
@@ -362,7 +369,70 @@ export const YUGEN = {
     ] as { role: string; name: string; initials: string; image?: string }[],
     eb: [] as { role: string; committee: string; name: string; initials: string; image?: string }[],
   },
-  resources: [] as {
+  resources: [
+    {
+      id: 'aippm-bg',
+      title: 'AIPPM — Background Guide',
+      description: 'Deliberation on the Foreign Contribution Regulations and the FC(R) Amendment Bill, 2026.',
+      type: 'pdf',
+      url: '/papers/YUGEN-PROPS MUN 2026- AIPPM BG.pdf',
+      status: 'available',
+    },
+    {
+      id: 'ip-journalism',
+      title: 'IP — Journalism Coverage Brief',
+      description: 'Coverage brief for the International Press corps at Yūgen 6.0.',
+      type: 'pdf',
+      url: '/papers/ip jounlism.pdf',
+      status: 'available',
+    },
+    {
+      id: 'ip-photojournalism',
+      title: 'IP — Photojournalism Background Guide',
+      description: 'Photojournalism background guide for the International Press corps.',
+      type: 'pdf',
+      url: '/papers/BACKGROUND GUIDE FOR IP PHOTOJOURNALISM..pdf',
+      status: 'available',
+    },
+    {
+      id: 'disec-bg',
+      title: 'DISEC — Background Guide',
+      description: 'Safeguarding critical undersea and maritime infrastructure against hybrid threats.',
+      type: 'pdf',
+      url: '/papers/DISEC_BG_PORPS MUN 6.pdf',
+      status: 'available',
+    },
+    {
+      id: 'unsc-bg',
+      title: 'UNSC — Background Guide',
+      description: 'Security Council agenda and background materials for Yūgen 6.0.',
+      type: 'pdf',
+      url: '/papers/YUGEN 6.0 UNSC BG (2).pdf',
+      status: 'available',
+    },
+    {
+      id: 'ccc-bg',
+      title: 'CCC — Background Guide',
+      description: 'The Suez Crisis — arc, directives, and crisis roster for the Continental Crisis Committee.',
+      type: 'pdf',
+      url: '/papers/YUGEN_CCC.pdf',
+      status: 'available',
+    },
+    {
+      id: 'unhrc-bg',
+      title: 'UNHRC — Background Guide',
+      description: 'Background guide for the UN Human Rights Council — publishing when confirmed.',
+      type: 'pdf',
+      status: 'coming-soon',
+    },
+    {
+      id: 'ccpcj-bg',
+      title: 'CCPCJ — Background Guide',
+      description: 'Background guide for the Commission on Crime Prevention and Criminal Justice — publishing when confirmed.',
+      type: 'pdf',
+      status: 'coming-soon',
+    },
+  ] as {
     id: string
     title: string
     description: string
