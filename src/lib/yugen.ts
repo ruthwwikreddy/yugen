@@ -703,6 +703,18 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     venue: 'Indoor Sports Complex',
   }),
   defaultCommittee({
+    id: 'disec',
+    acronym: 'DISEC',
+    name: 'Disarmament and International Security Committee',
+    type: 'DISEC',
+    topic:
+      'Deliberation on safeguarding critical undersea and maritime infrastructure against hybrid threats, with special emphasis on threats to undersea communication cables.',
+    topicExpanded:
+      'DISEC agenda: Deliberation on safeguarding critical undersea and maritime infrastructure against hybrid threats, with special emphasis on threats to undersea communication cables. Agenda set by the DISEC Executive Board. Background guide, delegate allocations, and position paper requirements publish with the study guide.',
+    difficulty: 'Beginner-Friendly',
+    venue: '12-H',
+  }),
+  defaultCommittee({
     id: 'unsc',
     acronym: 'UNSC',
     name: 'UN Security Council',
