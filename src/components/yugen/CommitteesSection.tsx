@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { getCommittees } from '../../lib/yugen'
-import { ComingSoonBlock } from './ComingSoonBlock'
 import { CommitteeGrid } from './CommitteeCard'
 
 export function CommitteesSection() {
@@ -19,32 +18,23 @@ export function CommitteesSection() {
           <p className="label-caps mb-4">Committees</p>
           <h2 className="section-title">Councils &amp; agendas</h2>
           <p className="mt-4 max-w-xl text-muted">
-            Eight placeholder councils — each with a full detail page. Final roster and topics drop here first.
-          </p>
-        </motion.div>
+          Explore the official councils and agendas for Yūgen Summit 6.0.
+        </p>
+      </motion.div>
 
-        <div className="mt-12">
-          <CommitteeGrid committees={preview} compact />
-        </div>
-
-        <div className="mt-10">
-          <ComingSoonBlock
-            eyebrow="Agendas"
-            title="Topics announcing soon"
-            description="Study guides, portfolios, and chair applications publish with the final committee reveal."
-            compact
-          />
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-4">
-          <Link to="/committees" className="btn-primary">
-            View all {committees.length} committees
-          </Link>
-          <Link to="/resources" className="btn-ghost">
-            Study guides
-          </Link>
-        </div>
+      <div className="mt-12">
+        <CommitteeGrid committees={preview} compact />
       </div>
-    </section>
+
+      <div className="mt-10 flex flex-wrap gap-4">
+        <Link to="/committees" className="btn-primary">
+          View all {committees.length} committees
+        </Link>
+        <Link to="/resources" className="btn-ghost">
+          Study guides
+        </Link>
+      </div>
+    </div>
+  </section>
   )
 }

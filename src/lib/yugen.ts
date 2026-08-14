@@ -187,8 +187,42 @@ export const YUGEN = {
     { id: 'f51c93a1-bbdb-4a98-89d4-ad04f147a130', src: '/gallery/f51c93a1-bbdb-4a98-89d4-ad04f147a130.JPG', alt: 'Yūgen Summit moments' },
     { id: 'fdc0f3ae-8c3c-41b7-ae15-9be5efad8017', src: '/gallery/fdc0f3ae-8c3c-41b7-ae15-9be5efad8017.JPG', alt: 'Yūgen Summit moments' },
   ] as GalleryItem[],
-  schedule: [] as { day: string; items: { time: string; title: string; location?: string }[] }[],
-  dressCode: [] as { title: string; description: string }[],
+  schedule: [
+    {
+      day: 'Day 1 — 22 August 2026',
+      items: [
+        { time: '8:00 - 9:30', title: 'Registrations' },
+        { time: '9:30 - 10:30', title: 'Opening Ceremony' },
+        { time: '10:30 - 11:00', title: 'Break' },
+        { time: '11:00 - 1:00', title: 'Committee Session 1' },
+        { time: '1:00 - 1:45', title: 'Lunch (in committee)' },
+        { time: '1:45 - 3:00', title: 'Committee Session 2' },
+        { time: '3:00 - 3:15', title: 'Break' },
+        { time: '3:15 - 4:30', title: 'Committee Session 3' },
+        { time: '4:30 onwards', title: 'Dispersal' },
+      ],
+    },
+    {
+      day: 'Day 2 — 23 August 2026',
+      items: [
+        { time: '7:00 - 7:45', title: 'Breakfast' },
+        { time: '8:00 - 10:30', title: 'Committee Session 4' },
+        { time: '10:30 - 10:45', title: 'Break' },
+        { time: '10:45 - 11:45', title: 'Committee Session 5 (UNHRC, UNSC, IP, CCC)' },
+        { time: '10:45 - 12:30', title: 'Committee Session 5 (AIPPM, DISEC, CCPCJ)' },
+        { time: '11:45 - 12:30', title: 'Lunch (UNHRC, UNSC, IP, CCC)' },
+        { time: '12:30 - 1:15', title: 'Lunch (AIPPM, DISEC, CCPCJ)' },
+        { time: '12:30 - 3:00', title: 'Committee Session 6 (UNHRC, UNSC, IP, CCC)' },
+        { time: '1:15 - 3:00', title: 'Committee Session 6 (AIPPM, DISEC, CCPCJ)' },
+        { time: '3:00 - 4:30', title: 'Closing Ceremony' },
+        { time: '4:30 onwards', title: 'Dispersal' },
+      ],
+    },
+  ] as { day: string; items: { time: string; title: string; location?: string }[] }[],
+  dressCode: [
+    { title: 'Day 1: Western Formals', description: 'Suits, blazers, formal shirts, trousers, and corporate/formal dresses.' },
+    { title: 'Day 2: Indian Traditionals', description: 'Kurtas, sherwanis, sarees, salwars, or other elegant traditional attire.' },
+  ],
   committees: [
     {
       id: 'aippm',
@@ -455,7 +489,7 @@ export const YUGEN = {
     { q: 'Is Yūgen open to all schools?', a: 'TBA — add eligibility criteria (inter-school, grade levels, etc.) when confirmed by the organizing committee.' },
     { q: 'Can I register as an individual delegate?', a: 'TBA — add individual vs school delegation policy when registration details are finalized.' },
     { q: 'What committees will be offered?', a: 'The full committee roster and agendas are announcing soon. Check /committees for placeholder cards until then.' },
-    { q: 'What is the dress code?', a: 'Western formal and session-specific guidelines publish before the conference. See /delegates for the full handbook when live.' },
+    { q: 'What is the dress code?', a: 'The dress code for Day 1 is Western Formals (suits, blazers, trousers, formal shirts, or formal dresses) and Day 2 is Indian Traditionals (kurtas, sherwanis, sarees, salwars, or elegant traditional attire).' },
     { q: 'Are study guides provided?', a: 'Study guides for each committee will be available on /resources when committees are announced.' },
     { q: 'What are the delegate fees?', a: 'Pricing tiers are shared with partner schools directly by the secretariat.' },
     { q: 'Is accommodation provided?', a: 'TBA — see /accommodation for travel and hotel guidance for outstation delegations when published.' },
@@ -642,6 +676,7 @@ function defaultCommittee(
         Committee,
         | 'topic'
         | 'topicExpanded'
+        | 'difficulty'
         | 'delegateCapacity'
         | 'portfolioRequired'
         | 'portfolioNote'

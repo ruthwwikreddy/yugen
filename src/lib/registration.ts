@@ -290,7 +290,7 @@ export async function bulkImportRegistrations(
     const entry = entries[i]
     try {
       const res = await createRegistration(flowSlug, entry.input)
-      let reg = res.registration
+      const reg = res.registration
 
       if (entry.status && entry.status !== reg.status) {
         await updateRegistrationStatus(reg.id, entry.status)

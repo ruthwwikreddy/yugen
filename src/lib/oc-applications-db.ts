@@ -268,7 +268,7 @@ export async function listOCApplications(filters?: {
   if (!firebaseEnabled || !db) return []
 
   try {
-    let q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'))
+    const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'))
     const snap = await getDocs(q)
     const applications = snap.docs.map((d) => formatOCApplication(d.data(), d.id))
 

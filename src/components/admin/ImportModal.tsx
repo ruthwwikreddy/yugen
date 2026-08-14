@@ -37,6 +37,23 @@ export function ImportModal({ open, onClose, onSuccess, onNavigateAllocations }:
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [result, setResult] = useState<{ success: number; failed: number } | null>(null)
 
+  const parsedItems: ParsedImportItem[] = useMemo(() => {
+    if (headers.length === 0 || dataRows.length === 0) return []
+    return buildImportItems(headers, dataRows, columnMap, defaultStatus)
+  }, [headers, dataRows, columnMap, defaultStatus])
+
+  const validItems = useMemo(() => parsedItems.filter((i) => i.valid), [parsedItems])
+
+  const mappedRequiredFields = useMemo(() => {
+    const values = Object.values(columnMap)
+    return {
+      name: values.includes('name'),
+      email: values.includes('email'),
+      phone: values.includes('phone'),
+      school: values.includes('school'),
+    }
+  }, [columnMap])
+
   if (!open) return null
 
   function resetAll() {
@@ -109,23 +126,6 @@ export function ImportModal({ open, onClose, onSuccess, onNavigateAllocations }:
   function handleMapChange(colIdx: number, field: FieldKey) {
     setColumnMap((prev) => ({ ...prev, [colIdx]: field }))
   }
-
-  const parsedItems: ParsedImportItem[] = useMemo(() => {
-    if (headers.length === 0 || dataRows.length === 0) return []
-    return buildImportItems(headers, dataRows, columnMap, defaultStatus)
-  }, [headers, dataRows, columnMap, defaultStatus])
-
-  const validItems = useMemo(() => parsedItems.filter((i) => i.valid), [parsedItems])
-
-  const mappedRequiredFields = useMemo(() => {
-    const values = Object.values(columnMap)
-    return {
-      name: values.includes('name'),
-      email: values.includes('email'),
-      phone: values.includes('phone'),
-      school: values.includes('school'),
-    }
-  }, [columnMap])
 
   const missingRequired = !mappedRequiredFields.name || !mappedRequiredFields.email
 

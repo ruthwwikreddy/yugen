@@ -202,7 +202,7 @@ export function SearchSelect({
       return 'Type to search'
     }
     return null
-  }, [open, query, selectable.length, totalMatches, groups, allOptions.length])
+  }, [open, query, selectable.length, totalMatches, groups])
 
   useEffect(() => {
     if (!open) {
@@ -350,9 +350,22 @@ export function SearchSelect({
   }
 
   const hasValue = Boolean(value)
-  let selectableIndex = -1
 
   const displayValue = open ? query : value || ''
+
+  // Pre-compute the selectable index for each row in a single pass so the
+  // render below stays pure (no `let` mutation mid-map).
+  const selectableIndexByRow = useMemo(() => {
+    const map = new Map<number, number>()
+    let idx = -1
+    rows.forEach((row, i) => {
+      if (row.kind !== 'section-header') {
+        idx += 1
+        map.set(i, idx)
+      }
+    })
+    return map
+  }, [rows])
 
   return (
     <div ref={containerRef} className={`relative min-w-0 ${className}`}>
@@ -440,8 +453,7 @@ export function SearchSelect({
               }
 
               if (row.kind === 'empty') {
-                selectableIndex += 1
-                const idx = selectableIndex
+                const idx = selectableIndexByRow.get(i) ?? -1
                 const selected = row.option.value === value
                 const active = idx === highlight
                 return (
@@ -458,8 +470,7 @@ export function SearchSelect({
                 )
               }
 
-              selectableIndex += 1
-              const idx = selectableIndex
+              const idx = selectableIndexByRow.get(i) ?? -1
               const selected = row.option.value === value
               const active = idx === highlight
 
