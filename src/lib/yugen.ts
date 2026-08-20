@@ -97,9 +97,9 @@ export const YUGEN = {
   },
   stats: [
     { label: 'Edition', value: '6.0' },
+    { label: 'Expected participants', value: '300+' },
     { label: 'Committees', value: '7' },
-    { label: 'Delegates', value: '297' },
-    { label: 'Schools', value: '40+' },
+    { label: 'Partner institutions', value: '10+' },
   ],
   about: {
     headline: 'Six editions in. The next chapter is on the way.',

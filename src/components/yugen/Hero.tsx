@@ -29,9 +29,9 @@ const MARQUEE_ITEMS = [
   YUGEN.datesHero,
   YUGEN.social.instagram,
   '22 & 23 August 2026',
-  '297 Delegates',
+  '300+ Expected participants',
   '7 Committees',
-  '40+ Schools',
+  '10+ Partner institutions',
 ]
 
 const EVENT_DATE = new Date('2026-08-22T08:00:00+05:30')
