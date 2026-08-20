@@ -97,6 +97,18 @@ export function CommitteeDetailContent({ committee }: { committee: Committee }) 
             </div>
           </Section>
         )}
+
+        {(committee.studyGuideUrl || (committee.studyGuideUrls && committee.studyGuideUrls.length > 0)) && (
+          <Section title="Study Guide Preview" delay={0.4}>
+            <div className="rounded-xl border border-yugen overflow-hidden bg-surface-raised h-[600px] relative">
+              <iframe 
+                src={`${committee.studyGuideUrl || (committee.studyGuideUrls && committee.studyGuideUrls[0])}#view=FitH`}
+                className="w-full h-full border-0"
+                title={`${committee.acronym} Study Guide`}
+              />
+            </div>
+          </Section>
+        )}
       </div>
 
       {/* Sticky Right Sidebar */}
