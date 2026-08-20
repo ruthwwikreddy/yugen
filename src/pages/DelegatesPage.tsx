@@ -67,6 +67,34 @@ export function DelegatesPage() {
         <Link to="/faq" className="btn-ghost">FAQ</Link>
         <Link to="/accommodation" className="btn-ghost">Accommodation</Link>
       </div>
+
+      <section className="mt-16">
+        <p className="label-caps mb-4">{YUGEN.whatsapp.label}</p>
+        <h2 className="font-heading text-2xl font-bold sm:text-3xl">
+          Join your committee&apos;s WhatsApp group
+        </h2>
+        <p className="mt-3 max-w-2xl text-muted">{YUGEN.whatsapp.description}</p>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {YUGEN.whatsapp.groups.map((group) => (
+            <a
+              key={group.id}
+              href={group.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-between rounded-xl border border-yugen bg-surface-raised p-5 transition-all hover:border-accent-light hover:bg-surface"
+            >
+              <div>
+                <p className="font-display text-lg uppercase tracking-wide text-yugen-white group-hover:text-accent-light">
+                  {group.acronym}
+                </p>
+                <p className="mt-1 text-xs text-dim">{group.name}</p>
+              </div>
+              <span className="label-caps text-accent-light">Join ↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
     </PageLayout>
   )
 }

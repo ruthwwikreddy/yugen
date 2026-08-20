@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { TornCardTop } from './TornEdge'
 import type { Committee, CommitteeChair } from '../../lib/yugen'
+import { YUGEN } from '../../lib/yugen'
 
 function ChairCard({ chair, committeeName }: { chair: CommitteeChair; committeeName: string }) {
   return (
@@ -35,6 +36,9 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
   const isAnnouncing = committee.status === 'announcing-soon'
   const isIP = committee.id === 'ip'
   const agendaLabel = isIP ? 'Coverage brief' : 'Agenda'
+  const whatsappGroup = YUGEN.whatsapp.groups.find(
+    (g) => g.id === committee.id || g.acronym.toLowerCase() === committee.acronym.toLowerCase(),
+  )
 
   return (
     <>
@@ -164,10 +168,20 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
         <p className="mt-2 text-sm text-muted">
           View all assigned portfolios, delegate names, countries/parties, and open seats for {committee.name}.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap gap-3">
           <Link to={`/allocations?committee=${committee.id}`} className="btn-primary">
             View {committee.acronym} Allocations →
           </Link>
+          {whatsappGroup && (
+            <a
+              href={whatsappGroup.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              Join {committee.acronym} WhatsApp group ↗
+            </a>
+          )}
         </div>
       </section>
 
