@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LogoLockup } from './Logo'
 import { YUGEN } from '../../lib/yugen'
-import { GATHRLY, RUTHWIK } from '../../lib/partners'
 
 export function Footer() {
   const { event, delegates, org } = YUGEN.footerLinks
@@ -80,21 +79,12 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col gap-5 border-t border-yugen/50 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-1.5 text-xs text-dim/80">
-            <p>
-              © {new Date().getFullYear()} Yūgen Summit · P. Obul Reddy Public School
-            </p>
-            <p>
-              Site by{' '}
-              <a href={RUTHWIK.url} target="_blank" rel="noopener noreferrer" className="hover:text-yugen-white transition-colors">
-                {RUTHWIK.name}
-              </a>
-              {' · '}
-              Event technology by{' '}
-              <a href={GATHRLY.homepage} target="_blank" rel="noopener noreferrer" className="hover:text-yugen-white transition-colors">
-                {GATHRLY.name}
-              </a>
-            </p>
+          <div className="mt-8 md:mt-0 md:text-right text-xs text-dim">
+            <span>© {new Date().getFullYear()} Yūgen Summit.</span>
+            <span className="opacity-50"> All rights reserved.</span>
+            <div className="mt-1.5 opacity-50 hover:opacity-100 transition-opacity">
+              Site by <a href="https://www.ruthwikreddy.live/" target="_blank" rel="noopener noreferrer" className="hover:text-yugen-white transition-colors">Ruthwik Reddy</a>
+            </div>
           </div>
           <div className="flex flex-wrap gap-5 text-xs text-dim/80">
             <Link to="/privacy" className="hover:text-yugen-white transition-colors">Privacy</Link>

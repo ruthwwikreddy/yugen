@@ -493,7 +493,7 @@ export const YUGEN = {
     sections: [
       { title: 'What to bring', items: ['TBA — school ID', 'TBA — stationery', 'TBA — formal attire', 'TBA — laptop (if applicable)'] },
       { title: 'Code of conduct', items: ['TBA — respect in committee', 'TBA — plagiarism policy', 'TBA — campus rules', 'TBA — social media guidelines'] },
-      { title: 'Registration process', items: ['School and individual delegate flows publish when registration opens on Gathrly', 'UPI and Razorpay payment options via our event technology partner', 'QR gate check-in at PORPS on conference day', 'Confirmation timeline and receipts sent through the Gathrly organizer dashboard'] },
+      { title: 'Registration process', items: ['School and individual delegate registration flows will be published soon', 'UPI and standard payment options will be available', 'QR gate check-in at PORPS on conference day', 'Confirmation timeline and receipts sent through our registration portal'] },
     ],
   },
   faq: [
@@ -510,9 +510,7 @@ export const YUGEN = {
     { q: 'What is the refund policy?', a: 'Refund terms are published by the secretariat. See /refund for the current policy framework.' },
     { q: 'How do I contact the secretariat?', a: 'Email hello@yugenporps.in or use the form on /contact.' },
   ],
-  sponsors: [
-    { name: 'Gathrly', tier: 'partner', url: 'https://www.gathrly.in/' },
-  ] as { name: string; tier: 'title' | 'gold' | 'silver' | 'partner'; logo?: string; url?: string }[],
+  sponsors: [] as { name: string; tier: 'title' | 'gold' | 'silver' | 'partner'; logo?: string; url?: string }[],
   awards: [] as { name: string; description: string; criteria?: string }[],
   apply: [
     { id: 'chair', title: 'Chair Applications', description: 'Lead a committee at Yūgen 6.0. Requirements and form publish soon.', status: 'coming-soon' as const },
@@ -870,7 +868,6 @@ export const DEFAULT_PRESS_KIT: typeof YUGEN.press.kit = [
   { title: 'Press release — Yūgen 6.0 announcement', status: 'coming-soon' },
   { title: 'Event fact sheet', status: 'coming-soon' },
   { title: 'High-resolution photos', status: 'coming-soon' },
-  { title: 'Event technology partner — Gathrly', url: 'https://www.gathrly.in/event-technology', status: 'available' },
 ]
 
 /** Placeholder gallery slots until photos are added to YUGEN.gallery */
@@ -912,7 +909,7 @@ export const LEGAL = {
     sections: [
       {
         heading: 'Acceptance',
-        body: 'By accessing yugenporps.in, you agree to these terms. This site is operated by the Yūgen Summit organizing committee at P. Obul Reddy Public School. The website was designed and built by Ruthwik Reddy.',
+        body: 'By accessing yugenporps.in, you agree to these terms. This site is operated by the Yūgen Summit organizing committee at P. Obul Reddy Public School.',
       },
       {
         heading: 'Event information',
@@ -920,7 +917,7 @@ export const LEGAL = {
       },
       {
         heading: 'Registration',
-        body: 'Registration terms, refund eligibility, and delegate conduct policies will be published when registration opens for Yūgen 6.0. Delegate registration, payments, and QR check-in are powered by Gathrly, our premium event technology partner headquartered in Hyderabad.',
+        body: 'Registration terms, refund eligibility, and delegate conduct policies will be published when registration opens for Yūgen 6.0.',
       },
       {
         heading: 'Contact',

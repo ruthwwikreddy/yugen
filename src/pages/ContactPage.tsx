@@ -2,7 +2,6 @@ import { Shell } from '../components/yugen/Shell'
 import { SEO } from '../components/yugen/SEO'
 import { NotifyForm } from '../components/yugen/NotifyForm'
 import { YUGEN } from '../lib/yugen'
-import { GATHRLY } from '../lib/partners'
 
 export function ContactPage() {
   return (
@@ -19,11 +18,7 @@ export function ContactPage() {
             <h1 className="mt-6 section-title">Reach the secretariat</h1>
             <p className="mt-4 text-muted">
               For partnerships, press, or general inquiries about Yūgen 6.0 — we&apos;re here.
-              Event technology for registration and check-in is provided by{' '}
-              <a href={GATHRLY.homepage} target="_blank" rel="noopener noreferrer" className="text-yugen-white hover:underline">
-                Gathrly
-              </a>
-              , our premium event technology partner in Hyderabad.
+              Registration and check-in details will be provided to confirmed delegates.
             </p>
 
             <div className="mt-10 space-y-6">
@@ -48,13 +43,9 @@ export function ContactPage() {
                 </a>
               </div>
               <div className="rounded-lg border border-yugen bg-surface p-6">
-                <p className="label-caps">Event technology</p>
-                <p className="mt-2 text-sm text-muted">
-                  Registration, payments, and QR check-in for Yūgen 6.0 run on Gathrly. For platform or integration inquiries, visit{' '}
-                  <a href={GATHRLY.contact} target="_blank" rel="noopener noreferrer" className="text-yugen-white hover:underline">
-                    Gathrly contact
-                  </a>
-                  .
+                <p className="label-caps">Registration</p>
+                <p className="text-dim">
+                  Registration details and platforms will be announced soon. Keep an eye on our social media for updates.
                 </p>
               </div>
               <div className="rounded-lg border border-yugen bg-surface p-6">

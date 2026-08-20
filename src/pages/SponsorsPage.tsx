@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { PageLayout } from '../components/yugen/PageLayout'
 import { ComingSoonBlock } from '../components/yugen/ComingSoonBlock'
 import { YUGEN } from '../lib/yugen'
-import { GATHRLY } from '../lib/partners'
+import { SEO } from '../components/yugen/SEO'
 
 export function SponsorsPage() {
   const hasSponsors = YUGEN.sponsors.length > 0
@@ -14,16 +14,12 @@ export function SponsorsPage() {
       path="/sponsors"
       eyebrow="Sponsors"
       headline="Partners &amp; sponsors"
-      subheadline="Organizations that make Yūgen possible. Our event registration and QR check-in partner is Gathrly."
+      subheadline="Organizations that make Yūgen possible."
     >
       {hasSponsors ? (
         <div className="space-y-12">
           <p className="text-sm leading-relaxed text-muted">
-            <a href={GATHRLY.eventTechnology} target="_blank" rel="noopener noreferrer" className="text-yugen-white hover:underline">
-              Gathrly
-            </a>{' '}
-            is our premium event technology partner — branded registration, UPI payments, and QR gate check-in for Yūgen 6.0.
-            Additional title, gold, and silver sponsors announce soon.
+            Our premium technology partners help power branded registration, UPI payments, and QR gate check-in for Yūgen 6.0.  Additional title, gold, and silver sponsors announce soon.
           </p>
           {(['title', 'gold', 'silver', 'partner'] as const).map((tier) => {
             const tierSponsors = YUGEN.sponsors.filter((s) => s.tier === tier)
@@ -63,12 +59,8 @@ export function SponsorsPage() {
         </div>
       ) : (
         <>
-          <p className="mb-8 text-sm leading-relaxed text-muted">
-            <a href={GATHRLY.homepage} target="_blank" rel="noopener noreferrer" className="text-yugen-white hover:underline">
-              Gathrly
-            </a>{' '}
-            is our premium event technology partner — powering branded registration, UPI payments, and QR gate check-in for Yūgen 6.0.
-            Title, gold, and silver sponsor tiers announce soon.
+          <p className="mt-4 text-sm text-dim leading-relaxed max-w-2xl text-center mx-auto">
+            Partner with us to support Hyderabad's premier Model UN conference.
           </p>
           <ComingSoonBlock
             title="Additional sponsor roster announcing soon"
