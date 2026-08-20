@@ -23,6 +23,7 @@ import { ContactPage } from './pages/ContactPage'
 import { LegalPage } from './pages/LegalPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PortfolioGuidePage } from './pages/PortfolioGuidePage'
+import { AllocationsPublicPage } from './pages/AllocationsPublicPage'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/committees" element={<CommitteesPage />} />
         <Route path="/committees/:id" element={<CommitteeDetailPage />} />
+        <Route path="/allocations" element={<AllocationsPublicPage />} />
         <Route path="/portfolio-guide" element={<PortfolioGuidePage />} />
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/team" element={<TeamPage />} />

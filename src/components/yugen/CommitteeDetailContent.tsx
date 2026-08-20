@@ -159,6 +159,19 @@ export function CommitteeDetailContent({ committee }: CommitteeDetailContentProp
       </section>
 
       <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
+        <p className="label-caps font-semibold text-accent-light">Allocations & Roster</p>
+        <h2 className="mt-3 font-heading text-2xl font-bold">Check your allocation for {committee.acronym}</h2>
+        <p className="mt-2 text-sm text-muted">
+          View all assigned portfolios, delegate names, countries/parties, and open seats for {committee.name}.
+        </p>
+        <div className="mt-6">
+          <Link to={`/allocations?committee=${committee.id}`} className="btn-primary">
+            View {committee.acronym} Allocations →
+          </Link>
+        </div>
+      </section>
+
+      <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
         <p className="label-caps">Showcase</p>
         <h2 className="mt-3 font-heading text-2xl font-bold">Explore this committee</h2>
         <p className="mt-2 text-sm text-muted">

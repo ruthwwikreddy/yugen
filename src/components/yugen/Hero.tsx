@@ -218,14 +218,6 @@ export function Hero() {
                       Summit · {YUGEN.venueShort}
                     </p>
                   </div>
-                  <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-yugen bg-yugen-border">
-                    {YUGEN.stats.map((stat) => (
-                      <div key={stat.label} className="bg-surface-raised px-4 py-4 text-center">
-                        <p className="font-display text-2xl uppercase tracking-tight">{stat.value}</p>
-                        <p className="mt-1 label-caps text-[9px]">{stat.label}</p>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
