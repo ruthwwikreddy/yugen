@@ -1,202 +1,143 @@
-import { Link } from 'react-router-dom'
-import { TornCardTop } from './TornEdge'
-import type { Committee, CommitteeChair } from '../../lib/yugen'
+import { motion } from 'framer-motion'
+import { type ReactNode } from 'react'
+import type { Committee } from '../../lib/yugen'
 import { YUGEN } from '../../lib/yugen'
 
-function ChairCard({ chair, committeeName }: { chair: CommitteeChair; committeeName: string }) {
+function Section({ title, children, delay = 0 }: { title: string; children: ReactNode; delay?: number }) {
   return (
-    <article className="overflow-hidden rounded-lg border border-yugen bg-yugen-black">
-      <TornCardTop />
-      <div className="bg-surface-raised px-4 pb-5 pt-1">
-        <div className="relative mx-auto aspect-[3/4] max-w-[180px] overflow-hidden bg-yugen-black">
-          {chair.image ? (
-            <img src={chair.image} alt={chair.name} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="font-display text-4xl uppercase text-yugen-white/20">{chair.initials}</span>
-            </div>
-          )}
-        </div>
-        <div className="mt-4 text-center">
-          {chair.name === 'TBA' && <span className="coming-soon-pill text-[8px]">TBA</span>}
-          <p className="mt-2 font-heading text-xs font-bold uppercase tracking-wide">{chair.role}</p>
-          <p className="mt-1 text-[11px] text-dim">{chair.name}</p>
-          <p className="mt-1 text-[10px] text-dim/80">{committeeName}</p>
-        </div>
-      </div>
-    </article>
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-16"
+    >
+      <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-yugen-white flex items-center gap-3">
+        <span className="h-2 w-2 rounded-full bg-accent-berry" />
+        {title}
+      </h2>
+      <div className="mt-6 border-t border-yugen pt-6">{children}</div>
+    </motion.section>
   )
 }
 
-interface CommitteeDetailContentProps {
-  committee: Committee
+function ChairCard({ name, role }: { name: string; role: string }) {
+  return (
+    <div className="group relative overflow-hidden rounded-xl border border-yugen bg-surface p-5 card-hover flex items-center gap-4">
+      {/* Glow hover effect */}
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-accent-berry/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-raised border border-yugen-strong transition-colors group-hover:border-accent-berry/50">
+        <span className="font-display text-lg uppercase text-yugen-white/40 group-hover:text-accent-mauve transition-colors">
+          {name.charAt(0)}
+        </span>
+      </div>
+      <div>
+        <p className="font-heading text-sm font-bold uppercase tracking-wide text-accent-mauve">{role}</p>
+        <p className="mt-0.5 text-base font-semibold text-yugen-white group-hover:text-yugen-white/90 transition-colors">{name}</p>
+      </div>
+    </div>
+  )
 }
 
-export function CommitteeDetailContent({ committee }: CommitteeDetailContentProps) {
-  const isAnnouncing = committee.status === 'announcing-soon'
-  const isIP = committee.id === 'ip'
-  const agendaLabel = isIP ? 'Coverage brief' : 'Agenda'
-  const whatsappGroup = YUGEN.whatsapp.groups.find(
-    (g) => g.id === committee.id || g.acronym.toLowerCase() === committee.acronym.toLowerCase(),
-  )
+export function CommitteeDetailContent({ committee }: { committee: Committee }) {
+  const whatsappUrl = YUGEN.whatsapp[committee.id as keyof typeof YUGEN.whatsapp]
 
   return (
-    <>
-      <div className="border-b border-yugen pb-10">
-        <Link to="/committees" className="label-caps hover:text-yugen-white">
-          ← All committees
-        </Link>
+    <div className="grid gap-12 lg:grid-cols-[1fr_300px] xl:gap-20 relative">
+      <div className="min-w-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="prose prose-invert max-w-none prose-p:text-muted prose-headings:text-yugen-white prose-a:text-accent-mauve prose-a:no-underline hover:prose-a:text-yugen-white"
+        >
+          <p className="text-lg leading-relaxed">{committee.description}</p>
+        </motion.div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <span className="label-caps">{committee.type}</span>
-          {isAnnouncing && <span className="coming-soon-pill">Announcing soon</span>}
-        </div>
-
-        <p className={`mt-6 font-display text-[clamp(3rem,10vw,5rem)] uppercase leading-none ${committee.acronym === 'TBA' ? 'text-yugen-white/50' : 'text-yugen-white'}`}>
-          {committee.acronym}
-        </p>
-        <h1 className="mt-3 font-heading text-3xl font-bold md:text-4xl">{committee.name}</h1>
-        <p className="mt-6 text-xl text-muted">{committee.topic}</p>
-      </div>
-
-      <section className="mt-12">
-        <h2 className="label-caps mb-4">{agendaLabel}</h2>
-        <div className="rounded-lg border border-yugen bg-surface-raised p-6 md:p-8">
-          <p className="leading-relaxed text-muted">
-            {committee.topicExpanded ?? committee.topic}
-          </p>
-        </div>
-      </section>
-
-      <section className="mt-12">
-        <h2 className="label-caps mb-4">Committee info</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: 'Difficulty', value: committee.difficulty },
-            { label: 'Capacity', value: committee.delegateCapacity },
-            { label: 'Portfolios', value: committee.portfolioRequired ? 'Required' : 'Not required' },
-            { label: 'Venue', value: committee.venue ?? 'TBA' },
-          ].map((item) => (
-            <div key={item.label} className="rounded-lg border border-yugen bg-surface p-5">
-              <p className="label-caps">{item.label}</p>
-              <p className="mt-2 font-heading text-sm font-semibold">{item.value}</p>
-            </div>
-          ))}
-        </div>
-        {committee.subRoles && committee.subRoles.length > 0 && (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {committee.subRoles.map((role) => (
-              <div
-                key={role.label}
-                className="flex items-center justify-between rounded-lg border border-yugen bg-surface-raised p-4"
-              >
-                <p className="font-heading text-sm font-semibold">{role.label}</p>
-                <p className="font-display text-2xl uppercase tracking-tight">{role.capacity}</p>
-              </div>
-            ))}
-          </div>
+        {committee.agendas.length > 0 && (
+          <Section title="Agendas" delay={0.1}>
+            <ul className="grid gap-4">
+              {committee.agendas.map((agenda, i) => (
+                <li key={i} className="group relative rounded-xl border border-yugen bg-surface-raised p-5 card-hover">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-accent-berry rounded-r transition-all duration-300 group-hover:h-2/3" />
+                  <p className="font-medium leading-relaxed text-yugen-white sm:text-lg pl-2">{agenda}</p>
+                </li>
+              ))}
+            </ul>
+          </Section>
         )}
-        {committee.portfolioNote && (
-          <p className="mt-4 text-sm text-dim">{committee.portfolioNote}</p>
-        )}
-      </section>
 
-      <section className="mt-12">
-        <h2 className="label-caps mb-6">Executive board</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {committee.chairs.map((chair) => (
-            <ChairCard key={`${chair.role}-${chair.initials}`} chair={chair} committeeName={committee.name} />
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-12">
-        <h2 className="label-caps mb-4">Study guide</h2>
-        <div className="flex flex-col gap-4 rounded-lg border border-yugen bg-surface-raised p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-heading font-bold">{committee.name} — Study Guide</p>
-            <p className="mt-1 text-sm text-muted">
-              {committee.studyGuideStatus === 'available'
-                ? committee.studyGuideUrls && committee.studyGuideUrls.length > 1
-                  ? `${committee.studyGuideUrls.length} background guides available for this committee.`
-                  : 'Download the background guide for this committee.'
-                : 'Background guide publishes when the agenda is confirmed.'}
-            </p>
-          </div>
-          {committee.studyGuideStatus === 'available' && committee.studyGuideUrl ? (
-            <div className="flex flex-wrap gap-3 shrink-0">
-              <a href={committee.studyGuideUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                Open in new tab
-              </a>
-              <a href={committee.studyGuideUrl} download className="btn-primary">
-                Download PDF
-              </a>
+        {committee.chairs.length > 0 && (
+          <Section title="Executive Board" delay={0.2}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {committee.chairs.map((chair, i) => (
+                <ChairCard key={i} name={chair.name} role={chair.role} />
+              ))}
             </div>
-          ) : (
-            <span className="coming-soon-pill shrink-0">Coming soon</span>
-          )}
-        </div>
-        {committee.studyGuideStatus === 'available' && (committee.studyGuideUrl || (committee.studyGuideUrls && committee.studyGuideUrls.length > 0)) && (
-          <div className="mt-4 space-y-6">
-            {((committee.studyGuideUrls && committee.studyGuideUrls.length > 0) ? committee.studyGuideUrls : [committee.studyGuideUrl!]).map((url, idx, arr) => {
-              const fileName = decodeURIComponent(url.split('/').pop() ?? '')
-              const prettyName = fileName
-                .replace(/\.pdf$/i, '')
-                .replace(/\.+$/, '')
-                .replace(/[_-]+/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
-              const label = arr.length > 1 ? `${committee.name} — Guide ${idx + 1} of ${arr.length}${prettyName ? ` · ${prettyName}` : ''}` : `${committee.name} study guide preview`
-              return (
-                <div key={url} className="overflow-hidden rounded-lg border border-yugen bg-yugen-black">
-                  <iframe
-                    src={url}
-                    title={label}
-                    className="h-[640px] w-full"
-                    loading="lazy"
-                  />
+          </Section>
+        )}
+
+        {whatsappUrl && (
+          <Section title="Communication" delay={0.3}>
+            <div className="rounded-xl border border-[#25D366]/30 bg-[#25D366]/5 p-6 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#25D366]/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <div>
+                  <h3 className="font-heading text-lg font-bold text-yugen-white">Delegate WhatsApp Group</h3>
+                  <p className="text-sm text-dim mt-1 max-w-md">Join this group to receive live updates, study materials, and direct communication from the Executive Board.</p>
                 </div>
-              )
-            })}
-          </div>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-xs font-bold uppercase tracking-widest text-black transition-all hover:bg-[#25D366]/90 hover:scale-105 shadow-[0_4px_16px_rgba(37,211,102,0.3)]"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                  </svg>
+                  Join Group
+                </a>
+              </div>
+            </div>
+          </Section>
         )}
-      </section>
+      </div>
 
-      <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
-        <p className="label-caps font-semibold text-accent-light">Allocations & Roster</p>
-        <h2 className="mt-3 font-heading text-2xl font-bold">Check your allocation for {committee.acronym}</h2>
-        <p className="mt-2 text-sm text-muted">
-          View all assigned portfolios, delegate names, countries/parties, and open seats for {committee.name}.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link to={`/allocations?committee=${committee.id}`} className="btn-primary">
-            View {committee.acronym} Allocations →
-          </Link>
-          {whatsappGroup && (
-            <a
-              href={whatsappGroup.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost"
-            >
-              Join {committee.acronym} WhatsApp group ↗
-            </a>
-          )}
-        </div>
-      </section>
+      {/* Sticky Right Sidebar */}
+      <motion.aside
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="hidden lg:block"
+      >
+        <div className="sticky top-32 rounded-2xl border border-yugen bg-surface-raised p-6 shadow-xl">
+          <p className="label-caps mb-4 text-yugen-white/80">Committee Info</p>
+          
+          <dl className="space-y-5">
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wider text-dim mb-1">Level</dt>
+              <dd className="inline-flex items-center rounded-full bg-white/[0.05] border border-white/10 px-2.5 py-1 text-xs font-medium text-yugen-white">
+                {committee.level}
+              </dd>
+            </div>
+            
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wider text-dim mb-1">Type</dt>
+              <dd className="text-sm text-yugen-white font-medium">{committee.type}</dd>
+            </div>
 
-      <section className="mt-12 rounded-xl border border-yugen bg-surface p-8">
-        <p className="label-caps">Showcase</p>
-        <h2 className="mt-3 font-heading text-2xl font-bold">Explore this committee</h2>
-        <p className="mt-2 text-sm text-muted">
-          This site previews the Yūgen 6.0 committee line-up. Allocations and committee preferences are managed by the secretariat directly.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-4">
-          <Link to="/committees" className="btn-primary">Browse all committees</Link>
-          <Link to="/resources" className="btn-ghost">All resources</Link>
-          <Link to="/contact" className="btn-ghost">Contact secretariat</Link>
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wider text-dim mb-1">Size</dt>
+              <dd className="text-sm text-yugen-white font-medium">{committee.size} delegates</dd>
+            </div>
+          </dl>
+
+          <div className="mt-8 pt-8 border-t border-yugen/50 space-y-3">
+            <a href={`/allocations`} className="btn-primary w-full text-xs py-3">View Country Matrix</a>
+            <a href={`/portfolio-guide`} className="btn-ghost w-full text-xs py-3">Read Portfolio Guide</a>
+          </div>
         </div>
-      </section>
-    </>
+      </motion.aside>
+    </div>
   )
 }

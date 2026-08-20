@@ -56,15 +56,16 @@ function MarqueeRow({
         {loop.map((photo, i) => (
           <div
             key={`${photo.id}-${i}`}
-            className="relative shrink-0 overflow-hidden rounded-lg border border-yugen bg-surface-raised"
+            className="group relative shrink-0 overflow-hidden rounded-xl bg-surface-raised transition-transform duration-500 hover:scale-[1.02] hover:z-10"
             style={{ height: `${tileHeight}px`, aspectRatio: '3 / 4' }}
           >
+            <div className="absolute inset-0 bg-yugen-black/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
             <img
               src={photo.src}
               alt={photo.alt}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover grayscale"
+              className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
             />
           </div>
         ))}

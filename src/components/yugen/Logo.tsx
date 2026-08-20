@@ -12,7 +12,7 @@ export function Logo({ className = 'h-8 w-8' }: LogoProps) {
     <img
       src={YUGEN_LOGO.white2x}
       alt=""
-      className={`block object-contain ${className}`}
+      className={`block object-contain transition-transform duration-300 hover:rotate-3 ${className}`}
       aria-hidden="true"
       draggable={false}
       decoding="async"
@@ -23,9 +23,11 @@ export function Logo({ className = 'h-8 w-8' }: LogoProps) {
 export function LogoLockup({ to = '/', showWordmark = true }: { to?: string; showWordmark?: boolean }) {
   return (
     <Link to={to} className="group flex items-center gap-3">
-      <Logo className="h-10 w-10 transition-opacity group-hover:opacity-80" />
+      <Logo className="h-10 w-10 transition-all duration-300 group-hover:scale-105 group-hover:opacity-90" />
       {showWordmark && (
-        <span className="font-display text-lg tracking-[0.12em] text-yugen-white">YUGEN</span>
+        <span className="font-display text-lg tracking-[0.15em] text-yugen-white transition-colors duration-300 group-hover:text-yugen-white/90">
+          YUGEN
+        </span>
       )}
     </Link>
   )
