@@ -31,7 +31,7 @@ export function Header() {
           duration: 0.5, 
           ease: [0.22, 1, 0.36, 1]
         }}
-        className={`mx-auto w-[90%] sm:w-[85%] max-w-4xl border border-yugen bg-yugen-black/95 backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+        className={`mx-auto w-[90%] sm:w-[85%] max-w-5xl border border-yugen bg-yugen-black/95 backdrop-blur-xl shadow-2xl transition-all duration-300 ${
           scrolled 
             ? ' rounded-xl py-1 px-4' 
             : ' rounded-2xl py-2 px-4'
@@ -40,12 +40,12 @@ export function Header() {
         <div className="flex h-12 md:h-14 items-center justify-between">
           <LogoLockup />
 
-          <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Main">
+          <nav className="hidden items-center gap-5 xl:flex xl:gap-6" aria-label="Main">
             {YUGEN.nav.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className="label-caps text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105"
+                className="label-caps whitespace-nowrap text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105"
               >
                 {item.label}
               </Link>
@@ -55,11 +55,11 @@ export function Header() {
           <div className="flex items-center gap-3">
             <Link
               to="/portfolio-guide"
-              className="label-caps hidden text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105 md:inline-flex"
+              className="label-caps hidden whitespace-nowrap text-yugen-muted transition-all duration-200 hover:text-accent-light hover:scale-105 xl:inline-flex"
             >
               Portfolios
             </Link>
-            <Link to="/contact" className="btn-primary hidden sm:inline-flex">
+            <Link to="/contact" className="btn-primary hidden whitespace-nowrap sm:inline-flex">
               Contact
             </Link>
             <button
