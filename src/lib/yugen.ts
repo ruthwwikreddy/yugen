@@ -71,6 +71,19 @@ export const YUGEN = {
     instagram: '@yugenporps',
     instagramUrl: 'https://instagram.com/yugenporps',
   },
+  whatsapp: {
+    label: 'Committee WhatsApp groups',
+    description: 'Every committee has a dedicated WhatsApp group for delegate coordination, position paper help, and updates from the Executive Board.',
+    groups: [
+      { id: 'unsc',  acronym: 'UNSC',  name: 'UN Security Council',                       url: 'https://chat.whatsapp.com/Dn0YKUTEryT7cFVymGvM29' },
+      { id: 'unhrc', acronym: 'UNHRC', name: 'UN Human Rights Council',                   url: 'https://chat.whatsapp.com/IAqe4rRPst91lVvWu7wqnH' },
+      { id: 'ccpcj', acronym: 'CCPCJ', name: 'Commission on Crime Prevention & CJ',       url: 'https://chat.whatsapp.com/Lk09vxUeN20Guf37is8P6Q' },
+      { id: 'aippm', acronym: 'AIPPM', name: 'All India Political Parties Meet',          url: 'https://chat.whatsapp.com/BCXe3CoTN4j5wuMOnOlP48' },
+      { id: 'ip',    acronym: 'IP',    name: 'International Press',                       url: 'https://chat.whatsapp.com/BpzATiHbcKt2u8sF7bRw7o' },
+      { id: 'ccc',   acronym: 'CCC',   name: 'Continental Crisis Committee',              url: 'https://chat.whatsapp.com/DNTA3Q98uWWFf4GkWzcHhD' },
+      { id: 'disec', acronym: 'DISEC', name: 'Disarmament & International Security',      url: 'https://chat.whatsapp.com/FKrhD6yWGGCITxoIsZ7Xlg' },
+    ],
+  },
   email: 'hello@yugenporps.in',
   brand: {
     black: '#000000',
@@ -85,8 +98,8 @@ export const YUGEN = {
   stats: [
     { label: 'Edition', value: '6.0' },
     { label: 'Committees', value: '7' },
-    { label: 'Delegates', value: 'TBA' },
-    { label: 'Schools', value: 'TBA' },
+    { label: 'Delegates', value: '297' },
+    { label: 'Schools', value: '40+' },
   ],
   about: {
     headline: 'Six editions in. The next chapter is on the way.',
@@ -234,10 +247,10 @@ export const YUGEN = {
       topicExpanded:
         'AIPPM will deliberate the impact of the Foreign Contribution Regulations on NGOs and civil society operations in India, balancing national security and economic growth, with special emphasis on the Foreign Contribution (Regulation) Amendment Bill, 2026. Party portfolios and position paper requirements publish with the study guide.',
       difficulty: 'Beginner-Friendly',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '71',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: 'Main Block Auditorium',
+      venue: 'Main Auditorium',
       studyGuideUrl: '/papers/YUGEN-PROPS MUN 2026- AIPPM BG.pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -256,10 +269,10 @@ export const YUGEN = {
       topic: 'Coverage brief announcing soon',
       topicExpanded: 'IP corps briefing, beat assignments, and portfolio requirements publish with the study guide.',
       difficulty: 'TBA',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '29',
       portfolioRequired: true,
       portfolioNote: 'TBA — journalism portfolio requirements.',
-      venue: '11-H',
+      venue: '12-G',
       studyGuideUrls: [
         '/papers/ip jounlism.pdf',
         '/papers/BACKGROUND GUIDE FOR IP PHOTOJOURNALISM..pdf',
@@ -282,7 +295,7 @@ export const YUGEN = {
       topicExpanded:
         'Final agenda for the UN Human Rights Council — set by the EB: Deliberation on Safeguarding Human Rights in the Context of Climate Change, Environmental Degradation, and Loss of Livelihoods. Country allocations, position paper format, and background materials publish with the study guide.',
       difficulty: 'Beginner-Friendly',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '72',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: 'Indoor Sports Complex',
@@ -304,7 +317,7 @@ export const YUGEN = {
       topicExpanded:
         'Chairs will deliberate on safeguarding critical undersea and maritime infrastructure against hybrid threats, with special emphasis on threats to undersea communication cables. Agenda set by the DISEC Executive Board. Background guide, delegate allocations, and position paper requirements publish with the study guide.',
       difficulty: 'Beginner-Friendly',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '63',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: '12-H',
@@ -326,10 +339,10 @@ export const YUGEN = {
       topicExpanded:
         'UNSC agenda — UNSC Summit Meeting. Freeze date: 30 January 1992. The Security Council convenes in the immediate aftermath of the Soviet Union\'s dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order. Country allocations, position paper format, and background materials publish with the study guide.',
       difficulty: 'Intermediate',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '25',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
-      venue: '11-D',
+      venue: '12-E',
       studyGuideUrl: '/papers/YUGEN 6.0 UNSC BG (2).pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -349,7 +362,7 @@ export const YUGEN = {
       topicExpanded:
         'CCPCJ agenda: Combating Illicit Trafficking of Drugs, Firearms, and Wildlife in Central Africa through Strengthened Regional Law Enforcement Cooperation. Background guide, country portfolios, and position paper requirements publish with the study guide.',
       difficulty: 'Intermediate',
-      delegateCapacity: 'TBA',
+      delegateCapacity: '40',
       portfolioRequired: true,
       portfolioNote: 'TBA — position paper requirements publish with the study guide.',
       venue: '12-D',
@@ -370,10 +383,10 @@ export const YUGEN = {
       topicExpanded:
         'CCC agenda — The Suez Crisis. Freeze date: 1 November 1956. The arc, directives, character briefs, and portfolio requirements publish with the full crisis roster.',
       difficulty: 'Advanced',
-      delegateCapacity: '10',
+      delegateCapacity: '30',
       portfolioRequired: true,
       portfolioNote: 'TBA — crisis portfolio format announcing soon.',
-      venue: '12-A',
+      venue: '12-F',
       studyGuideUrl: '/papers/YUGEN_CCC.pdf',
       studyGuideStatus: 'available',
       status: 'live',
@@ -607,7 +620,7 @@ export const YUGEN = {
     mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.443474306602!2d78.40697357593329!3d17.4384757013299!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb9139c427fdbf%3A0x419e21c70fe21903!2sAMS%20P.OBUL%20REDDY%20PUBLIC%20SCHOOL!5e0!3m2!1sen!2sin!4v1784643567730!5m2!1sen!2sin',
     parking: 'Parking instructions for faculty advisors and delegates available at campus entrance',
     accessibility: 'Accessible campus facilities available throughout conference venues',
-    committeeRooms: 'Room assignments publish with the final committee roster',
+    committeeRooms: 'Room assignments listed above — see the committee rooms table.',
     campusMapUrl: '',
   },
   accommodation: {
@@ -627,6 +640,7 @@ export const YUGEN = {
   nav: [
     { label: 'About', href: '/about' },
     { label: 'Committees', href: '/committees' },
+    { label: 'Allocations', href: '/allocations' },
     { label: 'Schedule', href: '/schedule' },
     { label: 'Resources', href: '/resources' },
     { label: 'FAQ', href: '/faq' },
@@ -637,11 +651,13 @@ export const YUGEN = {
       { label: 'About', href: '/about' },
       { label: 'Schedule', href: '/schedule' },
       { label: 'Committees', href: '/committees' },
+      { label: 'Allocations', href: '/allocations' },
       { label: 'Team', href: '/team' },
       { label: 'Venue', href: '/venue' },
       { label: 'Gallery', href: '/gallery' },
     ],
     delegates: [
+      { label: 'Allocations', href: '/allocations' },
       { label: 'Portfolio Guide', href: '/portfolio-guide' },
       { label: 'Delegate Guide', href: '/delegates' },
       { label: 'Resources', href: '/resources' },
@@ -713,7 +729,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
       'Deliberation on the impact of the Foreign Contribution Regulations on NGOs and civil society operations in India, while balancing national security and economic growth, with special emphasis on the Foreign Contribution (Regulation) Amendment Bill, 2026.',
     topicExpanded:
       'AIPPM will deliberate the impact of the Foreign Contribution Regulations on NGOs and civil society operations in India, balancing national security and economic growth, with special emphasis on the Foreign Contribution (Regulation) Amendment Bill, 2026. Party portfolios and position paper requirements publish with the study guide.',
-    venue: 'Main Block Auditorium',
+    venue: 'Main Auditorium',
   }),
   defaultCommittee({
     id: 'ip',
@@ -723,7 +739,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     topic: 'Coverage brief announcing soon',
     topicExpanded: 'IP corps briefing, beat assignments, and portfolio requirements publish with the study guide.',
     portfolioNote: 'TBA — journalism portfolio requirements.',
-    venue: '11-H',
+    venue: '12-G',
     chairs: IP_CHAIRS,
   }),
   defaultCommittee({
@@ -757,7 +773,7 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     topic: 'UNSC Summit Meeting',
     topicExpanded:
       'UNSC agenda — UNSC Summit Meeting. Freeze date: 30 January 1992. The Security Council convenes in the immediate aftermath of the Soviet Union\'s dissolution to address the resulting security vacuum across Eastern Europe and Central Asia, the future of nuclear stockpiles on former Soviet territory, and the framework for collective security in the post-Cold War order. Country allocations, position paper format, and background materials publish with the study guide.',
-    venue: '11-D',
+    venue: '12-E',
   }),
   defaultCommittee({
     id: 'ccpcj',
@@ -775,12 +791,12 @@ export const DEFAULT_COMMITTEES: Committee[] = [
     acronym: 'CCC',
     name: 'Continental Crisis Committee',
     type: 'Crisis',
-    delegateCapacity: '10',
+    delegateCapacity: '30',
     topic: 'The Suez Crisis.',
     topicExpanded:
       'CCC agenda — The Suez Crisis. Freeze date: 1 November 1956. The arc, directives, character briefs, and portfolio requirements publish with the full crisis roster.',
     portfolioNote: 'TBA — crisis portfolio format announcing soon.',
-    venue: '12-A',
+    venue: '12-F',
     chairs: CRISIS_CHAIRS,
   }),
 ]

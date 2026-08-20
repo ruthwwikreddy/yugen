@@ -19,6 +19,13 @@ export type AllocationEmailOptions = {
 
 const LOGO_URL = 'https://yugen.ruthwikreddy.live/logo-white@2x.png'
 
+function resolveCommitteeRoom(committeeAcronym: string): string | undefined {
+  const match = YUGEN.committees.find(
+    (c) => c.acronym.toLowerCase() === committeeAcronym.trim().toLowerCase(),
+  )
+  return match?.venue
+}
+
 export function buildAllocationPlainText(data: AllocationEmailData): string {
   const lines = [
     `Dear ${data.delegateName},`,
@@ -35,10 +42,13 @@ export function buildAllocationPlainText(data: AllocationEmailData): string {
     lines.push(`Country / Portfolio : ${data.country}`)
   }
 
+  const room = resolveCommitteeRoom(data.committee)
+
   lines.push(
     `School / Institution : ${data.school}`,
     `Dates : ${YUGEN.dates}`,
     `Venue : ${YUGEN.venue}, ${YUGEN.city}`,
+    ...(room ? [`Committee Room : ${room}`] : []),
     '--------------------------------------------------',
     '',
     'NEXT STEPS:',
@@ -60,6 +70,7 @@ export function buildAllocationHtml(
   options: AllocationEmailOptions = {}
 ): string {
   const logoSrc = options.logoUrl || LOGO_URL
+  const room = resolveCommitteeRoom(data.committee)
 
   const countryBlock = data.country
     ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
@@ -137,6 +148,14 @@ export function buildAllocationHtml(
                         <td style="padding:7px 0;color:rgba(255,255,255,0.4);width:110px;">Venue</td>
                         <td style="padding:7px 0;color:rgba(255,255,255,0.85);font-weight:500;">${escapeHtml(YUGEN.venue)}, ${escapeHtml(YUGEN.city)}</td>
                       </tr>
+                      ${room ? `
+                      <tr>
+                        <td colspan="2" style="height:1px;background:rgba(255,255,255,0.06);padding:0;"></td>
+                      </tr>
+                      <tr>
+                        <td style="padding:7px 0;color:rgba(255,255,255,0.4);width:110px;">Committee Room</td>
+                        <td style="padding:7px 0;color:rgba(255,255,255,0.85);font-weight:500;">${escapeHtml(room)}</td>
+                      </tr>` : ''}
                     </table>
                   </td>
                 </tr>

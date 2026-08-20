@@ -88,6 +88,38 @@ export function VenuePage() {
         </motion.div>
       </div>
 
+      {/* Committee room allocations */}
+      <section className="mt-16">
+        <p className="label-caps mb-4">Committee rooms</p>
+        <h2 className="font-heading text-2xl font-bold sm:text-3xl">Where each council meets</h2>
+        <p className="mt-3 max-w-2xl text-muted">
+          Room allocations for Yūgen Summit 6.0. Use this table to find your committee room
+          on conference day — signage at the registration desk will mirror these assignments.
+        </p>
+
+        <div className="mt-8 overflow-hidden rounded-xl border border-yugen">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-surface-raised">
+              <tr>
+                <th className="px-6 py-4 label-caps">Committee</th>
+                <th className="px-6 py-4 label-caps">Room / Venue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {YUGEN.committees.map((c) => (
+                <tr key={c.id} className="border-t border-yugen/60">
+                  <td className="px-6 py-4">
+                    <p className="font-display text-base uppercase tracking-wide">{c.acronym}</p>
+                    <p className="mt-1 text-xs text-dim">{c.name}</p>
+                  </td>
+                  <td className="px-6 py-4 font-medium text-yugen-white">{c.venue ?? 'TBA'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       {/* Getting here */}
       <section className="mt-16">
         <p className="label-caps mb-4">Getting here</p>
