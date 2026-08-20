@@ -5,7 +5,8 @@ import type { Committee } from '../../lib/yugen'
 export function CommitteeCard({ committee }: { committee: Committee }) {
   const whatsappUrl = YUGEN.whatsapp[committee.id as keyof typeof YUGEN.whatsapp]
 
-  const getDifficultyColor = (level: string) => {
+  const getDifficultyColor = (level?: string) => {
+    if (!level) return 'text-zinc-400 bg-zinc-400/10 border-zinc-400/20'
     const l = level.toLowerCase()
     if (l.includes('beginner')) return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
     if (l.includes('intermediate')) return 'text-amber-400 bg-amber-400/10 border-amber-400/20'
