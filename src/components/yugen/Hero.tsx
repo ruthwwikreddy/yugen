@@ -219,23 +219,33 @@ export function Hero() {
                 variants={fadeUp}
                 initial="hidden"
                 animate="visible"
-                className="mt-5 inline-flex items-center gap-1 rounded-xl border border-yugen bg-white/[0.03] px-4 py-2.5"
+                className="mt-6 mb-2 inline-flex flex-wrap items-center gap-4 sm:gap-6 rounded-2xl border border-yugen bg-surface/50 p-4 sm:px-6 sm:py-5 shadow-[0_0_40px_rgba(0,0,0,0.5)] backdrop-blur-xl"
               >
-                <span className="label-caps mr-2 text-dim/70">Starts in</span>
+                <div className="flex items-center gap-3 pr-4 sm:pr-6 border-r border-yugen-strong">
+                  <div className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full bg-accent-crimson opacity-75"></span>
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent-berry shadow-[0_0_10px_rgba(200,80,95,0.8)]"></span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-yugen-white">Starts In</span>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-4">
                 {[
                   { v: countdown.d, l: 'Days' },
-                  { v: countdown.h, l: 'Hrs' },
-                  { v: countdown.m, l: 'Min' },
-                  { v: countdown.s, l: 'Sec' },
+                  { v: countdown.h, l: 'Hours' },
+                  { v: countdown.m, l: 'Mins' },
+                  { v: countdown.s, l: 'Secs' },
                 ].map(({ v, l }, i) => (
-                  <span key={l} className="flex items-baseline gap-0.5">
-                    <span className="font-display text-xl text-yugen-white tabular-nums">
-                      {String(v).padStart(2, '0')}
-                    </span>
-                    <span className="text-[9px] uppercase tracking-wider text-dim">{l}</span>
-                    {i < 3 && <span className="mx-1.5 text-yugen-border font-light">:</span>}
-                  </span>
+                  <div key={l} className="flex items-center gap-2 sm:gap-4">
+                    <div className="flex flex-col items-center justify-center min-w-[3rem] sm:min-w-[4rem]">
+                      <span className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-yugen-white tabular-nums drop-shadow-[0_2px_15px_rgba(255,255,255,0.3)]">
+                        {String(v).padStart(2, '0')}
+                      </span>
+                      <span className="mt-1 sm:mt-1.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.25em] text-dim">{l}</span>
+                    </div>
+                    {i < 3 && <span className="text-yugen-strong font-display text-2xl sm:text-4xl opacity-50">:</span>}
+                  </div>
                 ))}
+                </div>
               </motion.div>
             )}
 
@@ -309,17 +319,23 @@ export function Hero() {
                   />
                   <div className="relative px-8 pb-10 pt-8 md:px-10 md:pb-12 md:pt-10">
                     <Logo className="relative mx-auto h-36 w-36 md:h-44 md:w-44 transition-transform duration-500 hover:scale-105" />
-                    <div className="mt-6 text-center md:mt-8">
-                      <p className="font-display text-2xl uppercase tracking-[0.18em] text-yugen-white/90">
-                        SUMMIT 6.0
-                      </p>
-                      <p className="mt-1.5 font-body text-[10px] font-medium uppercase tracking-[0.22em] text-dim">
+                    <div className="mt-8 flex flex-col items-center text-center">
+                      <div className="inline-block rounded-full border border-yugen-strong bg-white/[0.03] px-4 py-1.5 mb-4 shadow-[0_0_25px_rgba(126,87,88,0.2)]">
+                        <span className="bg-gradient-to-r from-accent-mauve to-accent-berry bg-clip-text text-transparent font-display text-[10px] sm:text-xs uppercase tracking-[0.3em] font-bold">
+                          Edition VI
+                        </span>
+                      </div>
+                      <h2 className="font-heading text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-yugen-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.3)]">
+                        Yūgen Summit
+                      </h2>
+                      <p className="mt-4 font-body text-[11px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-dim max-w-[220px] leading-relaxed">
                         {YUGEN.dates}
                       </p>
-                      <div className="mt-4 flex items-center justify-center gap-2">
-                        <span className="h-px w-8 bg-gradient-to-r from-transparent to-accent-berry" />
-                        <span className="text-[9px] uppercase tracking-[0.28em] text-dim/60">{YUGEN.venueShort}</span>
-                        <span className="h-px w-8 bg-gradient-to-l from-transparent to-accent-berry" />
+                      
+                      <div className="mt-7 flex items-center justify-center gap-4 w-full max-w-[260px]">
+                        <span className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-berry/60" />
+                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.3em] text-yugen-white/70">{YUGEN.venueShort}</span>
+                        <span className="h-px flex-1 bg-gradient-to-l from-transparent to-accent-berry/60" />
                       </div>
                     </div>
                   </div>
