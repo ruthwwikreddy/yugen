@@ -49,15 +49,15 @@ export function CommitteesPage() {
             <p className="text-sm text-dim mt-1">Delegates must join their respective WhatsApp groups for live updates.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(YUGEN.whatsapp).map(([id, url]) => (
+            {YUGEN.whatsapp.groups.map((group) => (
               <a
-                key={id}
-                href={url}
+                key={group.id}
+                href={group.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-full border border-yugen bg-yugen-black px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted transition-all hover:border-[#25D366]/50 hover:bg-[#25D366]/10 hover:text-[#25D366]"
               >
-                {id}
+                {group.acronym}
               </a>
             ))}
           </div>

@@ -3,7 +3,7 @@ import { YUGEN } from '../../lib/yugen'
 import type { Committee } from '../../lib/yugen'
 
 export function CommitteeCard({ committee }: { committee: Committee }) {
-  const whatsappUrl = YUGEN.whatsapp[committee.id as keyof typeof YUGEN.whatsapp]
+  const whatsappUrl = YUGEN.whatsapp.groups.find(g => g.id === committee.id)?.url
 
   const getDifficultyColor = (level?: string) => {
     if (!level) return 'text-zinc-400 bg-zinc-400/10 border-zinc-400/20'
@@ -35,8 +35,8 @@ export function CommitteeCard({ committee }: { committee: Committee }) {
         
         {/* Badges Overlay */}
         <div className="absolute left-4 top-4 flex flex-wrap gap-2 z-10">
-          <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest backdrop-blur-md ${getDifficultyColor(committee.level)}`}>
-            {committee.level}
+          <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest backdrop-blur-md ${getDifficultyColor(committee.difficulty)}`}>
+            {committee.difficulty}
           </span>
         </div>
       </div>

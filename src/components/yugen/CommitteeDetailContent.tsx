@@ -40,7 +40,7 @@ function ChairCard({ name, role }: { name: string; role: string }) {
 }
 
 export function CommitteeDetailContent({ committee }: { committee: Committee }) {
-  const whatsappUrl = YUGEN.whatsapp[committee.id as keyof typeof YUGEN.whatsapp]
+  const whatsappUrl = YUGEN.whatsapp.groups.find(g => g.id === committee.id)?.url
 
   return (
     <div className="grid gap-12 lg:grid-cols-[1fr_300px] xl:gap-20 relative">
@@ -54,16 +54,12 @@ export function CommitteeDetailContent({ committee }: { committee: Committee }) 
           <p className="text-lg leading-relaxed">{committee.description}</p>
         </motion.div>
 
-        {committee.agendas.length > 0 && (
-          <Section title="Agendas" delay={0.1}>
-            <ul className="grid gap-4">
-              {committee.agendas.map((agenda, i) => (
-                <li key={i} className="group relative rounded-xl border border-yugen bg-surface-raised p-5 card-hover">
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-accent-berry rounded-r transition-all duration-300 group-hover:h-2/3" />
-                  <p className="font-medium leading-relaxed text-yugen-white sm:text-lg pl-2">{agenda}</p>
-                </li>
-              ))}
-            </ul>
+        {committee.topicExpanded && (
+          <Section title="Agenda" delay={0.1}>
+            <div className="group relative rounded-xl border border-yugen bg-surface-raised p-5 card-hover">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-accent-berry rounded-r transition-all duration-300 group-hover:h-2/3" />
+              <p className="font-medium leading-relaxed text-yugen-white sm:text-lg pl-2">{committee.topicExpanded}</p>
+            </div>
           </Section>
         )}
 
@@ -117,7 +113,7 @@ export function CommitteeDetailContent({ committee }: { committee: Committee }) 
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wider text-dim mb-1">Level</dt>
               <dd className="inline-flex items-center rounded-full bg-white/[0.05] border border-white/10 px-2.5 py-1 text-xs font-medium text-yugen-white">
-                {committee.level}
+                {committee.difficulty}
               </dd>
             </div>
             
@@ -128,7 +124,7 @@ export function CommitteeDetailContent({ committee }: { committee: Committee }) 
 
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wider text-dim mb-1">Size</dt>
-              <dd className="text-sm text-yugen-white font-medium">{committee.size} delegates</dd>
+              <dd className="text-sm text-yugen-white font-medium">{committee.delegateCapacity} delegates</dd>
             </div>
           </dl>
 
