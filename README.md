@@ -1,76 +1,95 @@
-# Yūgen Summit 6.0 — Official Site
+<div align="center">
+# YUGEN
+**The comprehensive digital infrastructure for YUGEN Model United Nations.**
+A full-stack event management platform handling delegate registrations, committee allocations, revenue tracking, and public information dissemination.
+[Source](https://github.com/ruthwwikreddy/yugen) · Built by [Ruthwik Reddy](https://www.ruthwikreddy.live/)
+MIT licensed · React + TypeScript · Firebase Powered
+</div>
 
-Production website for **Yugen Porps** (Yūgen Summit 6.0) at P. Obul Reddy Public School, Hyderabad.
+---
 
-## Stack
+## Table of contents
+1. [What YUGEN does](#1-what-yugen-does)
+2. [Core Architecture](#2-core-architecture)
+3. [Key Modules](#3-key-modules)
+4. [Quick start](#4-quick-start)
+5. [Admin Capabilities](#5-admin-capabilities)
+6. [Tech Stack](#6-tech-stack)
+7. [Contributing](#7-contributing)
+8. [License](#8-license)
 
-React 19 · Vite · TypeScript · Tailwind v4 · Framer Motion · react-router-dom
+---
 
-## Develop
+## 1. What YUGEN does
 
-```bash
-npm install
-npm run dev
-npm run build
+| Capability | Detail |
+|---|---|
+| **Delegate Lifecycle** | Manages the complete flow from registration $\rightarrow$ payment $\rightarrow$ confirmation $\rightarrow$ allocation. |
+| **Allocation Engine** | Admin tools to import committee matrices and automatically assign portfolios to delegates. |
+| **Revenue Tracking** | Real-time dashboard monitoring early-bird and priority round payments via UPI. |
+| **Information Hub** | Publicly accessible resources, background guides, and schedule for all participants. |
+| **Admin Control** | Password-protected backend to manage delegate data and send allocation emails. |
+
+## 2. Core Architecture
+
+```
+Delegate/User             YUGEN Platform (React/TS)             Firebase Cloud
+─────────────────         ────────────────────────            ────────────────────────
+Register for Event   ─────▶  Registration Wizard      ──────▶    Firestore (Registrations)
+Submit Payment       ─────▶  UPI Payment Integration   ──────▶    Firestore (Payment Status)
+Check Portfolio      ◀─────  Public Allocations Page   ◀──────    Firestore (Allocations)
+                                                                       │
+                                                                       ▼
+Admin User           ─────▶  Admin Dashboard          ◀──────    Secure Admin Auth
+Import CSV Matrix    ─────▶  Allocation Engine        ──────▶    Update Portfolios
+Send Allocations     ─────▶  Email Dispatcher         ──────▶    Notify Delegates
 ```
 
-## Content — single source of truth
+## 3. Key Modules
 
-**All copy and data lives in `src/lib/yugen.ts`.** Replace `TBA` values and empty arrays when the organizing committee confirms details.
+- **Registration Wizard**: A multi-step form with validation and payment tracking.
+- **Allocation System**: Logic to map delegates to specific countries/portfolios based on committee matrices.
+- **Admin Dashboard**: A secure area for the Secretariat to manage the event's operational data.
+- **Public Resources**: A centralized hub for background guides and event documentation.
 
-| Data | Where to update |
-|------|-----------------|
-| Dates, hero status | `dates`, `datesHero`, `status` |
-| Stats bar | `stats` |
-| About + SG letter | `about` |
-| Past editions | `legacy.editions` |
-| Gallery photos | `gallery[]` — `{ id, src, alt, caption }` |
-| Committees | `committees[]` — enables `/committees/:id` |
-| Schedule | `schedule[]` |
-| Dress code | `dressCode[]` |
-| Secretariat | `secretariat[]` |
-| USGs + EB | `team.usgs[]`, `team.eb[]` |
-| Resources / PDFs | `resources[]` or use defaults until filled |
-| Delegate handbook | `delegatesGuide.sections` |
-| FAQ | `faq[]` |
-| Awards | `awards[]` |
-| Sponsors | `sponsors[]` |
-| Pricing | `pricing[]` |
-| Venue / map | `venueDetail` |
-| Hotels / travel | `accommodation` |
-| Press kit | `press.kit[]` |
-| Chair / IP apply | `apply[]` |
+## 4. Quick start
 
-Empty arrays fall back to polished TBA placeholders via helpers: `getResources()`, `getAwards()`, `getPressKit()`, `getGalleryItems()`, `getPricing()`.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/ruthwwikreddy/yugen.git
+   cd yugen
+   ```
 
-## Notify form
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Copy `.env.example` → `.env.local` and set `VITE_FORMSPREE_ENDPOINT`.
+3. **Configure Firebase**:
+   Create a `.env` file and add your Firebase configuration keys.
 
-## Routes
+4. **Run locally**:
+   ```bash
+   npm run dev
+   ```
 
-| Route | Page |
-|-------|------|
-| `/` | Home — hero, stats, about, legacy, committees, schedule, venues, dress code, secretariat, gallery, notify CTA |
-| `/about` | About + letter from SG |
-| `/register` | Notify + pricing tiers (TBA) |
-| `/committees` | Committee listing |
-| `/committees/:id` | Committee detail (when roster live) |
-| `/schedule` | Full schedule |
-| `/team` | Secretariat, USGs, EB |
-| `/resources` | RoP, study guides, handbook PDFs |
-| `/delegates` | Delegate handbook |
-| `/faq` | FAQ accordion |
-| `/awards` | Award categories |
-| `/apply` | Chair / IP / OC applications |
-| `/sponsors` | Partner logos |
-| `/press` | Media kit |
-| `/venue` | Campus, parking, map |
-| `/accommodation` | Travel + hotels |
-| `/gallery` | Photo grid |
-| `/contact` | Contact + notify |
-| `/privacy` `/terms` `/refund` | Legal |
+## 5. Admin Capabilities
 
-## Deploy
+The `/admin` portal provides the Secretariat with powerful tools:
+- **Registration Management**: View and edit all delegate details.
+- **CSV Import**: Bulk upload committee matrices for fast allocation.
+- **Revenue Monitoring**: Track total fees collected across different registration rounds.
+- **Allocation Dispatch**: Trigger notification emails to delegates once portfolios are assigned.
 
-Vercel or Cloudflare Pages → point `yugenporps.in` DNS. SPA rewrites configured in `vercel.json`.
+## 6. Tech Stack
+
+- **Frontend**: React 18, TypeScript, Vite.
+- **Styling**: Tailwind CSS / Custom CSS (Glassmorphism).
+- **Backend/Database**: Firebase Firestore, Firebase Auth.
+- **Deployment**: Vercel.
+
+## 7. Contributing
+This is a specialized event platform. Contributions regarding performance, UI/UX enhancements, or new admin features are welcome.
+
+## 8. License
+Released under the **MIT License** — feel free to adapt this infrastructure for your own MUN or event management needs.
