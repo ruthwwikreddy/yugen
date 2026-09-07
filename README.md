@@ -1,5 +1,7 @@
 <div align="center">
+  
 # YUGEN
+
 **The comprehensive digital infrastructure for YUGEN Model United Nations.**
 A full-stack event management platform handling delegate registrations, committee allocations, revenue tracking, and public information dissemination.
 [Source](https://github.com/ruthwwikreddy/yugen) · Built by [Ruthwik Reddy](https://www.ruthwikreddy.live/)
