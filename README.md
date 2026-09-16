@@ -1,8 +1,9 @@
 <div align="center">
-  
+
 # YUGEN
 
 **The comprehensive digital infrastructure for YUGEN Model United Nations.**
+
 A full-stack event management platform handling delegate registrations, committee allocations, revenue tracking, and public information dissemination.
 [Source](https://github.com/ruthwwikreddy/yugen) · Built by [Ruthwik Reddy](https://www.ruthwikreddy.live/)
 MIT licensed · React + TypeScript · Firebase Powered
@@ -11,6 +12,7 @@ MIT licensed · React + TypeScript · Firebase Powered
 ---
 
 ## Table of contents
+
 1. [What YUGEN does](#1-what-yugen-does)
 2. [Core Architecture](#2-core-architecture)
 3. [Key Modules](#3-key-modules)
@@ -30,7 +32,6 @@ MIT licensed · React + TypeScript · Firebase Powered
 | **Allocation Engine** | Admin tools to import committee matrices and automatically assign portfolios to delegates. |
 | **Revenue Tracking** | Real-time dashboard monitoring early-bird and priority round payments via UPI. |
 | **Information Hub** | Publicly accessible resources, background guides, and schedule for all participants. |
-| **Admin Control** | Password-protected backend to manage delegate data and send allocation emails. |
 
 ## 2. Core Architecture
 
@@ -51,7 +52,6 @@ Send Allocations     ─────▶  Email Dispatcher         ────�
 
 - **Registration Wizard**: A multi-step form with validation and payment tracking.
 - **Allocation System**: Logic to map delegates to specific countries/portfolios based on committee matrices.
-- **Admin Dashboard**: A secure area for the Secretariat to manage the event's operational data.
 - **Public Resources**: A centralized hub for background guides and event documentation.
 
 ## 4. Quick start
@@ -77,7 +77,6 @@ Send Allocations     ─────▶  Email Dispatcher         ────�
 
 ## 5. Admin Capabilities
 
-The `/admin` portal provides the Secretariat with powerful tools:
 - **Registration Management**: View and edit all delegate details.
 - **CSV Import**: Bulk upload committee matrices for fast allocation.
 - **Revenue Monitoring**: Track total fees collected across different registration rounds.
@@ -86,12 +85,15 @@ The `/admin` portal provides the Secretariat with powerful tools:
 ## 6. Tech Stack
 
 - **Frontend**: React 18, TypeScript, Vite.
-- **Styling**: Tailwind CSS / Custom CSS (Glassmorphism).
 - **Backend/Database**: Firebase Firestore, Firebase Auth.
 - **Deployment**: Vercel.
 
 ## 7. Contributing
-This is a specialized event platform. Contributions regarding performance, UI/UX enhancements, or new admin features are welcome.
+
+Contributions are welcome. Please follow the standard GitHub workflow for submitting pull requests.
 
 ## 8. License
-Released under the **MIT License** — feel free to adapt this infrastructure for your own MUN or event management needs.
+
+Released under the **MIT License**.
+
+Designed and engineered by **[Ruthwik Reddy](https://www.ruthwikreddy.live/)** · [github.com/ruthwwikreddy/yugen](https://github.com/ruthwwikreddy/yugen)
